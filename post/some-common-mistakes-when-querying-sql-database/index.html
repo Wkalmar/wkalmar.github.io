@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Some Common Mistakes When Querying SQL Database // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="http://example.org/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Some Common Mistakes When Querying SQL Database"/>
+<meta name="twitter:description" content="Introduction When I started learning SQL, I found out several issues which I thought to be interesting to share. For our needs, let&rsquo;s use AdventureWorks2012 database, which can be obtained here.
+1. Don&rsquo;t Forget about NULL Let us execute the following query: select Count(*)from Sales.SalesOrderDetail The result will be:
+Filtering by CarrierTrackingNumber: select Count(*)from Sales.SalesOrderDetailwhere CarrierTrackingNumber = &#39;4911-403C-98&#39; will give us:
+It is natural to assume that the result of the following query: select Count(*)from Sales."/>
+
+    <meta property="og:title" content="Some Common Mistakes When Querying SQL Database" />
+<meta property="og:description" content="Introduction When I started learning SQL, I found out several issues which I thought to be interesting to share. For our needs, let&rsquo;s use AdventureWorks2012 database, which can be obtained here.
+1. Don&rsquo;t Forget about NULL Let us execute the following query: select Count(*)from Sales.SalesOrderDetail The result will be:
+Filtering by CarrierTrackingNumber: select Count(*)from Sales.SalesOrderDetailwhere CarrierTrackingNumber = &#39;4911-403C-98&#39; will give us:
+It is natural to assume that the result of the following query: select Count(*)from Sales." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/post/some-common-mistakes-when-querying-sql-database/" />
+<meta property="article:published_time" content="2014-06-22T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2014-06-22T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="http://example.org/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Some Common Mistakes When Querying SQL Database</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jun 22, 2014
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="http://example.org/tags/sql/">SQL</a><a class="tag" href="http://example.org/tags/sql-server/">SQL-Server</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="introduction">Introduction</h2>
+
+<p>When I started learning SQL, I found out several issues which I thought to be interesting to share. For our needs, let&rsquo;s use <code>AdventureWorks2012</code> database, which can be obtained <a href="http://msftdbprodsamples.codeplex.com/downloads/get/165399">here</a>.</p>
+
+<h2 id="1-don-t-forget-about-null">1. Don&rsquo;t Forget about NULL</h2>
+
+<p>Let us execute the following query:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">Count</span>(<span style="color:#f92672">*</span>)
+<span style="color:#66d9ef">from</span> Sales.SalesOrderDetail</code></pre></div>
+The result will be:</p>
+
+<p><img src="/1/1.jpg" alt="" /></p>
+
+<p>Filtering by <code>CarrierTrackingNumber</code>:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">Count</span>(<span style="color:#f92672">*</span>)
+<span style="color:#66d9ef">from</span> Sales.SalesOrderDetail
+<span style="color:#66d9ef">where</span> CarrierTrackingNumber <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;4911-403C-98&#39;</span></code></pre></div>
+will give us:</p>
+
+<p><img src="/1/2.jpg" alt="" /></p>
+
+<p>It is natural to assume that the result of the following query:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">Count</span>(<span style="color:#f92672">*</span>)
+<span style="color:#66d9ef">from</span> Sales.SalesOrderDetail
+<span style="color:#66d9ef">where</span> CarrierTrackingNumber <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;4911-403C-98&#39;</span></code></pre></div>
+would be <code>121317-12=121205</code>. However, in fact it is</p>
+
+<p><img src="/1/3.jpg" alt="" /></p>
+
+<p>So where are all the other rows? Those rows have <code>NULL</code> in <code>CarrierTrackingNumber</code> column.</p>
+
+<p><img src="/1/4.jpg" alt="" /></p>
+
+<p>The fact is that comparison between <code>NULL</code> and the value (&lsquo;4911-403C-98&rsquo; in our case) will return <code>UNKNOWN</code>, while <code>WHERE</code> clause returns only statements that are <code>true</code>. Comparison between value and <code>NULL</code> will also give <code>UNKNOWN</code>, which is shown on a screenshot below.</p>
+
+<p><img src="/1/5.jpg" alt="" /></p>
+
+<p>So if you need to compare your value and <code>NULL</code>, you should use operator <code>IS NULL</code>. For example:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">Count</span>(<span style="color:#f92672">*</span>)
+<span style="color:#66d9ef">from</span> Sales.SalesOrderDetail
+<span style="color:#66d9ef">where</span> CarrierTrackingNumber <span style="color:#f92672">&lt;&gt;</span> <span style="color:#e6db74">&#39;4911-403C-98&#39;</span> <span style="color:#66d9ef">or</span> CarrierTrackingNumber  <span style="color:#66d9ef">IS</span>  <span style="color:#66d9ef">NUll</span></code></pre></div>
+will give us expected:</p>
+
+<p><img src="/1/6.jpg" alt="" /></p>
+
+<h2 id="2-inner-join-is-not-a-golden-hammer">2. INNER JOIN is Not a Golden Hammer</h2>
+
+<p>Let us select <strong>all</strong> job candidates and id of their addresses (it is more natural to select addresses but let us not complicate the query for our learning needs). As this information is situated in 2 different tables linked by the column <code>BusinessEntityId</code>, common practice for the beginners is to use <code>INNER JOIN</code> on this column.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">C</span>.JobCandidateID, A.AddressID
+<span style="color:#66d9ef">from</span> HumanResources.JobCandidate <span style="color:#66d9ef">C</span> <span style="color:#66d9ef">inner</span> <span style="color:#66d9ef">join</span> Person.BusinessEntityAddress A
+<span style="color:#66d9ef">on</span> <span style="color:#66d9ef">c</span>.BusinessEntityID <span style="color:#f92672">=</span> A.BusinessEntityID</code></pre></div>
+Everything looks fine, until we realize that there are 13 job candidates in the first table.</p>
+
+<p><img src="/1/7.jpg" alt="" /></p>
+
+<p>Again, the problem is <code>NULL</code>. If we examine <code>JobCandidate</code> table closely, we&rsquo;ll see that the column <code>BusinessEntityId</code> can have <code>NULL</code> as its values.</p>
+
+<p><img src="/1/8.jpg" alt="" /></p>
+
+<p>Therefore, if we want to select all job candidates, we should use LEFT JOIN instead of INNER JOIN, which will just select all rows from left table.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">C</span>.JobCandidateID, A.AddressID
+<span style="color:#66d9ef">from</span> HumanResources.JobCandidate <span style="color:#66d9ef">C</span> <span style="color:#66d9ef">left</span> <span style="color:#66d9ef">join</span> Person.BusinessEntityAddress A
+<span style="color:#66d9ef">on</span> <span style="color:#66d9ef">c</span>.BusinessEntityID <span style="color:#f92672">=</span> A.BusinessEntityID</code></pre></div>
+And voila!</p>
+
+<p><img src="/1/9.jpg" alt="" /></p>
+
+<h2 id="3-if-syntax-construct-exists-why-don-t-you-use-it">3. If Syntax Construct Exists, Why Don’t You Use It?</h2>
+
+<p>Let us take a look at the two queries, which do exactly the same: select items, which cost more than 100 and were bought more than 1000 times.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">Select</span> t.ProductID, <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> TransactionCount <span style="color:#66d9ef">From</span> Sales.SalesOrderDetail t
+<span style="color:#66d9ef">WHERE</span> (<span style="color:#66d9ef">Select</span> <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">From</span> Sales.SalesOrderDetail t1
+    <span style="color:#66d9ef">Where</span> t1.ProductId <span style="color:#f92672">=</span> t.ProductId <span style="color:#66d9ef">AND</span> t1.UnitPrice <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">100</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1000</span>
+<span style="color:#66d9ef">Group</span> <span style="color:#66d9ef">by</span> t.ProductId
+
+<span style="color:#66d9ef">Select</span> ProductID, <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>)
+<span style="color:#66d9ef">From</span> Sales.SalesOrderDetail
+<span style="color:#66d9ef">Where</span> UnitPrice <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">100</span>
+<span style="color:#66d9ef">Group</span> <span style="color:#66d9ef">by</span> ProductID
+<span style="color:#66d9ef">Having</span> <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1000</span></code></pre></div>
+Which one to use? Here are the statistics:</p>
+
+<p><img src="/1/10.jpg" alt="" /></p>
+
+<p>As you can see, the first one is imperformant. Therefore, if subquery or join can be replaced by more simple approach, you should better do so.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

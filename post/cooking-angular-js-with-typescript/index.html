@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Cooking angular.js with Typescript // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="http://example.org/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Cooking angular.js with Typescript"/>
+<meta name="twitter:description" content="Introduction Typescript starts to gain more and more popularity because of static typing offering its benefits. Still, some developers who are involved in supporting projects with angular.js may be stuck with lack of community offering their recipes of using angular.js together with typescript. This article will try to fill this gap.
+Our strategy involves shipping working product at every stage of development. So in real life, transition to typescript can be performed gradually thus not hurting business goals that development team has to reach."/>
+
+    <meta property="og:title" content="Cooking angular.js with Typescript" />
+<meta property="og:description" content="Introduction Typescript starts to gain more and more popularity because of static typing offering its benefits. Still, some developers who are involved in supporting projects with angular.js may be stuck with lack of community offering their recipes of using angular.js together with typescript. This article will try to fill this gap.
+Our strategy involves shipping working product at every stage of development. So in real life, transition to typescript can be performed gradually thus not hurting business goals that development team has to reach." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/post/cooking-angular-js-with-typescript/" />
+<meta property="article:published_time" content="2018-12-26T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2018-12-26T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="http://example.org/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Cooking angular.js with Typescript</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Dec 26, 2018
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="http://example.org/tags/javascript/">Javascript</a><a class="tag" href="http://example.org/tags/typescript/">Typescript</a><a class="tag" href="http://example.org/tags/angular.js/">Angular.js</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Typescript starts to gain more and more popularity because of static typing offering its benefits. Still, some developers who are involved in supporting projects with angular.js may be stuck with lack of community offering their recipes of using angular.js together with typescript. This article will try to fill this gap.</p>
+
+<p>Our strategy involves shipping working product at every stage of development. So in real life, transition to typescript can be performed gradually thus not hurting business goals that development team has to reach.</p>
+
+<p>The article will contain some referential code snippets but if you want to learn the subject more deeply, I suggest you follow <a href="https://github.com/Wkalmar/angularjs-by-example/tree/ts-case-study">github project</a> which is a fork of the existing project which I&rsquo;ve translated to typescript.</p>
+
+<h2 id="setting-up-the-environment">Setting Up the Environment</h2>
+
+<p>First of all, we need to install the following dependencies:</p>
+
+<ul>
+<li>typescript</li>
+<li>gulp-typescript - in order to perform respective gulp tasks and</li>
+<li>@types/angular which will add strong typing for angular.js internals</li>
+</ul>
+
+<p>Next, we create tsconfig.json in the root of our project as follows:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;compilerOptions&#34;</span>: {
+    <span style="color:#f92672">&#34;allowJs&#34;</span>: <span style="color:#66d9ef">true</span>,
+    <span style="color:#f92672">&#34;module&#34;</span>: <span style="color:#e6db74">&#34;none&#34;</span>,
+    <span style="color:#f92672">&#34;target&#34;</span>: <span style="color:#e6db74">&#34;es5&#34;</span>,
+    <span style="color:#f92672">&#34;types&#34;</span>: [
+      <span style="color:#e6db74">&#34;angular&#34;</span>
+    ]
+  },
+  <span style="color:#f92672">&#34;include&#34;</span>: [
+    <span style="color:#e6db74">&#34;./src/**/*.ts&#34;</span>
+  ]
+}</code></pre></div>
+We specify module system as <code>none</code> as we leave the job of resolving module dependencies to angular.js on the contrary to module resolvers like webpack.</p>
+
+<p>Also, note the section types where we specify our typings such as @types/angular.</p>
+
+<p>Target es5 allows us not to create demanding transpiling piplines involving babel.js.</p>
+
+<p>Now let’s add a gulp task to the existing file:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ts</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;gulp-typescript&#39;</span>);
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">tsProject</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">createProject</span>(<span style="color:#e6db74">&#34;tsconfig.json&#34;</span>);
+
+<span style="color:#75715e">//Compile all typescript files into javascript
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">task</span>(<span style="color:#e6db74">&#39;ts-build&#39;</span>, <span style="color:#66d9ef">function</span>() {
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">src</span>([<span style="color:#e6db74">&#39;src/**/*.ts&#39;</span>])
+  .<span style="color:#a6e22e">pipe</span>(<span style="color:#a6e22e">tsProject</span>())
+  .<span style="color:#a6e22e">pipe</span>(<span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">dest</span>(<span style="color:#e6db74">&#34;src/&#34;</span>));
+});</code></pre></div>
+Now we can call our task for the existing one:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">gulp</span>.<span style="color:#a6e22e">task</span>(<span style="color:#e6db74">&#39;usemin&#39;</span>, [<span style="color:#e6db74">&#39;inject-templates&#39;</span>, <span style="color:#e6db74">&#39;ts-build&#39;</span>], <span style="color:#66d9ef">function</span>() {</code></pre></div>
+Now we’ve set up our environment and are ready to go. Also, everything still works fine and is ready to be shipped.</p>
+
+<h2 id="translate-directive-to-idiomatic-typescript">Translate Directive to Idiomatic Typescript</h2>
+
+<p>The strategy is to start translation from autonomous units and proceed with other units relying on your already translated items so you can reap the benefit of static typing. You can also start your transition at an arbitrary point specifying all untranslated dependencies types as <code>any</code>, but in my opinion, this diminishes benefits of strong typing and I suggest to start from directives and services which serve as a foundation for your angular.js application.</p>
+
+<p>For the directive, you can get away with just renaming .js extension to .ts but still, you can take advantage of angular.js typings and the type system you define as in the directive below:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NgEnterDirective</span> <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">ng</span>.<span style="color:#a6e22e">IDirective</span> {
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">link</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">scope</span> : <span style="color:#66d9ef">any</span>, <span style="color:#a6e22e">element</span> : <span style="color:#66d9ef">JQLite</span>, <span style="color:#a6e22e">attrs</span> : <span style="color:#66d9ef">ng.IAttributes</span>) <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">bind</span>(<span style="color:#e6db74">&#34;keydown keypress&#34;</span>, (<span style="color:#a6e22e">event</span>) <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">which</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">13</span>) {
+                <span style="color:#a6e22e">scope</span>.<span style="color:#a6e22e">$apply</span>(<span style="color:#66d9ef">function</span>(){
+                    <span style="color:#a6e22e">scope</span>.<span style="color:#a6e22e">$eval</span>(<span style="color:#a6e22e">attrs</span>.<span style="color:#a6e22e">ngEnter</span>);
+                });
+                <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">preventDefault</span>();
+            }
+        });
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">Factory</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">ng</span>.<span style="color:#a6e22e">IDirectiveFactory</span> {
+        <span style="color:#66d9ef">return</span> () <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">NgEnterDirective</span>();
+    }
+}
+
+<span style="color:#a6e22e">angular</span>
+    .<span style="color:#a6e22e">module</span>(<span style="color:#e6db74">&#39;app.core&#39;</span>)
+    .<span style="color:#a6e22e">directive</span>(<span style="color:#e6db74">&#39;ngEnter&#39;</span>, <span style="color:#a6e22e">NgEnterDirective</span>.<span style="color:#a6e22e">Factory</span>());</code></pre></div></p>
+
+<h2 id="translate-service">Translate Service</h2>
+
+<p>Let’s have a look at <code>ShowService</code> from our case study app:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Actor</span> {
+    <span style="color:#a6e22e">name</span>: <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">character</span>: <span style="color:#66d9ef">string</span>
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Show</span> {
+    <span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">number</span>
+    <span style="color:#a6e22e">original_name</span>: <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">cast</span>: <span style="color:#66d9ef">Actor</span>[]
+    <span style="color:#a6e22e">genres</span>: <span style="color:#66d9ef">string</span>[]
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TvServiceResponse</span> {
+    <span style="color:#a6e22e">results</span>: <span style="color:#66d9ef">Show</span>[]
+}
+
+<span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Contains a service to communicate with the TRACK TV API
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ShowService</span> {
+    <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">$inject</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;$http&#34;</span>, <span style="color:#e6db74">&#34;$log&#34;</span>, <span style="color:#e6db74">&#34;moment&#34;</span>]
+
+    <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">private</span> <span style="color:#a6e22e">$http</span> : <span style="color:#66d9ef">ng.IHttpService</span>,
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">$log</span> : <span style="color:#66d9ef">ng.ILogService</span>,
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">moment</span> : <span style="color:#66d9ef">any</span>) {
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>;
+        }
+
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">API_KEY</span> : <span style="color:#66d9ef">string</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;87de9079e74c828116acce677f6f255b&#39;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">BASE_URL</span> : <span style="color:#66d9ef">string</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://api.themoviedb.org/3&#39;</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">makeRequest</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">url</span> : <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">params</span> : <span style="color:#66d9ef">any</span>) <span style="color:#f92672">:</span> <span style="color:#a6e22e">any</span> <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">requestUrl</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">BASE_URL</span><span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">url</span><span style="color:#e6db74">}</span><span style="color:#e6db74">?api_key=</span><span style="color:#e6db74">${</span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">API_KEY</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>;
+        <span style="color:#a6e22e">angular</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">params</span>, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">value</span>, <span style="color:#a6e22e">key</span>){
+            <span style="color:#a6e22e">requestUrl</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">requestUrl</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&amp;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">key</span><span style="color:#e6db74">}</span><span style="color:#e6db74">=</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">value</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>;
+        });
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$http</span>({
+            <span style="color:#e6db74">&#39;url&#39;</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">requestUrl</span>,
+            <span style="color:#e6db74">&#39;method&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;GET&#39;</span>,
+            <span style="color:#e6db74">&#39;headers&#39;</span><span style="color:#f92672">:</span> {
+                <span style="color:#e6db74">&#39;Content-Type&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;application/json&#39;</span>
+            },
+            <span style="color:#e6db74">&#39;cache&#39;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+        }).<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">response</span>) <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">data</span>;
+        }).<span style="color:#66d9ef">catch</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">dataServiceError</span>);
+    }
+    <span style="color:#a6e22e">getPremieres</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#75715e">//Get first day of the current month
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date();
+        <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">setDate</span>(<span style="color:#ae81ff">1</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">makeRequest</span>(<span style="color:#e6db74">&#39;discover/tv&#39;</span>,
+        {<span style="color:#e6db74">&#39;first_air_date.gte&#39;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">moment</span>(<span style="color:#a6e22e">date</span>), <span style="color:#a6e22e">append_to_response</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;genres&#39;</span>}).<span style="color:#a6e22e">then</span>
+          ((<span style="color:#a6e22e">data</span> : <span style="color:#66d9ef">TvServiceResponse</span>) <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">results</span>;
+        });
+    }
+    <span style="color:#a6e22e">get</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">id</span> : <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">makeRequest</span>(<span style="color:#e6db74">`tv/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {});
+    }
+    <span style="color:#a6e22e">getCast</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">id</span> : <span style="color:#66d9ef">number</span>) <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">makeRequest</span>(<span style="color:#e6db74">`tv/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">/credits`</span>, {});
+    }
+    <span style="color:#a6e22e">search</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">query</span> : <span style="color:#66d9ef">string</span>) <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">makeRequest</span>(<span style="color:#e6db74">&#39;search/tv&#39;</span>, {<span style="color:#a6e22e">query</span>: <span style="color:#66d9ef">query</span>}).<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">data</span> : <span style="color:#66d9ef">TvServiceResponse</span>) <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">results</span>;
+        });
+    }
+    <span style="color:#a6e22e">getPopular</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">makeRequest</span>(<span style="color:#e6db74">&#39;tv/popular&#39;</span>, {}).<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">data</span> : <span style="color:#66d9ef">TvServiceResponse</span>) <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">results</span>;
+        });
+    }
+
+    <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">dataServiceError</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">errorResponse</span> : <span style="color:#66d9ef">string</span>) <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$log</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#39;XHR Failed for ShowService&#39;</span>);
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$log</span>.<span style="color:#a6e22e">error</span>(<span style="color:#a6e22e">errorResponse</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errorResponse</span>;
+    }
+}
+
+<span style="color:#a6e22e">angular</span>
+    .<span style="color:#a6e22e">module</span>(<span style="color:#e6db74">&#39;app.services&#39;</span>)
+    .<span style="color:#a6e22e">factory</span>(<span style="color:#e6db74">&#39;ShowService&#39;</span>, <span style="color:#a6e22e">ShowService</span>);</code></pre></div>
+At this point, it&rsquo;s worth mentioning not only how we employ our DTOs to make sure our program works correctly but also how we take advantage of ES6 features such as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">arrow functions</a> or <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals">string interpolation</a>.</p>
+
+<p>The trick here is that typescript does transpiling to ES5 as we&rsquo;ve specified in our tsconfig.json.</p>
+
+<h2 id="translate-value-provider">Translate Value Provider</h2>
+
+<p>Translation of another autonomous part looks dead simple:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PageValues</span> {
+    <span style="color:#a6e22e">title</span> : <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">description</span> : <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">loading</span> : <span style="color:#66d9ef">boolean</span>
+}
+
+<span style="color:#a6e22e">angular</span>
+    .<span style="color:#a6e22e">module</span>(<span style="color:#e6db74">&#39;app.core&#39;</span>)
+    .<span style="color:#a6e22e">value</span>(<span style="color:#e6db74">&#39;PageValues&#39;</span>, <span style="color:#a6e22e">PageValues</span>);</code></pre></div></p>
+
+<h2 id="translate-controller">Translate Controller</h2>
+
+<p>At this point of transition, we can inject our strongly-typed dependencies into our controllers and translate them too.</p>
+
+<p>Here&rsquo;s the example:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SearchController</span> {
+    <span style="color:#a6e22e">query</span>: <span style="color:#66d9ef">string</span>;
+    <span style="color:#a6e22e">shows</span>: <span style="color:#66d9ef">any</span>[];
+    <span style="color:#a6e22e">loading</span>: <span style="color:#66d9ef">boolean</span>;
+
+    <span style="color:#a6e22e">setSearch</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">query</span> <span style="color:#f92672">=</span> encodeURI(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">query</span>);
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$location</span>.<span style="color:#a6e22e">path</span>(<span style="color:#e6db74">`/search/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">query</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+    }
+    <span style="color:#a6e22e">performSearch</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">query</span> : <span style="color:#66d9ef">string</span>) <span style="color:#f92672">=&gt;</span> {
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">loading</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">ShowService</span>.<span style="color:#a6e22e">search</span>(<span style="color:#a6e22e">query</span>).<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">response</span> : <span style="color:#66d9ef">Show</span>[]) <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">shows</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">response</span>;
+            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">loading</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+        });
+    };
+
+    <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">private</span> <span style="color:#a6e22e">$location</span> : <span style="color:#66d9ef">ng.ILocationService</span>,
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">$routeParams</span>: <span style="color:#66d9ef">any</span>,
+        <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">ShowService</span>: <span style="color:#66d9ef">ShowService</span>) {
+            <span style="color:#a6e22e">PageValues</span>.<span style="color:#a6e22e">instance</span>.<span style="color:#a6e22e">title</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;SEARCH&#34;</span>;
+            <span style="color:#a6e22e">PageValues</span>.<span style="color:#a6e22e">instance</span>.<span style="color:#a6e22e">description</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Search for your favorite TV shows.&#34;</span>;
+
+            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">query</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>;
+            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">shows</span> <span style="color:#f92672">=</span> [];
+            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">loading</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+
+            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">$routeParams</span>.<span style="color:#a6e22e">query</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;undefined&#34;</span>) {
+                <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">performSearch</span>(<span style="color:#a6e22e">$routeParams</span>.<span style="color:#a6e22e">query</span>);
+                <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">query</span> <span style="color:#f92672">=</span> decodeURI(<span style="color:#a6e22e">$routeParams</span>.<span style="color:#a6e22e">query</span>);
+            }
+        }
+}
+
+<span style="color:#e6db74">&#39;use strict&#39;</span>;
+<span style="color:#a6e22e">angular</span>
+    .<span style="color:#a6e22e">module</span>(<span style="color:#e6db74">&#39;app.core&#39;</span>)
+    .<span style="color:#a6e22e">controller</span>(<span style="color:#e6db74">&#39;SearchController&#39;</span>, <span style="color:#a6e22e">SearchController</span>);</code></pre></div></p>
+
+<h2 id="making-tsconfig-json-more-strict">Making tsconfig.json More Strict</h2>
+
+<p>At the point, when we got typescript all over the application, we can make our tsconfig.json more strict. This way, we can apply more levels of code correctness checking.</p>
+
+<p>Let&rsquo;s examine some useful options we can add:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;compilerOptions&#34;</span>: {
+        <span style="color:#f92672">&#34;allowJs&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;alwaysStrict&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;module&#34;</span>: <span style="color:#e6db74">&#34;none&#34;</span>,
+        <span style="color:#f92672">&#34;noImplicitAny&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;noImplicitThis&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;strictNullChecks&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;strictFunctionTypes&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;target&#34;</span>: <span style="color:#e6db74">&#34;es5&#34;</span>,
+        <span style="color:#f92672">&#34;types&#34;</span>: [
+            <span style="color:#e6db74">&#34;angular&#34;</span>
+        ]
+    },
+    <span style="color:#f92672">&#34;include&#34;</span>: [
+        <span style="color:#e6db74">&#34;./src/**/*.ts&#34;</span>
+    ]
+}</code></pre></div></p>
+
+<h2 id="leaving-angular-js-boundary">Leaving angular.js Boundary</h2>
+
+<p>Another thing worth mentioning is that using typescript allows us to build our application&rsquo;s logic without relying on angular.js constructs. This may be useful if we need to build some business logic which otherwise would be limited by angular.js constraints, i.e., we want to employ <a href="https://www.geeksforgeeks.org/dynamic-method-dispatch-runtime-polymorphism-java/">dynamic polymorphism</a> but built in angular.js dependency injection rather restrains than empowers us.</p>
+
+<p>For our toy example, let&rsquo;s return back to value provider, which is dead simple but again can provide you with some overall impression of how you should not feel limited to angular.js constructs.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PageValues</span> {
+    <span style="color:#a6e22e">title</span> : <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">description</span> : <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">loading</span> : <span style="color:#66d9ef">boolean</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#a6e22e">instance</span> : <span style="color:#66d9ef">PageValues</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PageValues</span>();
+}</code></pre></div>
+Note how we use singleton pattern now with the static instance and also got rid of angular.js module wire-up.</p>
+
+<p>Now we can call it from any part of our angular.js application in the following way:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#a6e22e">PageValues</span>.<span style="color:#a6e22e">instance</span>.<span style="color:#a6e22e">title</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;VIEW&#34;</span>;
+<span style="color:#a6e22e">PageValues</span>.<span style="color:#a6e22e">instance</span>.<span style="color:#a6e22e">description</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">`Overview, seasons &amp; info for &#39;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">show</span>.<span style="color:#a6e22e">original_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;.`</span>;</code></pre></div></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Front-end community is believed to be the most rapid-changing one. This might lead to the situation when client side of the application should be constantly rewritten with top-notch opinionated frameworks in order for developer team to still enjoy the benefits of having access to the support of front-end community. Yet not every development team, especially in large enterprises, can afford such luxury due to the need to chase business goals.</p>
+
+<p>My article was supposed to provide some help for such teams to connect to some of the modern community solutions without largely sacrificing their business goals.</p>
+
+<p>Another notable thing that the latest section of my article shows is how easily you can drift away from your framework opinionatedness if you want to add some flexibility to your front-end application architecture.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

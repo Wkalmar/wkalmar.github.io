@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Creating Holy Grail Layouts with CSS Grid // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="http://example.org/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Creating Holy Grail Layouts with CSS Grid"/>
+<meta name="twitter:description" content="Introduction The holy grail layout is a layout that consists of fixed width header, footer, left sidebar, right sidebar and fluid hero item as below:
+Traditionally, it is composed via negative margins technique.
+To be honest, this doesn’t communicate much to me and looks more like a bunch of hacks. Luckily display: grid has arrived which allows to build 2-dimensional layout in more semantically meaningful style.
+Markup Let’s define our markup as follows: &lt;div class=&#34;grid&#34;&gt;&lt;header&gt;Header&lt;/header&gt;&lt;aside class=&#34;sidebar-left&#34;&gt;Left Sidebar&lt;/aside&gt;&lt;article&gt;Article&lt;/article&gt;&lt;aside class=&#34;sidebar-right&#34;&gt;Right Sidebar&lt;/aside&gt;&lt;footer&gt;Footer&lt;/footer&gt;&lt;/div&gt;"/>
+
+    <meta property="og:title" content="Creating Holy Grail Layouts with CSS Grid" />
+<meta property="og:description" content="Introduction The holy grail layout is a layout that consists of fixed width header, footer, left sidebar, right sidebar and fluid hero item as below:
+Traditionally, it is composed via negative margins technique.
+To be honest, this doesn’t communicate much to me and looks more like a bunch of hacks. Luckily display: grid has arrived which allows to build 2-dimensional layout in more semantically meaningful style.
+Markup Let’s define our markup as follows: &lt;div class=&#34;grid&#34;&gt;&lt;header&gt;Header&lt;/header&gt;&lt;aside class=&#34;sidebar-left&#34;&gt;Left Sidebar&lt;/aside&gt;&lt;article&gt;Article&lt;/article&gt;&lt;aside class=&#34;sidebar-right&#34;&gt;Right Sidebar&lt;/aside&gt;&lt;footer&gt;Footer&lt;/footer&gt;&lt;/div&gt;" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/post/creating-holy-grail-layouts-with-css-grid/" />
+<meta property="article:published_time" content="2018-08-19T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2018-08-19T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="http://example.org/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Creating Holy Grail Layouts with CSS Grid</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Aug 19, 2018
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="http://example.org/tags/css/">CSS</a><a class="tag" href="http://example.org/tags/html/">HTML</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="introduction">Introduction</h2>
+
+<p>The holy grail layout is a layout that consists of fixed width header, footer, left sidebar, right sidebar and fluid hero item as below:</p>
+
+<p><img src="/5/1.jpg" alt="drawing" width="600"/></p>
+
+<p>Traditionally, it is composed via <a href="https://alistapart.com/article/holygrail/">negative margins technique</a>.</p>
+
+<p>To be honest, this doesn’t communicate much to me and looks more like a bunch of hacks. Luckily <code>display: grid</code> has arrived which allows to build 2-dimensional layout in more semantically meaningful style.</p>
+
+<h2 id="markup">Markup</h2>
+
+<p>Let’s define our markup as follows:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;grid&#34;</span>&gt;
+  &lt;<span style="color:#f92672">header</span>&gt;
+    Header
+  &lt;/<span style="color:#f92672">header</span>&gt;
+
+  &lt;<span style="color:#f92672">aside</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sidebar-left&#34;</span>&gt;
+    Left Sidebar
+  &lt;/<span style="color:#f92672">aside</span>&gt;
+
+  &lt;<span style="color:#f92672">article</span>&gt;
+    Article
+  &lt;/<span style="color:#f92672">article</span>&gt;
+
+  &lt;<span style="color:#f92672">aside</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;sidebar-right&#34;</span>&gt;
+    Right Sidebar
+  &lt;/<span style="color:#f92672">aside</span>&gt;
+
+  &lt;<span style="color:#f92672">footer</span>&gt;
+    Footer
+  &lt;/<span style="color:#f92672">footer</span>&gt;
+
+&lt;/<span style="color:#f92672">div</span>&gt;</code></pre></div></p>
+
+<h2 id="styles">Styles</h2>
+
+<p>First, we define that container employs grid layout:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">grid</span> {
+  <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">grid</span>;
+}</code></pre></div>
+As you might already have noticed, our grid has 3 rows. Let’s make them equal for the sake of simplicity.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">grid-template-rows</span><span style="color:#f92672">:</span> <span style="color:#f92672">repeat</span><span style="color:#f92672">(</span><span style="color:#f92672">3</span><span style="color:#f92672">,</span> <span style="color:#f92672">100px</span><span style="color:#f92672">);</span></code></pre></div>
+We use repeat function for that which repeats row specified number of times.</p>
+
+<p>Also we have 3 columns: the first and the last of them are fixed width whereas the middle one occupies all the remaining space.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">grid-template-columns</span><span style="color:#f92672">:</span> <span style="color:#f92672">150px</span> <span style="color:#f92672">1fr</span> <span style="color:#f92672">150px</span><span style="color:#f92672">;</span></code></pre></div>
+Here <code>fr</code> is a new unit that indicates a fraction of a free space. Here, middle column consumes one fraction of a free space.</p>
+
+<p>Our complete container styles look as follows:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">grid</span> {
+  <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">grid</span>;
+  <span style="color:#66d9ef">grid-template-columns</span>: <span style="color:#ae81ff">150</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">1</span>fr <span style="color:#ae81ff">150</span><span style="color:#66d9ef">px</span>;
+  <span style="color:#66d9ef">grid-template-rows</span>: <span style="color:#a6e22e">repeat</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>);
+}</code></pre></div>
+Now we have to make our header and footer span for all 3 available columns:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">header</span><span style="color:#f92672">,</span> <span style="color:#f92672">footer</span> {
+  <span style="color:#66d9ef">grid-column</span>: <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">4</span>;
+}</code></pre></div>
+Which is the shorthand for:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">header</span><span style="color:#f92672">,</span> <span style="color:#f92672">footer</span> {
+  <span style="color:#66d9ef">grid-column-start</span>: <span style="color:#ae81ff">1</span>;
+  <span style="color:#66d9ef">grid-column-end</span>: <span style="color:#ae81ff">4</span>;
+}</code></pre></div>
+Or:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">header</span><span style="color:#f92672">,</span> <span style="color:#f92672">footer</span> {
+  <span style="color:#66d9ef">grid-column-start</span>: <span style="color:#ae81ff">1</span>;
+  <span style="color:#66d9ef">grid-column-end</span>: span <span style="color:#ae81ff">3</span>;
+}</code></pre></div>
+Which means that header and footer span for 3 columns.</p>
+
+<p>Now we just have to assign grid rows:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">header</span> {
+  <span style="color:#66d9ef">grid-row</span>: <span style="color:#ae81ff">1</span>;
+}
+
+.<span style="color:#a6e22e">sidebar-left</span> {
+  <span style="color:#66d9ef">grid-column</span>: <span style="color:#ae81ff">1</span>;
+  <span style="color:#66d9ef">grid-row</span>: <span style="color:#ae81ff">2</span>;
+}
+
+<span style="color:#f92672">article</span> {
+  <span style="color:#66d9ef">overflow</span>: <span style="color:#66d9ef">hidden</span>;
+  <span style="color:#66d9ef">grid-column</span>: <span style="color:#ae81ff">2</span>;
+  <span style="color:#66d9ef">grid-row</span>: <span style="color:#ae81ff">2</span>;
+}
+
+.<span style="color:#a6e22e">sidebar-right</span> {
+  <span style="color:#66d9ef">grid-column</span>: <span style="color:#ae81ff">3</span>;
+  <span style="color:#66d9ef">grid-row</span>: <span style="color:#ae81ff">2</span>;
+}
+
+<span style="color:#f92672">footer</span> {
+  <span style="color:#66d9ef">grid-row</span>: <span style="color:#ae81ff">3</span>;
+}</code></pre></div></p>
+
+<h2 id="internet-explorer-11-support">Internet Explorer 11 Support</h2>
+
+<p>This feature is <a href="https://caniuse.com/#feat=css-grid">available</a> for all modern browsers but in case you still have support for Internet Explorer 11, you will require some special prefixes:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">grid</span> {
+  <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">-ms-</span><span style="color:#66d9ef">grid</span>;
+  <span style="color:#66d9ef">display</span>: <span style="color:#66d9ef">grid</span>;
+  <span style="color:#66d9ef">-ms-</span>grid-columns: <span style="color:#ae81ff">150</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">1</span>fr <span style="color:#ae81ff">150</span><span style="color:#66d9ef">px</span>;
+      <span style="color:#66d9ef">grid-template-columns</span>: <span style="color:#ae81ff">150</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">1</span>fr <span style="color:#ae81ff">150</span><span style="color:#66d9ef">px</span>;
+  <span style="color:#66d9ef">-ms-</span>grid-rows: <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>; <span style="color:#960050;background-color:#1e0010">//repeat</span> <span style="color:#960050;background-color:#1e0010">does</span> <span style="color:#960050;background-color:#1e0010">not</span> <span style="color:#960050;background-color:#1e0010">work</span>
+      <span style="color:#66d9ef">grid-template-rows</span>: <span style="color:#a6e22e">repeat</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>);
+}</code></pre></div>
+And some prefixes for <code>grid-column</code> and <code>grid-row</code> in the following fashion:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">header</span><span style="color:#f92672">,</span> <span style="color:#f92672">footer</span> {
+  <span style="color:#66d9ef">-ms-</span><span style="color:#66d9ef">grid-column</span>: <span style="color:#ae81ff">1</span>;
+      <span style="color:#66d9ef">grid-column-start</span>: <span style="color:#ae81ff">1</span>;
+  <span style="color:#66d9ef">-ms-</span>grid-column-span: <span style="color:#ae81ff">3</span>; <span style="color:#960050;background-color:#1e0010">//the</span> <span style="color:#960050;background-color:#1e0010">way</span> <span style="color:#960050;background-color:#1e0010">to</span> <span style="color:#960050;background-color:#1e0010">span</span> <span style="color:#960050;background-color:#1e0010">columns</span>
+      <span style="color:#66d9ef">grid-column-end</span>: span <span style="color:#ae81ff">3</span>;
+}</code></pre></div></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>As you have seen in this article, grid layouts allow us to create 2-dimensional layouts in a more semantically concise way without employing CSS hacks. As they are supported for all modern browsers, they are now de-facto standard for creating 2-dimensional layouts.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

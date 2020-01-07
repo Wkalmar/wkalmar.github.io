@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OOP on Bohdan Stupak&#39;s blog</title>
+    <link>http://example.org/tags/oop/</link>
+    <description>Recent content in OOP on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 18 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/oop/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>&#34;Method can be made static&#34; May Hide OO Design Flaw</title>
+      <link>http://example.org/post/method-can-be-made-static-may-hide-oo-design-flaw/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/method-can-be-made-static-may-hide-oo-design-flaw/</guid>
+      <description>Introduction Wandering through codebases, I&amp;rsquo;ve encountered some examples of code where ReSharper issues the above mentioned warning. Although the fix seems straightforward, the warning itself may hide a more subtle issue connected to object responsibility assignment.
+Toy Example Let&amp;rsquo;s take a look at the following code: public class EmailConstructor{private const string Signature = &amp;#34;Regards&amp;#34;;public string Construct(User recipient, string body){var builder = new StringBuilder();builder.Append($&amp;#34;Hello {GetNiceUserName(recipient)}&amp;#34;);builder.</description>
+    </item>
+    
+  </channel>
+</rss>

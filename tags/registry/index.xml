@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>registry on Bohdan Stupak&#39;s blog</title>
+    <link>http://example.org/tags/registry/</link>
+    <description>Recent content in registry on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 04 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/registry/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Registry Redirection when using 32-bit Application on 64-bit Windows</title>
+      <link>http://example.org/post/registry-redirection-when-using-bit-application-on/</link>
+      <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/registry-redirection-when-using-bit-application-on/</guid>
+      <description>This article will guide you through Windows registry redirection feature, which might seem quite unintuitive at first acquaintance. ##The Code Consider the following situation. We have code that writes to HKEY_LOCAL_MACHINE registry on 64-bit OS. var softwareSubKey = Registry.LocalMachine.OpenSubKey(&amp;#34;Software&amp;#34;, RegistryKeyPermissionCheck.ReadWriteSubTree);softwareSubKey.CreateSubKey(&amp;#34;MySoftware&amp;#34;);  When successfully executing this code, we somewhat unexpectedly receive no MySoftware folder at \HKEY_LOCAL_MACHINE\SOFTWARE path. After investigating build tab in project options, we discover the following:</description>
+    </item>
+    
+  </channel>
+</rss>

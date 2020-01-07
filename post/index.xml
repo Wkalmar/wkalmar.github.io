@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Bohdan Stupak&#39;s blog</title>
+    <link>http://example.org/post/</link>
+    <description>Recent content in Posts on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 06 Mar 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ignoring Operation Result when using F# async Computation Expression</title>
+      <link>http://example.org/post/ignoring-operation-result-when-using-fsharp-async/</link>
+      <pubDate>Wed, 06 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/ignoring-operation-result-when-using-fsharp-async/</guid>
+      <description>Consider this simple code downloading page contents using Puppeteer-sharp. let renderHtml = async {BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision) |&amp;gt; Async.AwaitTask |&amp;gt; ignorelet options = LaunchOptions()options.Headless &amp;lt;- truelet! browser = Puppeteer.LaunchAsync(options) |&amp;gt; Async.AwaitTasklet! page = browser.NewPageAsync() |&amp;gt; Async.AwaitTaskpage.GoToAsync(&amp;#34;https://i.ua&amp;#34;) |&amp;gt; Async.AwaitTask |&amp;gt; ignorereturn! page.GetContentAsync() |&amp;gt; Async.AwaitTask} Since we actually don&amp;rsquo;t care about download browser result, we naturally would expect that our line&amp;hellip; BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision) |&amp;gt; Async.AwaitTask |&amp;gt; ignore &amp;hellip;would be equivalent to this C# code: await new BrowserFetcher().</description>
+    </item>
+    
+    <item>
+      <title>Dependency Injection for Quartz.NET in .NET Core</title>
+      <link>http://example.org/post/dependency-injection-for-quartz-net-in-net-core/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/dependency-injection-for-quartz-net-in-net-core/</guid>
+      <description>Introduction Quartz.NET is a handy library that allows you to schedule recurring tasks via implementing IJob interface. Yet the limitation of it is that, by default, it supports only parameterless constructor which complicates injecting external service inside of it, i.e., for implementing repository pattern. In this article, we&amp;rsquo;ll take a look at how we can tackle this problem using standard .NET Core DI container.
+The whole project referred in the article is provided inside the following [Github repository]().</description>
+    </item>
+    
+    <item>
+      <title>Cooking angular.js with Typescript</title>
+      <link>http://example.org/post/cooking-angular-js-with-typescript/</link>
+      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/cooking-angular-js-with-typescript/</guid>
+      <description>Introduction Typescript starts to gain more and more popularity because of static typing offering its benefits. Still, some developers who are involved in supporting projects with angular.js may be stuck with lack of community offering their recipes of using angular.js together with typescript. This article will try to fill this gap.
+Our strategy involves shipping working product at every stage of development. So in real life, transition to typescript can be performed gradually thus not hurting business goals that development team has to reach.</description>
+    </item>
+    
+    <item>
+      <title>Creating Holy Grail Layouts with CSS Grid</title>
+      <link>http://example.org/post/creating-holy-grail-layouts-with-css-grid/</link>
+      <pubDate>Sun, 19 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/creating-holy-grail-layouts-with-css-grid/</guid>
+      <description>Introduction The holy grail layout is a layout that consists of fixed width header, footer, left sidebar, right sidebar and fluid hero item as below:
+Traditionally, it is composed via negative margins technique.
+To be honest, this doesn’t communicate much to me and looks more like a bunch of hacks. Luckily display: grid has arrived which allows to build 2-dimensional layout in more semantically meaningful style.
+Markup Let’s define our markup as follows: &amp;lt;div class=&amp;#34;grid&amp;#34;&amp;gt;&amp;lt;header&amp;gt;Header&amp;lt;/header&amp;gt;&amp;lt;aside class=&amp;#34;sidebar-left&amp;#34;&amp;gt;Left Sidebar&amp;lt;/aside&amp;gt;&amp;lt;article&amp;gt;Article&amp;lt;/article&amp;gt;&amp;lt;aside class=&amp;#34;sidebar-right&amp;#34;&amp;gt;Right Sidebar&amp;lt;/aside&amp;gt;&amp;lt;footer&amp;gt;Footer&amp;lt;/footer&amp;gt;&amp;lt;/div&amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>Refactoring F# Imperative Code Towards Declarative</title>
+      <link>http://example.org/post/refactoring-fsharp-imperative-code-towards-declarative/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/refactoring-fsharp-imperative-code-towards-declarative/</guid>
+      <description>Recently, perusing the internet, I found an article which implements the trapezoidal rule in F#. open Systemlet main() =//Function to integratelet f x =10.0*x*xlet trapezoidal a b N =let mutable xi = alet h = (b - a)/Nlet mutable suma = h/2.0*(f(a)+f(b))for x in 1 .. System.Convert.ToInt32(N) dolet mutable xi1 = xi + hsuma &amp;lt;- suma + h*f(xi1)xi &amp;lt;- xi1suma//some usage examplelet fromA = 0.</description>
+    </item>
+    
+    <item>
+      <title>End-to-end Testing of Your Web Applications with Canopy</title>
+      <link>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</link>
+      <pubDate>Mon, 14 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</guid>
+      <description>Why Canopy Stabilization Layer Built on Top of Selenium One of the most crucial concepts of canopy is reliability - when performing an action framework tries during time span specified via elementTimeout or compareTimeout or pageTimeout before failing which improves experience during writing tests.
+Expressiveness The syntax looks pretty self-explanatory: &amp;#34;Bio should contain twitter link&amp;#34; &amp;amp;&amp;amp;&amp;amp; fun _ -&amp;gt;url &amp;#34;https://github.com/Wkalmar&amp;#34;&amp;#34;.user-profile-bio&amp;#34; == &amp;#34;https://twitter.com/BohdanStupak1&amp;#34;
+F# In one of my previous articles, I have already expressed my opinion regarding power and expressiveness of F#.</description>
+    </item>
+    
+    <item>
+      <title>&#34;Method can be made static&#34; May Hide OO Design Flaw</title>
+      <link>http://example.org/post/method-can-be-made-static-may-hide-oo-design-flaw/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/method-can-be-made-static-may-hide-oo-design-flaw/</guid>
+      <description>Introduction Wandering through codebases, I&amp;rsquo;ve encountered some examples of code where ReSharper issues the above mentioned warning. Although the fix seems straightforward, the warning itself may hide a more subtle issue connected to object responsibility assignment.
+Toy Example Let&amp;rsquo;s take a look at the following code: public class EmailConstructor{private const string Signature = &amp;#34;Regards&amp;#34;;public string Construct(User recipient, string body){var builder = new StringBuilder();builder.Append($&amp;#34;Hello {GetNiceUserName(recipient)}&amp;#34;);builder.</description>
+    </item>
+    
+    <item>
+      <title>Property-Based Testing With FsCheck</title>
+      <link>http://example.org/post/propertybased-testing-with-fscheck/</link>
+      <pubDate>Tue, 19 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/propertybased-testing-with-fscheck/</guid>
+      <description>Introduction This article introduces the concept of property-based testing which is another approach to verify that a function provides an expected result. The complete source code of the project can be accessed on GitHub.
+False safety of traditional unit-testing approach Let&amp;rsquo;s imagine that we have an array of musicians where we define a musician by his/her name and an overall number of people who have listened to that musician: type Artist = {name: stringlisteners: int} And also, we have a function that orders a descendant array of type above by listeners count.</description>
+    </item>
+    
+    <item>
+      <title>Querying Last.fm web API with F#</title>
+      <link>http://example.org/post/querying-last-fm-web-api-with-fsharp/</link>
+      <pubDate>Tue, 07 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/querying-last-fm-web-api-with-fsharp/</guid>
+      <description>Introduction Let&amp;rsquo;s imagine that you have an edgy musical taste so you would like to recommend to your friends only those artists which are the most mainstream. If you have a profile on last.fm, then you could write a small tool which would query and process your listening statistics to automate this task.
+My tool for this job is F# programming language and I&amp;rsquo;ll show you some benefits of it such as type providers or the ease of unit testing functions comparing to objects.</description>
+    </item>
+    
+    <item>
+      <title>Registry Redirection when using 32-bit Application on 64-bit Windows</title>
+      <link>http://example.org/post/registry-redirection-when-using-bit-application-on/</link>
+      <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/registry-redirection-when-using-bit-application-on/</guid>
+      <description>This article will guide you through Windows registry redirection feature, which might seem quite unintuitive at first acquaintance. ##The Code Consider the following situation. We have code that writes to HKEY_LOCAL_MACHINE registry on 64-bit OS. var softwareSubKey = Registry.LocalMachine.OpenSubKey(&amp;#34;Software&amp;#34;, RegistryKeyPermissionCheck.ReadWriteSubTree);softwareSubKey.CreateSubKey(&amp;#34;MySoftware&amp;#34;);  When successfully executing this code, we somewhat unexpectedly receive no MySoftware folder at \HKEY_LOCAL_MACHINE\SOFTWARE path. After investigating build tab in project options, we discover the following:</description>
+    </item>
+    
+    <item>
+      <title>Pure CSS Salesforce-like progressbar Control</title>
+      <link>http://example.org/post/pure-css-salesforce-like-progressbar-control/</link>
+      <pubDate>Sun, 09 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/pure-css-salesforce-like-progressbar-control/</guid>
+      <description>Introduction This article covers several CSS techniques: using LESS, using display: flex and some CSS hacks.
+You can download the complete source code on github.
+Using LESS LESS is CSS preprocessor which allows extending CSS with some useful features. You can learn more about it here. In this project, I use LESS variables and functions which as you can see later, allow me to work with colors in a cleaner way.</description>
+    </item>
+    
+    <item>
+      <title>Money Precision Issues</title>
+      <link>http://example.org/post/money-precision-issues/</link>
+      <pubDate>Sun, 15 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/money-precision-issues/</guid>
+      <description>Many developers like MONEY data type as it tends to be faster during computations and byte cheaper (arguably). Still in the next few examples, I am going to show an issue that can lead to possible loss of precision.
+Let us try the following code: decalare @d1 money, @d2 money, @res moneyset @d1 = 18.4172set @d2 = 1.00set @res = @d2/@d1select @res The actual result is 0,054297 and by all mathematical rules should be rounded to 0,0543.</description>
+    </item>
+    
+    <item>
+      <title>Some Common Mistakes When Querying SQL Database</title>
+      <link>http://example.org/post/some-common-mistakes-when-querying-sql-database/</link>
+      <pubDate>Sun, 22 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/some-common-mistakes-when-querying-sql-database/</guid>
+      <description>Introduction When I started learning SQL, I found out several issues which I thought to be interesting to share. For our needs, let&amp;rsquo;s use AdventureWorks2012 database, which can be obtained here.
+1. Don&amp;rsquo;t Forget about NULL Let us execute the following query: select Count(*)from Sales.SalesOrderDetail The result will be:
+Filtering by CarrierTrackingNumber: select Count(*)from Sales.SalesOrderDetailwhere CarrierTrackingNumber = &amp;#39;4911-403C-98&amp;#39; will give us:
+It is natural to assume that the result of the following query: select Count(*)from Sales.</description>
+    </item>
+    
+  </channel>
+</rss>

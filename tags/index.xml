@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Bohdan Stupak&#39;s blog</title>
+    <link>http://example.org/tags/</link>
+    <description>Recent content in Tags on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 06 Mar 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>.NET</title>
+      <link>http://example.org/tags/.net/</link>
+      <pubDate>Wed, 06 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/.net/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Fsharp</title>
+      <link>http://example.org/tags/fsharp/</link>
+      <pubDate>Wed, 06 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/fsharp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Csharp</title>
+      <link>http://example.org/tags/csharp/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/csharp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DI</title>
+      <link>http://example.org/tags/di/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/di/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Angular.js</title>
+      <link>http://example.org/tags/angular.js/</link>
+      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/angular.js/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Javascript</title>
+      <link>http://example.org/tags/javascript/</link>
+      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Typescript</title>
+      <link>http://example.org/tags/typescript/</link>
+      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/typescript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CSS</title>
+      <link>http://example.org/tags/css/</link>
+      <pubDate>Sun, 19 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/css/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HTML</title>
+      <link>http://example.org/tags/html/</link>
+      <pubDate>Sun, 19 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/html/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>FP</title>
+      <link>http://example.org/tags/fp/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/fp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>QA</title>
+      <link>http://example.org/tags/qa/</link>
+      <pubDate>Mon, 14 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/qa/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OOP</title>
+      <link>http://example.org/tags/oop/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/oop/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>64-bit</title>
+      <link>http://example.org/tags/64-bit/</link>
+      <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/64-bit/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Windows</title>
+      <link>http://example.org/tags/windows/</link>
+      <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/windows/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>registry</title>
+      <link>http://example.org/tags/registry/</link>
+      <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/registry/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SQL</title>
+      <link>http://example.org/tags/sql/</link>
+      <pubDate>Sun, 15 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/sql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SQL-Server</title>
+      <link>http://example.org/tags/sql-server/</link>
+      <pubDate>Sun, 15 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/tags/sql-server/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

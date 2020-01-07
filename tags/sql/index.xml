@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SQL on Bohdan Stupak&#39;s blog</title>
+    <link>http://example.org/tags/sql/</link>
+    <description>Recent content in SQL on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Feb 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Money Precision Issues</title>
+      <link>http://example.org/post/money-precision-issues/</link>
+      <pubDate>Sun, 15 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/money-precision-issues/</guid>
+      <description>Many developers like MONEY data type as it tends to be faster during computations and byte cheaper (arguably). Still in the next few examples, I am going to show an issue that can lead to possible loss of precision.
+Let us try the following code: decalare @d1 money, @d2 money, @res moneyset @d1 = 18.4172set @d2 = 1.00set @res = @d2/@d1select @res The actual result is 0,054297 and by all mathematical rules should be rounded to 0,0543.</description>
+    </item>
+    
+    <item>
+      <title>Some Common Mistakes When Querying SQL Database</title>
+      <link>http://example.org/post/some-common-mistakes-when-querying-sql-database/</link>
+      <pubDate>Sun, 22 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/some-common-mistakes-when-querying-sql-database/</guid>
+      <description>Introduction When I started learning SQL, I found out several issues which I thought to be interesting to share. For our needs, let&amp;rsquo;s use AdventureWorks2012 database, which can be obtained here.
+1. Don&amp;rsquo;t Forget about NULL Let us execute the following query: select Count(*)from Sales.SalesOrderDetail The result will be:
+Filtering by CarrierTrackingNumber: select Count(*)from Sales.SalesOrderDetailwhere CarrierTrackingNumber = &amp;#39;4911-403C-98&amp;#39; will give us:
+It is natural to assume that the result of the following query: select Count(*)from Sales.</description>
+    </item>
+    
+  </channel>
+</rss>

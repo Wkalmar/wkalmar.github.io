@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>.NET on Bohdan Stupak&#39;s blog</title>
+    <link>http://example.org/tags/.net/</link>
+    <description>Recent content in .NET on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 06 Mar 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/.net/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ignoring Operation Result when using F# async Computation Expression</title>
+      <link>http://example.org/post/ignoring-operation-result-when-using-fsharp-async/</link>
+      <pubDate>Wed, 06 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/ignoring-operation-result-when-using-fsharp-async/</guid>
+      <description>Consider this simple code downloading page contents using Puppeteer-sharp. let renderHtml = async {BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision) |&amp;gt; Async.AwaitTask |&amp;gt; ignorelet options = LaunchOptions()options.Headless &amp;lt;- truelet! browser = Puppeteer.LaunchAsync(options) |&amp;gt; Async.AwaitTasklet! page = browser.NewPageAsync() |&amp;gt; Async.AwaitTaskpage.GoToAsync(&amp;#34;https://i.ua&amp;#34;) |&amp;gt; Async.AwaitTask |&amp;gt; ignorereturn! page.GetContentAsync() |&amp;gt; Async.AwaitTask} Since we actually don&amp;rsquo;t care about download browser result, we naturally would expect that our line&amp;hellip; BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision) |&amp;gt; Async.AwaitTask |&amp;gt; ignore &amp;hellip;would be equivalent to this C# code: await new BrowserFetcher().</description>
+    </item>
+    
+    <item>
+      <title>Dependency Injection for Quartz.NET in .NET Core</title>
+      <link>http://example.org/post/dependency-injection-for-quartz-net-in-net-core/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/dependency-injection-for-quartz-net-in-net-core/</guid>
+      <description>Introduction Quartz.NET is a handy library that allows you to schedule recurring tasks via implementing IJob interface. Yet the limitation of it is that, by default, it supports only parameterless constructor which complicates injecting external service inside of it, i.e., for implementing repository pattern. In this article, we&amp;rsquo;ll take a look at how we can tackle this problem using standard .NET Core DI container.
+The whole project referred in the article is provided inside the following [Github repository]().</description>
+    </item>
+    
+    <item>
+      <title>End-to-end Testing of Your Web Applications with Canopy</title>
+      <link>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</link>
+      <pubDate>Mon, 14 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</guid>
+      <description>Why Canopy Stabilization Layer Built on Top of Selenium One of the most crucial concepts of canopy is reliability - when performing an action framework tries during time span specified via elementTimeout or compareTimeout or pageTimeout before failing which improves experience during writing tests.
+Expressiveness The syntax looks pretty self-explanatory: &amp;#34;Bio should contain twitter link&amp;#34; &amp;amp;&amp;amp;&amp;amp; fun _ -&amp;gt;url &amp;#34;https://github.com/Wkalmar&amp;#34;&amp;#34;.user-profile-bio&amp;#34; == &amp;#34;https://twitter.com/BohdanStupak1&amp;#34;
+F# In one of my previous articles, I have already expressed my opinion regarding power and expressiveness of F#.</description>
+    </item>
+    
+    <item>
+      <title>Property-Based Testing With FsCheck</title>
+      <link>http://example.org/post/propertybased-testing-with-fscheck/</link>
+      <pubDate>Tue, 19 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/propertybased-testing-with-fscheck/</guid>
+      <description>Introduction This article introduces the concept of property-based testing which is another approach to verify that a function provides an expected result. The complete source code of the project can be accessed on GitHub.
+False safety of traditional unit-testing approach Let&amp;rsquo;s imagine that we have an array of musicians where we define a musician by his/her name and an overall number of people who have listened to that musician: type Artist = {name: stringlisteners: int} And also, we have a function that orders a descendant array of type above by listeners count.</description>
+    </item>
+    
+    <item>
+      <title>Querying Last.fm web API with F#</title>
+      <link>http://example.org/post/querying-last-fm-web-api-with-fsharp/</link>
+      <pubDate>Tue, 07 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/querying-last-fm-web-api-with-fsharp/</guid>
+      <description>Introduction Let&amp;rsquo;s imagine that you have an edgy musical taste so you would like to recommend to your friends only those artists which are the most mainstream. If you have a profile on last.fm, then you could write a small tool which would query and process your listening statistics to automate this task.
+My tool for this job is F# programming language and I&amp;rsquo;ll show you some benefits of it such as type providers or the ease of unit testing functions comparing to objects.</description>
+    </item>
+    
+    <item>
+      <title>Registry Redirection when using 32-bit Application on 64-bit Windows</title>
+      <link>http://example.org/post/registry-redirection-when-using-bit-application-on/</link>
+      <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/registry-redirection-when-using-bit-application-on/</guid>
+      <description>This article will guide you through Windows registry redirection feature, which might seem quite unintuitive at first acquaintance. ##The Code Consider the following situation. We have code that writes to HKEY_LOCAL_MACHINE registry on 64-bit OS. var softwareSubKey = Registry.LocalMachine.OpenSubKey(&amp;#34;Software&amp;#34;, RegistryKeyPermissionCheck.ReadWriteSubTree);softwareSubKey.CreateSubKey(&amp;#34;MySoftware&amp;#34;);  When successfully executing this code, we somewhat unexpectedly receive no MySoftware folder at \HKEY_LOCAL_MACHINE\SOFTWARE path. After investigating build tab in project options, we discover the following:</description>
+    </item>
+    
+  </channel>
+</rss>

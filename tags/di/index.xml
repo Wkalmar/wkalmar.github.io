@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DI on Bohdan Stupak&#39;s blog</title>
+    <link>http://example.org/tags/di/</link>
+    <description>Recent content in DI on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 22 Feb 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://example.org/tags/di/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Dependency Injection for Quartz.NET in .NET Core</title>
+      <link>http://example.org/post/dependency-injection-for-quartz-net-in-net-core/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/dependency-injection-for-quartz-net-in-net-core/</guid>
+      <description>Introduction Quartz.NET is a handy library that allows you to schedule recurring tasks via implementing IJob interface. Yet the limitation of it is that, by default, it supports only parameterless constructor which complicates injecting external service inside of it, i.e., for implementing repository pattern. In this article, we&amp;rsquo;ll take a look at how we can tackle this problem using standard .NET Core DI container.
+The whole project referred in the article is provided inside the following [Github repository]().</description>
+    </item>
+    
+  </channel>
+</rss>
