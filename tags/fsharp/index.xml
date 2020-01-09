@@ -2,39 +2,39 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Fsharp on Bohdan Stupak&#39;s blog</title>
-    <link>http://example.org/tags/fsharp/</link>
+    <link>https://wkalmar.github.io/tags/fsharp/</link>
     <description>Recent content in Fsharp on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 06 Mar 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/fsharp/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wkalmar.github.io/tags/fsharp/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Ignoring Operation Result when using F# async Computation Expression</title>
-      <link>http://example.org/post/ignoring-operation-result-when-using-fsharp-async/</link>
+      <link>https://wkalmar.github.io/post/ignoring-operation-result-when-using-fsharp-async/</link>
       <pubDate>Wed, 06 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/ignoring-operation-result-when-using-fsharp-async/</guid>
+      <guid>https://wkalmar.github.io/post/ignoring-operation-result-when-using-fsharp-async/</guid>
       <description>Consider this simple code downloading page contents using Puppeteer-sharp. let renderHtml = async {BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision) |&amp;gt; Async.AwaitTask |&amp;gt; ignorelet options = LaunchOptions()options.Headless &amp;lt;- truelet! browser = Puppeteer.LaunchAsync(options) |&amp;gt; Async.AwaitTasklet! page = browser.NewPageAsync() |&amp;gt; Async.AwaitTaskpage.GoToAsync(&amp;#34;https://i.ua&amp;#34;) |&amp;gt; Async.AwaitTask |&amp;gt; ignorereturn! page.GetContentAsync() |&amp;gt; Async.AwaitTask} Since we actually don&amp;rsquo;t care about download browser result, we naturally would expect that our line&amp;hellip; BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision) |&amp;gt; Async.AwaitTask |&amp;gt; ignore &amp;hellip;would be equivalent to this C# code: await new BrowserFetcher().</description>
     </item>
     
     <item>
       <title>Refactoring F# Imperative Code Towards Declarative</title>
-      <link>http://example.org/post/refactoring-fsharp-imperative-code-towards-declarative/</link>
+      <link>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/refactoring-fsharp-imperative-code-towards-declarative/</guid>
+      <guid>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</guid>
       <description>Recently, perusing the internet, I found an article which implements the trapezoidal rule in F#. open Systemlet main() =//Function to integratelet f x =10.0*x*xlet trapezoidal a b N =let mutable xi = alet h = (b - a)/Nlet mutable suma = h/2.0*(f(a)+f(b))for x in 1 .. System.Convert.ToInt32(N) dolet mutable xi1 = xi + hsuma &amp;lt;- suma + h*f(xi1)xi &amp;lt;- xi1suma//some usage examplelet fromA = 0.</description>
     </item>
     
     <item>
       <title>End-to-end Testing of Your Web Applications with Canopy</title>
-      <link>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</link>
+      <link>https://wkalmar.github.io/post/end-to-end-testing-of-your-web-applications-with-c/</link>
       <pubDate>Mon, 14 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</guid>
+      <guid>https://wkalmar.github.io/post/end-to-end-testing-of-your-web-applications-with-c/</guid>
       <description>Why Canopy Stabilization Layer Built on Top of Selenium One of the most crucial concepts of canopy is reliability - when performing an action framework tries during time span specified via elementTimeout or compareTimeout or pageTimeout before failing which improves experience during writing tests.
 Expressiveness The syntax looks pretty self-explanatory: &amp;#34;Bio should contain twitter link&amp;#34; &amp;amp;&amp;amp;&amp;amp; fun _ -&amp;gt;url &amp;#34;https://github.com/Wkalmar&amp;#34;&amp;#34;.user-profile-bio&amp;#34; == &amp;#34;https://twitter.com/BohdanStupak1&amp;#34;
 F# In one of my previous articles, I have already expressed my opinion regarding power and expressiveness of F#.</description>
@@ -42,20 +42,20 @@ F# In one of my previous articles, I have already expressed my opinion regarding
     
     <item>
       <title>Property-Based Testing With FsCheck</title>
-      <link>http://example.org/post/propertybased-testing-with-fscheck/</link>
+      <link>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</link>
       <pubDate>Tue, 19 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/propertybased-testing-with-fscheck/</guid>
+      <guid>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</guid>
       <description>Introduction This article introduces the concept of property-based testing which is another approach to verify that a function provides an expected result. The complete source code of the project can be accessed on GitHub.
 False safety of traditional unit-testing approach Let&amp;rsquo;s imagine that we have an array of musicians where we define a musician by his/her name and an overall number of people who have listened to that musician: type Artist = {name: stringlisteners: int} And also, we have a function that orders a descendant array of type above by listeners count.</description>
     </item>
     
     <item>
       <title>Querying Last.fm web API with F#</title>
-      <link>http://example.org/post/querying-last-fm-web-api-with-fsharp/</link>
+      <link>https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/</link>
       <pubDate>Tue, 07 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/querying-last-fm-web-api-with-fsharp/</guid>
+      <guid>https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/</guid>
       <description>Introduction Let&amp;rsquo;s imagine that you have an edgy musical taste so you would like to recommend to your friends only those artists which are the most mainstream. If you have a profile on last.fm, then you could write a small tool which would query and process your listening statistics to automate this task.
 My tool for this job is F# programming language and I&amp;rsquo;ll show you some benefits of it such as type providers or the ease of unit testing functions comparing to objects.</description>
     </item>

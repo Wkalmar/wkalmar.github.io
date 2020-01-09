@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Angular.js on Bohdan Stupak&#39;s blog</title>
-    <link>http://example.org/tags/angular.js/</link>
+    <link>https://wkalmar.github.io/tags/angular.js/</link>
     <description>Recent content in Angular.js on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 26 Dec 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/angular.js/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wkalmar.github.io/tags/angular.js/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Cooking angular.js with Typescript</title>
-      <link>http://example.org/post/cooking-angular-js-with-typescript/</link>
+      <link>https://wkalmar.github.io/post/cooking-angular-js-with-typescript/</link>
       <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/cooking-angular-js-with-typescript/</guid>
+      <guid>https://wkalmar.github.io/post/cooking-angular-js-with-typescript/</guid>
       <description>Introduction Typescript starts to gain more and more popularity because of static typing offering its benefits. Still, some developers who are involved in supporting projects with angular.js may be stuck with lack of community offering their recipes of using angular.js together with typescript. This article will try to fill this gap.
 Our strategy involves shipping working product at every stage of development. So in real life, transition to typescript can be performed gradually thus not hurting business goals that development team has to reach.</description>
     </item>

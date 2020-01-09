@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>FP on Bohdan Stupak&#39;s blog</title>
-    <link>http://example.org/tags/fp/</link>
+    <link>https://wkalmar.github.io/tags/fp/</link>
     <description>Recent content in FP on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 22 May 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/fp/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wkalmar.github.io/tags/fp/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Refactoring F# Imperative Code Towards Declarative</title>
-      <link>http://example.org/post/refactoring-fsharp-imperative-code-towards-declarative/</link>
+      <link>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/refactoring-fsharp-imperative-code-towards-declarative/</guid>
+      <guid>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</guid>
       <description>Recently, perusing the internet, I found an article which implements the trapezoidal rule in F#. open Systemlet main() =//Function to integratelet f x =10.0*x*xlet trapezoidal a b N =let mutable xi = alet h = (b - a)/Nlet mutable suma = h/2.0*(f(a)+f(b))for x in 1 .. System.Convert.ToInt32(N) dolet mutable xi1 = xi + hsuma &amp;lt;- suma + h*f(xi1)xi &amp;lt;- xi1suma//some usage examplelet fromA = 0.</description>
     </item>
     
     <item>
       <title>Querying Last.fm web API with F#</title>
-      <link>http://example.org/post/querying-last-fm-web-api-with-fsharp/</link>
+      <link>https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/</link>
       <pubDate>Tue, 07 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/querying-last-fm-web-api-with-fsharp/</guid>
+      <guid>https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/</guid>
       <description>Introduction Let&amp;rsquo;s imagine that you have an edgy musical taste so you would like to recommend to your friends only those artists which are the most mainstream. If you have a profile on last.fm, then you could write a small tool which would query and process your listening statistics to automate this task.
 My tool for this job is F# programming language and I&amp;rsquo;ll show you some benefits of it such as type providers or the ease of unit testing functions comparing to objects.</description>
     </item>

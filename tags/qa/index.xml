@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>QA on Bohdan Stupak&#39;s blog</title>
-    <link>http://example.org/tags/qa/</link>
+    <link>https://wkalmar.github.io/tags/qa/</link>
     <description>Recent content in QA on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 14 May 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/qa/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wkalmar.github.io/tags/qa/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>End-to-end Testing of Your Web Applications with Canopy</title>
-      <link>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</link>
+      <link>https://wkalmar.github.io/post/end-to-end-testing-of-your-web-applications-with-c/</link>
       <pubDate>Mon, 14 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</guid>
+      <guid>https://wkalmar.github.io/post/end-to-end-testing-of-your-web-applications-with-c/</guid>
       <description>Why Canopy Stabilization Layer Built on Top of Selenium One of the most crucial concepts of canopy is reliability - when performing an action framework tries during time span specified via elementTimeout or compareTimeout or pageTimeout before failing which improves experience during writing tests.
 Expressiveness The syntax looks pretty self-explanatory: &amp;#34;Bio should contain twitter link&amp;#34; &amp;amp;&amp;amp;&amp;amp; fun _ -&amp;gt;url &amp;#34;https://github.com/Wkalmar&amp;#34;&amp;#34;.user-profile-bio&amp;#34; == &amp;#34;https://twitter.com/BohdanStupak1&amp;#34;
 F# In one of my previous articles, I have already expressed my opinion regarding power and expressiveness of F#.</description>

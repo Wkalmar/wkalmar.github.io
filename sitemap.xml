@@ -3,192 +3,209 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://example.org/tags/.net/</loc>
+    <loc>https://wkalmar.github.io/tags/.net/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/csharp/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/leader-election-with-redlock-net/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/microservices/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/redis/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/</loc>
+    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/fsharp/</loc>
     <lastmod>2019-03-06T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/</loc>
-    <lastmod>2019-03-06T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/tags/fsharp/</loc>
-    <lastmod>2019-03-06T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/post/ignoring-operation-result-when-using-fsharp-async/</loc>
+    <loc>https://wkalmar.github.io/post/ignoring-operation-result-when-using-fsharp-async/</loc>
     <lastmod>2019-03-06T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/post/</loc>
-    <lastmod>2019-03-06T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/tags/</loc>
-    <lastmod>2019-03-06T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/tags/csharp/</loc>
+    <loc>https://wkalmar.github.io/tags/di/</loc>
     <lastmod>2019-02-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/tags/di/</loc>
-    <lastmod>2019-02-22T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/post/dependency-injection-for-quartz-net-in-net-core/</loc>
+    <loc>https://wkalmar.github.io/post/dependency-injection-for-quartz-net-in-net-core/</loc>
     <lastmod>2019-02-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/angular.js/</loc>
+    <loc>https://wkalmar.github.io/tags/angular.js/</loc>
     <lastmod>2018-12-26T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/cooking-angular-js-with-typescript/</loc>
+    <loc>https://wkalmar.github.io/post/cooking-angular-js-with-typescript/</loc>
     <lastmod>2018-12-26T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/javascript/</loc>
-    <lastmod>2018-12-26T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/tags/typescript/</loc>
+    <loc>https://wkalmar.github.io/tags/javascript/</loc>
     <lastmod>2018-12-26T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/tags/css/</loc>
+    <loc>https://wkalmar.github.io/tags/typescript/</loc>
+    <lastmod>2018-12-26T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/css/</loc>
     <lastmod>2018-08-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/creating-holy-grail-layouts-with-css-grid/</loc>
+    <loc>https://wkalmar.github.io/post/creating-holy-grail-layouts-with-css-grid/</loc>
     <lastmod>2018-08-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/html/</loc>
+    <loc>https://wkalmar.github.io/tags/html/</loc>
     <lastmod>2018-08-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/tags/fp/</loc>
+    <loc>https://wkalmar.github.io/tags/fp/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/refactoring-fsharp-imperative-code-towards-declarative/</loc>
+    <loc>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/post/end-to-end-testing-of-your-web-applications-with-c/</loc>
+    <loc>https://wkalmar.github.io/post/end-to-end-testing-of-your-web-applications-with-c/</loc>
     <lastmod>2018-05-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/qa/</loc>
+    <loc>https://wkalmar.github.io/tags/qa/</loc>
     <lastmod>2018-05-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/method-can-be-made-static-may-hide-oo-design-flaw/</loc>
+    <loc>https://wkalmar.github.io/post/method-can-be-made-static-may-hide-oo-design-flaw/</loc>
     <lastmod>2018-02-18T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/oop/</loc>
+    <loc>https://wkalmar.github.io/tags/oop/</loc>
     <lastmod>2018-02-18T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/propertybased-testing-with-fscheck/</loc>
+    <loc>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</loc>
     <lastmod>2017-12-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/post/querying-last-fm-web-api-with-fsharp/</loc>
+    <loc>https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/</loc>
     <lastmod>2017-11-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/64-bit/</loc>
+    <loc>https://wkalmar.github.io/tags/64-bit/</loc>
     <lastmod>2017-09-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/registry-redirection-when-using-bit-application-on/</loc>
+    <loc>https://wkalmar.github.io/post/registry-redirection-when-using-bit-application-on/</loc>
     <lastmod>2017-09-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/windows/</loc>
-    <lastmod>2017-09-04T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/tags/registry/</loc>
+    <loc>https://wkalmar.github.io/tags/windows/</loc>
     <lastmod>2017-09-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/pure-css-salesforce-like-progressbar-control/</loc>
+    <loc>https://wkalmar.github.io/tags/registry/</loc>
+    <lastmod>2017-09-04T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/pure-css-salesforce-like-progressbar-control/</loc>
     <lastmod>2017-07-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/post/money-precision-issues/</loc>
+    <loc>https://wkalmar.github.io/post/money-precision-issues/</loc>
     <lastmod>2015-02-15T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/tags/sql/</loc>
-    <lastmod>2015-02-15T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.org/tags/sql-server/</loc>
+    <loc>https://wkalmar.github.io/tags/sql/</loc>
     <lastmod>2015-02-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://example.org/post/some-common-mistakes-when-querying-sql-database/</loc>
+    <loc>https://wkalmar.github.io/tags/sql-server/</loc>
+    <lastmod>2015-02-15T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/some-common-mistakes-when-querying-sql-database/</loc>
     <lastmod>2014-06-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/categories/</loc>
+    <loc>https://wkalmar.github.io/categories/</loc>
     <priority>0</priority>
   </url>
   

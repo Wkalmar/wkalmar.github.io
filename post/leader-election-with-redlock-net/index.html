@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Leader election with Redlock.net // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Leader election with Redlock.net"/>
+<meta name="twitter:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. Consider a service which apart from other functionality runs once per day some mission-critical job which should be executed in a single instance."/>
+
+    <meta property="og:title" content="Leader election with Redlock.net" />
+<meta property="og:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. Consider a service which apart from other functionality runs once per day some mission-critical job which should be executed in a single instance." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/leader-election-with-redlock-net/" />
+<meta property="article:published_time" content="2019-07-19T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-07-19T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Leader election with Redlock.net</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jul 19, 2019
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/csharp/">Csharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a><a class="tag" href="https://wkalmar.github.io/tags/redis/">Redis</a><a class="tag" href="https://wkalmar.github.io/tags/microservices/">Microservices</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="why-locking-things">Why locking things</h2>
+
+<p>Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
+Consider a service which apart from other functionality runs once per day some mission-critical job which should be executed in a single instance. At the same time, the deployment of a single instance is counterproductive because microservice bears other functionality which would benefit from horizontal scaling. One may argue that we can split such microservice into even smaller microservice but I&rsquo;d be cautious against making microservices too granular.
+Another reason might be poor-man&rsquo;s failover scenario, where one instance of a service executes work, while other is idle and waits just in case the first instance fails for some reason.
+As a solution, I offer to elect a single leader which would handle shared resource exclusively at a single point of time.
+Such well-known leader election algorithms such as Bully algorithm or Ring algorithm require a lot of ceremony and knowledge of the logical topology of your system in order to be implemented. That&rsquo;s the reason why we&rsquo;ll have a look at leader election using a distributed lock.
+You should use this pattern when the tasks in a distributed application need careful coordination and there&rsquo;s no natural leader.
+As storage for a distributed lock, we&rsquo;ll use Redis. Redis is in-memory key-value storage so we&rsquo;ll take advantage of its speed. There is already a <a href="https://github.com/samcook/RedLock.net">library</a> that implements distributed lock over Redis. So we just have to make use of it.</p>
+
+<h2 id="the-code">The code</h2>
+
+<p>The sample code can be accessed on <a href="https://github.com/Wkalmar/LeaderElection">github</a>. Let&rsquo;s break down what actually happens here.
+The idea behind leader election via distributed lock is whoever acquires lock over shared resource becomes a leader. So naturally, we have a lock key quite similarly to built-in C# <code>lock</code> construct.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> _resource = <span style="color:#e6db74">&#34;the-thing-we-are-locking-on&#34;</span>;
+</code></pre></div>
+Obviously, the storage is a single point of failure so we have to make sure that it is reliable. RedLock.net which we use for our case allows us to use multiple instances of Redis instead of single in order to improve reliability.
+Here&rsquo;s how we create connection to Redis during start up.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">var</span> endPoints = <span style="color:#66d9ef">new</span> List&lt;RedLockEndPoint&gt;
+{
+    <span style="color:#66d9ef">new</span> DnsEndPoint(<span style="color:#e6db74">&#34;redis1&#34;</span>, <span style="color:#ae81ff">6379</span>)
+    <span style="color:#66d9ef">new</span> DnsEndPoint(<span style="color:#e6db74">&#34;redis2&#34;</span>, <span style="color:#ae81ff">6379</span>)
+    <span style="color:#66d9ef">new</span> DnsEndPoint(<span style="color:#e6db74">&#34;redis3&#34;</span>, <span style="color:#ae81ff">6379</span>)
+};
+_distributedLockFactory = RedLockFactory.Create(endPoints);
+</code></pre></div>
+Every instance try to acquire a lock once in a given period of time. If it succeeds it becomes a leader. If not it will try once again later.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> TimeSpan _expiry = TimeSpan.FromSeconds(_expirySecondsCount);
+_acquireLockTimer = <span style="color:#66d9ef">new</span> Timer(<span style="color:#66d9ef">async</span> state =&gt; <span style="color:#66d9ef">await</span> TryAcquireLock((CancellationToken)state), _cts.Token, <span style="color:#ae81ff">0</span>, _expirySecondsCount * <span style="color:#ae81ff">1000</span>);
+</code></pre></div>
+However, the leader does not need to re-acquire a lock since it has auto-extend feature. At first encounter with RedLock.net this might be unintuitive so it should be noted. Let&rsquo;s have a look at TryAcquireLock method.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TryAcquireLock(CancellationToken token)
+{
+    <span style="color:#66d9ef">if</span> (token.IsCancellationRequested)
+        <span style="color:#66d9ef">return</span>;
+
+    <span style="color:#66d9ef">var</span> distributedLock = <span style="color:#66d9ef">await</span> _distributedLockFactory.CreateLockAsync(_resource, _expiry);
+    <span style="color:#66d9ef">if</span> (distributedLock.IsAcquired)
+    {
+        DoLeaderJob();
+        _acquireLockTimer.Dispose(); <span style="color:#75715e">//no need to renew lock because of autoextend
+</span><span style="color:#75715e"></span>    }
+}
+</code></pre></div>
+As mentioned above we get rid of re-acquire timer as soon as an instance becomes a leader taking advantage of auto-extend feature.
+Once the instance fails the lock is released and is up to other instances for a taking.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>As we can see the implementation of leader election via distributed lock is pretty straightforward. Still, it should be used with care since every locking increases contention between instances of a microservice and thus reduces the benefits of horizontal scaling.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
