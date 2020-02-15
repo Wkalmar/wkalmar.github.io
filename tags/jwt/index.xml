@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JWT on Bohdan Stupak&#39;s blog</title>
+    <link>https://wkalmar.github.io/tags/jwt/</link>
+    <description>Recent content in JWT on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 15 Feb 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://wkalmar.github.io/tags/jwt/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Building auth endpoint with Go and AWS Lambda</title>
+      <link>https://wkalmar.github.io/post/building-auth-endpoint-with-go-and-aws-lambda/</link>
+      <pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/building-auth-endpoint-with-go-and-aws-lambda/</guid>
+      <description>When I was playing around with my pet-project Kyiv Station Walk I’ve noticed that manually removing test data is tedious and I need to come up with a concept of the admin page. This required some sort of authentication endpoint. Some super-lightweight service which would check login and password against as a pair of super-user credentials.
+Serverless is quite useful for this simple nanoservice. This brings some cost-saving as serverless comes to me almost free due to low execution rate that I anticipate for the admin page of my low-popular service.</description>
+    </item>
+    
+  </channel>
+</rss>
