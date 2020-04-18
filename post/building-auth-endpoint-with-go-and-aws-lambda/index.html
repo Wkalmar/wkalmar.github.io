@@ -72,7 +72,7 @@ Serverless is quite useful for this simple nanoservice. This brings some cost-sa
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          4 min read
+          5 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -139,7 +139,7 @@ Here’s how you set up them in AWS console</p>
 
 <h2 id="jwt-generation">JWT Generation</h2>
 
-<p>Once the service verifies that credentials are valid it issues a token which allows it’s bearer to act as a super-user. For this purpose, we’ll use <a href="https://ru.wikipedia.org/wiki/JSON_Web_Token">JWT</a> which is a de-facto standard format for access tokens.</p>
+<p>Once the service verifies that credentials are valid it issues a token which allows it’s bearer to act as a super-user. For this purpose, we’ll use <a href="https://jwt.io/">JWT</a> which is a de-facto standard format for access tokens.</p>
 
 <p>We&rsquo;ll need the following package
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#e6db74">&#34;github.com/dgrijalva/jwt-go&#34;</span></code></pre></div></p>
@@ -204,6 +204,23 @@ Now our API is ready to be consumed. Here’s a brief snippet from the main serv
         Result.<span style="color:#a6e22e">Ok</span>()
     <span style="color:#66d9ef">with</span>
     <span style="color:#f92672">|</span> <span style="color:#f92672">_</span> <span style="color:#f92672">-&gt;</span> Result.<span style="color:#a6e22e">Error</span> <span style="color:#e6db74">&#34;Forbidden&#34;</span></code></pre></div></p>
+
+<h2 id="minimizing-attack-surface">Minimizing attack surface</h2>
+
+<p>At this point, our function is open to some vulnerabilities so we have to perform some additional work on our API gateway.</p>
+
+<h3 id="edpoint-throttling">Edpoint throttling</h3>
+
+<p>The default settings are to high for authorization function that is not expected to be invoked often. Let&rsquo;s change this.
+<img src="/6/4.PNG" width="600"/></p>
+
+<h3 id="ip-whitelist">IP whitelist</h3>
+
+<p>Neither do we want our function to be accessible from any IP possible. The following snippet in the &ldquo;Resource policy&rdquo; API gateway settings section allows us to create a whitelist of IP addresses that can access our lambda.
+<img src="/6/5.PNG" width="600"/></p>
+
+<p>In order to obtain ARN we can navigate back to Lambda configuration page and check it by clicking on API Gateway icon.
+<img src="/6/6.PNG" width="600"/></p>
 
 <h2 id="conclusion">Conclusion</h2>
 
