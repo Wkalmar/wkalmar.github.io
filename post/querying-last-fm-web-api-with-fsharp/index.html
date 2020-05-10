@@ -72,7 +72,7 @@ My tool for this job is F# programming language and I&rsquo;ll show you some ben
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          5 min read
+          7 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -244,6 +244,72 @@ Note that we had to make our <code>getTopArtists()</code> to accept unit to be a
         Assert.<span style="color:#a6e22e">Equal</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.[</span>1<span style="color:#f92672">],</span>
         <span style="color:#e6db74">&#34;%d0%a6%d1%83%d0%ba%d0%be%d1%80+%d0%91%d1%96%d0%bb%d0%b0+%d0%a1%d0%bc%d0%b5%d1%80%d1%82%d1%8c&#34;</span><span style="color:#f92672">)</span>
     <span style="color:#f92672">|</span> <span style="color:#a6e22e">Error</span> <span style="color:#f92672">_</span> <span style="color:#f92672">-&gt;</span> Assert.<span style="color:#a6e22e">True</span><span style="color:#f92672">(</span>false<span style="color:#f92672">)</span></code></pre></div></p>
+
+<h2 id="property-based-testing">Property-based testing</h2>
+
+<h3 id="false-safety-of-traditional-unit-testing-approach">False safety of traditional unit-testing approach</h3>
+
+<p>Let&rsquo;s imagine that we have an array of musicians where we define a musician by his/her name and an overall number of people who have listened to that musician:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Artist</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>
+    name<span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span>
+    listeners<span style="color:#f92672">:</span> <span style="color:#66d9ef">int</span>
+<span style="color:#f92672">}</span></code></pre></div>
+And also, we have a function that orders a descendant array of type above by listeners count.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> orderArtistsByListenersCount artists <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">let</span> ordered <span style="color:#f92672">=</span>
+            artists
+                <span style="color:#f92672">|&gt;</span> Array.sortBy <span style="color:#f92672">(</span><span style="color:#66d9ef">fun</span> i <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">-</span>i<span style="color:#f92672">.</span>listeners<span style="color:#f92672">)</span>
+    <span style="color:#a6e22e">Success</span><span style="color:#f92672">(</span>ordered<span style="color:#f92672">)</span></code></pre></div>
+We could write a unit-test to verify that this function works correctly with xUnit just as below.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Fact</span><span style="color:#f92672">&gt;]</span>
+<span style="color:#66d9ef">let</span> orderArtistsByListenersCount_returns_expected_result() <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">Satie</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Erik Satie&#34;</span><span style="color:#f92672">;</span> listeners <span style="color:#f92672">=</span> 750000<span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">Chopin</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>name <span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Frederic Chopin&#34;</span><span style="color:#f92672">;</span> listeners <span style="color:#f92672">=</span> 1200000<span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">Barber</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Samuel Barber&#34;</span><span style="color:#f92672">;</span> listeners <span style="color:#f92672">=</span> 371000<span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">let</span> artists <span style="color:#f92672">=</span> <span style="color:#f92672">[|</span><span style="color:#a6e22e">Satie</span><span style="color:#f92672">;</span> <span style="color:#a6e22e">Chopin</span><span style="color:#f92672">;</span> <span style="color:#a6e22e">Barber</span><span style="color:#f92672">|]</span>
+    <span style="color:#66d9ef">let</span> result <span style="color:#f92672">=</span> orderArtistsByListenersCount artists
+    <span style="color:#66d9ef">match</span> result <span style="color:#66d9ef">with</span>
+    <span style="color:#f92672">|</span> <span style="color:#a6e22e">Success</span> s <span style="color:#f92672">-&gt;</span>
+        Assert.<span style="color:#a6e22e">Equal</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.[</span>0<span style="color:#f92672">],</span> <span style="color:#a6e22e">Chopin</span><span style="color:#f92672">)</span>
+        Assert.<span style="color:#a6e22e">Equal</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.[</span>1<span style="color:#f92672">],</span> <span style="color:#a6e22e">Satie</span><span style="color:#f92672">)</span>
+        Assert.<span style="color:#a6e22e">Equal</span><span style="color:#f92672">(</span>s<span style="color:#f92672">.[</span>2<span style="color:#f92672">],</span> <span style="color:#a6e22e">Barber</span><span style="color:#f92672">)</span>
+    <span style="color:#f92672">|</span> <span style="color:#a6e22e">Failure</span> <span style="color:#f92672">_</span> <span style="color:#f92672">-&gt;</span> Assert.<span style="color:#a6e22e">True</span><span style="color:#f92672">(</span>false<span style="color:#f92672">)</span></code></pre></div>
+Looks like we&rsquo;re fine now but in fact, nothing stops another developer from implementing a function which just satisfies the magic numbers provided in test.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> orderArtistsByListenersCount artists <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">Satie</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Erik Satie&#34;</span><span style="color:#f92672">;</span> listeners <span style="color:#f92672">=</span> 750000<span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">Chopin</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>name <span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Frederic Chopin&#34;</span><span style="color:#f92672">;</span> listeners <span style="color:#f92672">=</span> 1200000<span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">Barber</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Samuel Barber&#34;</span><span style="color:#f92672">;</span> listeners <span style="color:#f92672">=</span> 371000<span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">let</span> artists <span style="color:#f92672">=</span> <span style="color:#f92672">[|</span><span style="color:#a6e22e">Chopin</span><span style="color:#f92672">;</span> <span style="color:#a6e22e">Satie</span><span style="color:#f92672">;</span> <span style="color:#a6e22e">Barber</span><span style="color:#f92672">|]</span>
+    <span style="color:#a6e22e">Success</span><span style="color:#f92672">(</span>artists<span style="color:#f92672">)</span></code></pre></div>
+Actually, nothing verifies <em>sortedness</em> of an array.</p>
+
+<h3 id="property-based-testing-with-fscheck">Property-based testing with FsCheck</h3>
+
+<p>On the contrary, property-based testing verifies whether our result satisfies the properties that we define. For example, the below code checks whether each item of the sorted array has bigger or same amount of listeners as the next item
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">open</span> FsCheck.<span style="color:#a6e22e">Xunit</span>
+
+<span style="color:#66d9ef">let</span> <span style="color:#f92672">``</span>pairs from collection should be ordered<span style="color:#f92672">``</span> orderFn artists <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">let</span> orderedArtists <span style="color:#f92672">=</span> artists <span style="color:#f92672">|&gt;</span> orderFn
+    <span style="color:#66d9ef">match</span> orderedArtists <span style="color:#66d9ef">with</span>
+    <span style="color:#f92672">|</span> <span style="color:#a6e22e">Success</span> s <span style="color:#f92672">-&gt;</span> s <span style="color:#f92672">|&gt;</span> Array.pairwise <span style="color:#f92672">|&gt;</span> Array.forall <span style="color:#f92672">(</span><span style="color:#66d9ef">fun</span> <span style="color:#f92672">(</span>x<span style="color:#f92672">,</span>y<span style="color:#f92672">)</span> <span style="color:#f92672">-&gt;</span> x<span style="color:#f92672">.</span>listeners <span style="color:#f92672">&gt;=</span> y<span style="color:#f92672">.</span>listeners<span style="color:#f92672">)</span>
+    <span style="color:#f92672">|</span> <span style="color:#a6e22e">Failure</span> <span style="color:#f92672">_</span> <span style="color:#f92672">-&gt;</span> false
+
+<span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Property</span><span style="color:#f92672">&gt;]</span>
+<span style="color:#66d9ef">let</span> pairwise x <span style="color:#f92672">=</span>
+    <span style="color:#f92672">``</span>pairs from collection should be ordered<span style="color:#f92672">``</span> orderArtistsByListenersCount x</code></pre></div>
+What <a href="https://github.com/fscheck/FsCheck">FsCheck</a> does is that it generates several hundred random inputs to test that the property is satisfied upon all possible input values.</p>
+
+<p>Next example checks whether the result array contains same items as the input array.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> <span style="color:#f92672">``</span>should be permutation <span style="color:#66d9ef">of</span> original elements<span style="color:#f92672">``</span> orderFn artists <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">let</span> orderedArtists <span style="color:#f92672">=</span> artists <span style="color:#f92672">|&gt;</span> orderFn
+    <span style="color:#66d9ef">match</span> orderedArtists <span style="color:#66d9ef">with</span>
+    <span style="color:#f92672">|</span> <span style="color:#a6e22e">Success</span> s <span style="color:#f92672">-&gt;</span> s <span style="color:#f92672">|&gt;</span> List.ofArray <span style="color:#f92672">|&gt;</span> isPermutationOf <span style="color:#f92672">(</span>List.ofArray artists<span style="color:#f92672">)</span>
+    <span style="color:#f92672">|</span> <span style="color:#a6e22e">Failure</span> <span style="color:#f92672">_</span> <span style="color:#f92672">-&gt;</span> false
+
+<span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Property</span><span style="color:#f92672">&gt;]</span>
+<span style="color:#66d9ef">let</span> isPermutation x <span style="color:#f92672">=</span>
+    <span style="color:#f92672">``</span>should be permutation <span style="color:#66d9ef">of</span> original elements<span style="color:#f92672">``</span> orderArtistsByListenersCount x</code></pre></div>
+Implementation of isPermutation can be found <a href="https://github.com/Wkalmar/LastFmArtistGetter/blob/master/LastFmArtistGetter.Tests/ArrayHelpers.fs">here</a>.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 

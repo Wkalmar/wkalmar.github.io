@@ -6,22 +6,10 @@
     <description>Recent content in CSS on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 19 Aug 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Jul 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/css/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Creating Holy Grail Layouts with CSS Grid</title>
-      <link>https://wkalmar.github.io/post/creating-holy-grail-layouts-with-css-grid/</link>
-      <pubDate>Sun, 19 Aug 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/post/creating-holy-grail-layouts-with-css-grid/</guid>
-      <description>Introduction The holy grail layout is a layout that consists of fixed width header, footer, left sidebar, right sidebar and fluid hero item as below:
-Traditionally, it is composed via negative margins technique.
-To be honest, this doesn’t communicate much to me and looks more like a bunch of hacks. Luckily display: grid has arrived which allows to build 2-dimensional layout in more semantically meaningful style.
-Markup Let’s define our markup as follows: &amp;lt;div class=&amp;#34;grid&amp;#34;&amp;gt;&amp;lt;header&amp;gt;Header&amp;lt;/header&amp;gt;&amp;lt;aside class=&amp;#34;sidebar-left&amp;#34;&amp;gt;Left Sidebar&amp;lt;/aside&amp;gt;&amp;lt;article&amp;gt;Article&amp;lt;/article&amp;gt;&amp;lt;aside class=&amp;#34;sidebar-right&amp;#34;&amp;gt;Right Sidebar&amp;lt;/aside&amp;gt;&amp;lt;footer&amp;gt;Footer&amp;lt;/footer&amp;gt;&amp;lt;/div&amp;gt;</description>
-    </item>
     
     <item>
       <title>Pure CSS Salesforce-like progressbar Control</title>

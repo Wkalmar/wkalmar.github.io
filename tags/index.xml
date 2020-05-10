@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Csharp</title>
+      <link>https://wkalmar.github.io/tags/csharp/</link>
+      <pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/csharp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OOD</title>
+      <link>https://wkalmar.github.io/tags/ood/</link>
+      <pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/ood/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>AWS</title>
@@ -53,15 +71,6 @@
       <pubDate>Fri, 19 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/tags/.net/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Csharp</title>
-      <link>https://wkalmar.github.io/tags/csharp/</link>
-      <pubDate>Fri, 19 Jul 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/csharp/</guid>
       <description></description>
     </item>
     
@@ -129,24 +138,6 @@
     </item>
     
     <item>
-      <title>CSS</title>
-      <link>https://wkalmar.github.io/tags/css/</link>
-      <pubDate>Sun, 19 Aug 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/css/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>HTML</title>
-      <link>https://wkalmar.github.io/tags/html/</link>
-      <pubDate>Sun, 19 Aug 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/html/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>FP</title>
       <link>https://wkalmar.github.io/tags/fp/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
@@ -197,6 +188,24 @@
       <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/tags/registry/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CSS</title>
+      <link>https://wkalmar.github.io/tags/css/</link>
+      <pubDate>Sun, 09 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/css/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HTML</title>
+      <link>https://wkalmar.github.io/tags/html/</link>
+      <pubDate>Sun, 09 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/html/</guid>
       <description></description>
     </item>
     

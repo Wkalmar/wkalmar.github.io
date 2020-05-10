@@ -51,16 +51,6 @@ F# In one of my previous articles, I have already expressed my opinion regarding
     </item>
     
     <item>
-      <title>Property-Based Testing With FsCheck</title>
-      <link>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</link>
-      <pubDate>Tue, 19 Dec 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</guid>
-      <description>Introduction This article introduces the concept of property-based testing which is another approach to verify that a function provides an expected result. The complete source code of the project can be accessed on GitHub.
-False safety of traditional unit-testing approach Let&amp;rsquo;s imagine that we have an array of musicians where we define a musician by his/her name and an overall number of people who have listened to that musician: type Artist = {name: stringlisteners: int} And also, we have a function that orders a descendant array of type above by listeners count.</description>
-    </item>
-    
-    <item>
       <title>Querying Last.fm web API with F#</title>
       <link>https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/</link>
       <pubDate>Tue, 07 Nov 2017 00:00:00 +0000</pubDate>

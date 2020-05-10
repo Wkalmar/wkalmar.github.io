@@ -6,10 +6,20 @@
     <description>Recent content on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Refactoring string to specific types</title>
+      <link>https://wkalmar.github.io/post/refactoring-string-to-specific-types/</link>
+      <pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/refactoring-string-to-specific-types/</guid>
+      <description>Introduction While the article title may sound controversial as there is clearly nothing wrong with using string in your code below I&amp;rsquo;ll show the cases where string type doesn&amp;rsquo;t clearly communicate all the necessary properties of a domain in question. Then I&amp;rsquo;ll show how this can be handled. You can watch full code on Github.
+The code Recently I was tasked to write the code which converts Linux permissions to their octal representation.</description>
+    </item>
     
     <item>
       <title>Building auth endpoint with Go and AWS Lambda</title>
@@ -60,18 +70,6 @@ Our strategy involves shipping working product at every stage of development. So
     </item>
     
     <item>
-      <title>Creating Holy Grail Layouts with CSS Grid</title>
-      <link>https://wkalmar.github.io/post/creating-holy-grail-layouts-with-css-grid/</link>
-      <pubDate>Sun, 19 Aug 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/post/creating-holy-grail-layouts-with-css-grid/</guid>
-      <description>Introduction The holy grail layout is a layout that consists of fixed width header, footer, left sidebar, right sidebar and fluid hero item as below:
-Traditionally, it is composed via negative margins technique.
-To be honest, this doesn’t communicate much to me and looks more like a bunch of hacks. Luckily display: grid has arrived which allows to build 2-dimensional layout in more semantically meaningful style.
-Markup Let’s define our markup as follows: &amp;lt;div class=&amp;#34;grid&amp;#34;&amp;gt;&amp;lt;header&amp;gt;Header&amp;lt;/header&amp;gt;&amp;lt;aside class=&amp;#34;sidebar-left&amp;#34;&amp;gt;Left Sidebar&amp;lt;/aside&amp;gt;&amp;lt;article&amp;gt;Article&amp;lt;/article&amp;gt;&amp;lt;aside class=&amp;#34;sidebar-right&amp;#34;&amp;gt;Right Sidebar&amp;lt;/aside&amp;gt;&amp;lt;footer&amp;gt;Footer&amp;lt;/footer&amp;gt;&amp;lt;/div&amp;gt;</description>
-    </item>
-    
-    <item>
       <title>Refactoring F# Imperative Code Towards Declarative</title>
       <link>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</link>
       <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
@@ -99,16 +97,6 @@ F# In one of my previous articles, I have already expressed my opinion regarding
       <guid>https://wkalmar.github.io/post/method-can-be-made-static-may-hide-oo-design-flaw/</guid>
       <description>Introduction Wandering through codebases, I&amp;rsquo;ve encountered some examples of code where ReSharper issues the above mentioned warning. Although the fix seems straightforward, the warning itself may hide a more subtle issue connected to object responsibility assignment.
 Toy Example Let&amp;rsquo;s take a look at the following code: public class EmailConstructor{private const string Signature = &amp;#34;Regards&amp;#34;;public string Construct(User recipient, string body){var builder = new StringBuilder();builder.Append($&amp;#34;Hello {GetNiceUserName(recipient)}&amp;#34;);builder.</description>
-    </item>
-    
-    <item>
-      <title>Property-Based Testing With FsCheck</title>
-      <link>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</link>
-      <pubDate>Tue, 19 Dec 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</guid>
-      <description>Introduction This article introduces the concept of property-based testing which is another approach to verify that a function provides an expected result. The complete source code of the project can be accessed on GitHub.
-False safety of traditional unit-testing approach Let&amp;rsquo;s imagine that we have an array of musicians where we define a musician by his/her name and an overall number of people who have listened to that musician: type Artist = {name: stringlisteners: int} And also, we have a function that orders a descendant array of type above by listeners count.</description>
     </item>
     
     <item>

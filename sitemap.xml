@@ -3,13 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://wkalmar.github.io/tags/aws/</loc>
-    <lastmod>2020-02-15T00:00:00+00:00</lastmod>
+    <loc>https://wkalmar.github.io/</loc>
+    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/</loc>
+    <loc>https://wkalmar.github.io/tags/csharp/</loc>
+    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/ood/</loc>
+    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/</loc>
+    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/refactoring-string-to-specific-types/</loc>
+    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/</loc>
+    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/aws/</loc>
     <lastmod>2020-02-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -32,31 +61,13 @@
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/post/</loc>
-    <lastmod>2020-02-15T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/tags/serverless/</loc>
     <lastmod>2020-02-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/tags/</loc>
-    <lastmod>2020-02-15T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/tags/.net/</loc>
-    <lastmod>2019-07-19T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/csharp/</loc>
     <lastmod>2019-07-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -124,23 +135,6 @@
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/tags/css/</loc>
-    <lastmod>2018-08-19T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/post/creating-holy-grail-layouts-with-css-grid/</loc>
-    <lastmod>2018-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/html/</loc>
-    <lastmod>2018-08-19T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/tags/fp/</loc>
     <lastmod>2018-05-22T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -174,11 +168,6 @@
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/post/propertybased-testing-with-fscheck/</loc>
-    <lastmod>2017-12-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/</loc>
     <lastmod>2017-11-07T00:00:00+00:00</lastmod>
   </url>
@@ -203,6 +192,18 @@
   <url>
     <loc>https://wkalmar.github.io/tags/registry/</loc>
     <lastmod>2017-09-04T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/css/</loc>
+    <lastmod>2017-07-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/html/</loc>
+    <lastmod>2017-07-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
