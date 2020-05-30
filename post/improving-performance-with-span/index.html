@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Using Span&lt;T&gt; to improve performance of C# code // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using Span&lt;T&gt; to improve performance of C# code"/>
+<meta name="twitter:description" content="In my experience, the main thing to do in order to improve application performance is to reduce the number and duration of IO-calls. However, once this option is exercised another path that developers take is using memory on stack. Stack allows very fast allocation and deallocation although it should be used only for allocating small portions since stack size is pretty small. Also, using stack allows reducing pressure on GC."/>
+
+    <meta property="og:title" content="Using Span&lt;T&gt; to improve performance of C# code" />
+<meta property="og:description" content="In my experience, the main thing to do in order to improve application performance is to reduce the number and duration of IO-calls. However, once this option is exercised another path that developers take is using memory on stack. Stack allows very fast allocation and deallocation although it should be used only for allocating small portions since stack size is pretty small. Also, using stack allows reducing pressure on GC." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/improving-performance-with-span/" />
+<meta property="article:published_time" content="2020-05-17T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2020-05-17T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Using Span&lt;T&gt; to improve performance of C# code</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          May 17, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/csharp/">Csharp</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>In my experience, the main thing to do in order to improve application performance is to reduce the number and duration of IO-calls. However, once this option is exercised another path that developers take is using memory on stack. Stack allows very fast allocation and deallocation although it should be used only for allocating small portions since stack size is pretty small. Also, using stack allows reducing pressure on GC. In order to allocate memory on stack, one uses <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types">value types</a> or <code>stackalloc</code> operator combined with the usage of unmanaged memory.</p>
+
+<p>The second option is rarely used by developers since API for unmanaged memory access is quite verbose.</p>
+
+<p><code>Span&lt;T&gt;</code> is a family of value types that arrived in C# 7.2 which is an allocation-free representation of a memory from different sources. <code>Span&lt;T&gt;</code> allows developer to work with regions of contigious memory in more convenient fashion enshuring memory and type safety.</p>
+
+<h2 id="span-t-implementation">Span<T> implementation</h2>
+
+<h3 id="ref-return">Ref return</h3>
+
+<p>The first step in wrapping head around <code>Span&lt;T&gt;</code> implementation for those who don&rsquo;t closely follow updates in C# language is learning about <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/ref-returns">ref returns</a> which were introduced in C# 7.0.</p>
+
+<p>While most of the readers are familiar with passing method argument by reference, now C# allows returning a reference to a value instead of the value itself.</p>
+
+<p>Let us examine how it works. We&rsquo;ll create a simple wrapper around an array of prominent musicians which exhibits both traditional behavior and new ref return feature.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ArtistsStore</span>
+{
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span><span style="color:#a6e22e">[]</span> _artists = <span style="color:#66d9ef">new</span><span style="color:#a6e22e">[]</span> { <span style="color:#e6db74">&#34;Amenra&#34;</span>, <span style="color:#e6db74">&#34;The Shadow Ring&#34;</span>, <span style="color:#e6db74">&#34;Hiroshi Yoshimura&#34;</span> };
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> ReturnSingleArtist()
+	{
+		<span style="color:#66d9ef">return</span> _artists<span style="color:#a6e22e">[1]</span>;
+	}
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">string</span> ReturnSingleArtistByRef()
+	{
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">ref</span> _artists<span style="color:#a6e22e">[1]</span>;
+	}
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> AllAritsts =&gt; <span style="color:#66d9ef">string</span>.Join(<span style="color:#e6db74">&#34;, &#34;</span>, _artists);
+}
+</code></pre></div></p>
+
+<p>Now let&rsquo;s call those methods
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> store = <span style="color:#66d9ef">new</span> ArtistsStore();
+<span style="color:#66d9ef">var</span> artist = store.ReturnSingleArtist();
+artist = <span style="color:#e6db74">&#34;Henry Cow&#34;</span>;
+<span style="color:#66d9ef">var</span> allArtists = store.AllAritsts; <span style="color:#75715e">//Amenra, The Shadow Ring, Hiroshi Yoshimura
+</span><span style="color:#75715e"></span>
+artist = store.ReturnSingleArtistByRef();
+artist = <span style="color:#e6db74">&#34;Frank Zappa&#34;</span>;
+allArtists = store.AllAritsts; <span style="color:#75715e">//Amenra, The Shadow Ring, Hiroshi Yoshimura
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">var</span> artistReference = <span style="color:#66d9ef">ref</span> store.ReturnSingleArtistByRef();
+artistReference = <span style="color:#e6db74">&#34;Valentyn Sylvestrov&#34;</span>;
+allArtists = store.AllAritsts; <span style="color:#75715e">//Amenra, Valentyn Sylvestrov, Hiroshi Yoshimura
+</span></code></pre></div>
+Observe that while in the first and the second example original collection is unmodified in the final example we&rsquo;ve managed to alter the second artist of the collection. As you&rsquo;ll see later during the course of the article this useful feature will help us operate arrays located on the stack in a reference-like fashion.</p>
+
+<h3 id="ref-structs">Ref structs</h3>
+
+<p>As we know value types might be allocated on stack. Also, they not necessarily do depending on the context where the value is used. In order to make sure that the value is always allocated on stack the concept of <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct?view=netcore-3.1#ref-struct">ref struct</a> was introduced in C# 7.0. <code>Span&lt;T&gt;</code> is a <code>ref struct</code> so we are sure that is always allocated on stack.</p>
+
+<h3 id="span-t-implementation-1">Span<T> implementation</h3>
+
+<p><code>Span&lt;T&gt;</code> is a <code>ref struct</code> which contains a pointer to memory and length of the span similar to below.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Span</span>&lt;T&gt;
+{
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">ref</span> T _pointer;
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">int</span> _length;
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">ref</span> T <span style="color:#66d9ef">this</span><span style="color:#a6e22e">[int index]</span> =&gt; <span style="color:#66d9ef">ref</span> _pointer + index;
+  ...
+}
+</code></pre></div>
+Note <code>ref</code> modifier near the pointer field. Such construct can&rsquo;t be declared in a plain C# in .NET Core it is implemented via <code>ByReference&lt;T&gt;</code>.</p>
+
+<p>So as you can see indexing is implemented via <code>ref return</code> which allows reference-type-like behavior for stack-only struct.</p>
+
+<h2 id="span-t-limitations">Span<T> limitations</h2>
+
+<p>To ensure that the <code>ref struct</code> is always used on stack it possesses a number of limitations i.e. including that they can&rsquo;t be boxed, they can&rsquo;t be assigned to variables of type <code>object</code>, <code>dynamic</code> or to any interface type, they can&rsquo;t be fields in a reference type, and they can&rsquo;t be used across <code>await</code> and <code>yield</code> boundaries. In addition, calls to two methods, <code>Equals</code> and <code>GetHashCode</code>, throw a <code>NotSupportedException</code>. <code>Span&lt;T&gt;</code> is a <code>ref struct</code>.</p>
+
+<h2 id="reworking-existing-codebase-to-use-span-t">Reworking existing codebase to use Span<T></h2>
+
+<p>Let&rsquo;s examine code that converts Linux permissions to octal representation. You can access it <a href="https://github.com/Wkalmar/Orckestra/tree/span">here</a>
+Here is the original code
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SymbolicPermission</span>
+{
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">PermissionInfo</span>
+	{
+		<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Value { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+		<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">char</span> Symbol { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+	}
+
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> BlockCount = <span style="color:#ae81ff">3</span>;
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> BlockLength = <span style="color:#ae81ff">3</span>;
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> MissingPermissionSymbol = <span style="color:#e6db74">&#39;-&#39;</span>;
+
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">static</span> Dictionary&lt;<span style="color:#66d9ef">int</span>, PermissionInfo&gt; Permissions = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">int</span>, PermissionInfo&gt;() {
+			{<span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">new</span> PermissionInfo {
+				Symbol = <span style="color:#e6db74">&#39;r&#39;</span>,
+				Value = <span style="color:#ae81ff">4</span>
+			} },
+			{<span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">new</span> PermissionInfo {
+				Symbol = <span style="color:#e6db74">&#39;w&#39;</span>,
+				Value = <span style="color:#ae81ff">2</span>
+			}},
+			{<span style="color:#ae81ff">2</span>, <span style="color:#66d9ef">new</span> PermissionInfo {
+				Symbol = <span style="color:#e6db74">&#39;x&#39;</span>,
+				Value = <span style="color:#ae81ff">1</span>
+			}} };
+
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _value;
+
+	<span style="color:#66d9ef">private</span> SymbolicPermission(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
+	{
+		_value = <span style="color:#66d9ef">value</span>;
+	}
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> SymbolicPermission Parse(<span style="color:#66d9ef">string</span> input)
+	{
+		<span style="color:#66d9ef">if</span> (input.Length != BlockCount * BlockLength)
+		{
+			<span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentException(<span style="color:#e6db74">&#34;input should be a string 3 blocks of 3 characters each&#34;</span>);
+		}
+		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; input.Length; i++)
+		{
+			TestCharForValidity(input, i);
+		}
+
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> SymbolicPermission(input);
+	}
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> GetOctalRepresentation()
+	{
+		<span style="color:#66d9ef">var</span> res = <span style="color:#ae81ff">0</span>;
+		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; BlockCount; i++)
+		{
+			<span style="color:#66d9ef">var</span> block = GetBlock(i);
+			res += ConvertBlockToOctal(block) * (<span style="color:#66d9ef">int</span>)Math.Pow(<span style="color:#ae81ff">10</span>, BlockCount - i - <span style="color:#ae81ff">1</span>);
+		}
+		<span style="color:#66d9ef">return</span> res;
+	}
+
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> TestCharForValidity(<span style="color:#66d9ef">string</span> input, <span style="color:#66d9ef">int</span> position)
+	{
+		<span style="color:#66d9ef">var</span> index = position % BlockLength;
+		<span style="color:#66d9ef">var</span> expectedPermission = Permissions<span style="color:#a6e22e">[index]</span>;
+		<span style="color:#66d9ef">var</span> symbolToTest = input<span style="color:#a6e22e">[position]</span>;
+		<span style="color:#66d9ef">if</span> (symbolToTest != expectedPermission.Symbol &amp;&amp; symbolToTest != MissingPermissionSymbol)
+		{
+			<span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentException(<span style="color:#e6db74">$&#34;invalid input in position {position}&#34;</span>);
+		}
+	}
+
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> GetBlock(<span style="color:#66d9ef">int</span> blockNumber)
+	{
+		<span style="color:#66d9ef">return</span> _value.Substring(blockNumber * BlockLength, BlockLength);
+	}
+
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> ConvertBlockToOctal(<span style="color:#66d9ef">string</span> block)
+	{
+		<span style="color:#66d9ef">var</span> res = <span style="color:#ae81ff">0</span>;
+		<span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> (index, permission) <span style="color:#66d9ef">in</span> Permissions)
+		{
+			<span style="color:#66d9ef">var</span> actualValue = block<span style="color:#a6e22e">[index]</span>;
+			<span style="color:#66d9ef">if</span> (actualValue == permission.Symbol)
+			{
+				res += permission.Value;
+			}
+		}
+		<span style="color:#66d9ef">return</span> res;
+	}
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SymbolicUtils</span>
+{
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> SymbolicToOctal(<span style="color:#66d9ef">string</span> input)
+	{
+		<span style="color:#66d9ef">var</span> permission = SymbolicPermission.Parse(input);
+		<span style="color:#66d9ef">return</span> permission.GetOctalRepresentation();
+	}
+}
+</code></pre></div></p>
+
+<p>The reasoning is pretty straightforward: <code>string</code> is an array of <code>char</code>, so why not allocate it on stack instead of heap.</p>
+
+<p>So our first goal is to mark field <code>_value</code> of <code>SymbolicPermission</code> as <code>ReadOnlySpan&lt;char&gt;</code> instead of <code>string</code>. To achieve this we must declare <code>SymbolicPermission</code> as <code>ref struct</code> since field or property cannot be of type <code>Span&lt;T&gt;</code> unless it&rsquo;s an instance of a <code>ref struct</code>.</p>
+
+<p>Now we just change every <code>string</code> within our reach to <code>ReadOnlySpan&lt;char&gt;</code>. The only point of interest is <code>GetBlock</code> method since here we replace <code>Substring</code> with <code>Slice</code>.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> ReadOnlySpan&lt;<span style="color:#66d9ef">char</span>&gt; GetBlock(<span style="color:#66d9ef">int</span> blockNumber)
+{
+	<span style="color:#66d9ef">return</span> _value.Slice(blockNumber * BlockLength, BlockLength);
+}
+</code></pre></div></p>
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p>Let&rsquo;s measure the outcome</p>
+
+<p><img src="/7/1.PNG" width="600"/></p>
+
+<p>We notice the speed up which accounts for 50 nanoseconds which is about 10% of performance improvement. One can argue that 50 nanoseconds are not that much but it costed almost nothing for us to achieve it!</p>
+
+<p>Now we&rsquo;re going to evaluate this improvement on permission having 18 blocks of 12 characters each to see whether we can gain significant improvements.</p>
+
+<p><img src="/7/2.PNG" width="600"/></p>
+
+<p>As you can see we&rsquo;ve managed to gain 0.5 microsecond or 5% performance improvement. Again it may look like a modest achievement. But remember that this was really low hanging fruit.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><code>Span&lt;T&gt;</code> provides safe and easy to use alternative to <code>stackallock</code> which allows easy to get performance improvement. While gain from each usage of it is relatively small the consistent usage of it allows to avoid what is known as a death by thousand cuts. <code>Span&lt;T&gt;</code> is widely used across .NET Core 3.0 codebase wich allowed to get a <a href="https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-core-3-0/">perfomance improvement comparing to the previous version</a>.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

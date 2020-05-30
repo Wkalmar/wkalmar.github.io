@@ -6,18 +6,27 @@
     <description>Recent content in Csharp on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 03 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 17 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Refactoring string to specific types</title>
-      <link>https://wkalmar.github.io/post/refactoring-string-to-specific-types/</link>
-      <pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate>
+      <title>Using Span&lt;T&gt; to improve performance of C# code</title>
+      <link>https://wkalmar.github.io/post/improving-performance-with-span/</link>
+      <pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://wkalmar.github.io/post/refactoring-string-to-specific-types/</guid>
-      <description>Introduction While the article title may sound controversial as there is clearly nothing wrong with using string in your code below I&amp;rsquo;ll show the cases where string type doesn&amp;rsquo;t clearly communicate all the necessary properties of a domain in question. Then I&amp;rsquo;ll show how this can be handled. You can watch full code on Github.
+      <guid>https://wkalmar.github.io/post/improving-performance-with-span/</guid>
+      <description>In my experience, the main thing to do in order to improve application performance is to reduce the number and duration of IO-calls. However, once this option is exercised another path that developers take is using memory on stack. Stack allows very fast allocation and deallocation although it should be used only for allocating small portions since stack size is pretty small. Also, using stack allows reducing pressure on GC.</description>
+    </item>
+    
+    <item>
+      <title>Refactoring string into the specific type</title>
+      <link>https://wkalmar.github.io/post/refactoring-string-into-specific-type/</link>
+      <pubDate>Sun, 10 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/refactoring-string-into-specific-type/</guid>
+      <description>Introduction While the article title may sound controversial as there is clearly nothing wrong with using string in your code below I&amp;rsquo;ll show the case where string type doesn&amp;rsquo;t clearly communicate all the necessary properties of a domain in question. Then I&amp;rsquo;ll show how this can be handled. You can watch full code on Github.
 The code Recently I was tasked to write the code which converts Linux permissions to their octal representation.</description>
     </item>
     

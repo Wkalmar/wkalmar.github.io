@@ -4,37 +4,42 @@
   
   <url>
     <loc>https://wkalmar.github.io/</loc>
-    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wkalmar.github.io/tags/csharp/</loc>
-    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/ood/</loc>
-    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wkalmar.github.io/post/</loc>
-    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/post/refactoring-string-to-specific-types/</loc>
-    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://wkalmar.github.io/tags/</loc>
-    <lastmod>2020-05-03T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/improving-performance-with-span/</loc>
+    <lastmod>2020-05-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/ood/</loc>
+    <lastmod>2020-05-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/refactoring-string-into-specific-type/</loc>
+    <lastmod>2020-05-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
