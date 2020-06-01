@@ -18,8 +18,8 @@
 <meta property="og:description" content="In my experience, the main thing to do in order to improve application performance is to reduce the number and duration of IO-calls. However, once this option is exercised another path that developers take is using memory on stack. Stack allows very fast allocation and deallocation although it should be used only for allocating small portions since stack size is pretty small. Also, using stack allows reducing pressure on GC." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://wkalmar.github.io/post/improving-performance-with-span/" />
-<meta property="article:published_time" content="2020-05-17T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2020-05-17T00:00:00&#43;00:00"/>
+<meta property="article:published_time" content="2020-05-30T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2020-05-30T00:00:00&#43;00:00"/>
 
 
   </head>
@@ -63,7 +63,7 @@
   <title>calendar</title>
   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
 </svg>
-          May 17, 2020
+          May 30, 2020
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
@@ -85,7 +85,7 @@
 
 <p>The second option is rarely used by developers since API for unmanaged memory access is quite verbose.</p>
 
-<p><code>Span&lt;T&gt;</code> is a family of value types that arrived in C# 7.2 which is an allocation-free representation of a memory from different sources. <code>Span&lt;T&gt;</code> allows developer to work with regions of contigious memory in more convenient fashion enshuring memory and type safety.</p>
+<p><code>Span&lt;T&gt;</code> is a family of value types that arrived in C# 7.2 which is an allocation-free representation of memory from different sources. <code>Span&lt;T&gt;</code> allows developers to work with regions of contiguous memory in more convenient fashion ensuring memory and type safety.</p>
 
 <h2 id="span-t-implementation">Span<T> implementation</h2>
 
@@ -260,6 +260,13 @@ Here is the original code
 
 <p>So our first goal is to mark field <code>_value</code> of <code>SymbolicPermission</code> as <code>ReadOnlySpan&lt;char&gt;</code> instead of <code>string</code>. To achieve this we must declare <code>SymbolicPermission</code> as <code>ref struct</code> since field or property cannot be of type <code>Span&lt;T&gt;</code> unless it&rsquo;s an instance of a <code>ref struct</code>.</p>
 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">SymbolicPermission</span>
+{
+	...
+	<span style="color:#66d9ef">private</span> ReadOnlySpan&lt;<span style="color:#66d9ef">char</span>&gt; _value;
+}
+</code></pre></div>
+
 <p>Now we just change every <code>string</code> within our reach to <code>ReadOnlySpan&lt;char&gt;</code>. The only point of interest is <code>GetBlock</code> method since here we replace <code>Substring</code> with <code>Slice</code>.
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> ReadOnlySpan&lt;<span style="color:#66d9ef">char</span>&gt; GetBlock(<span style="color:#66d9ef">int</span> blockNumber)
 {
@@ -283,7 +290,7 @@ Here is the original code
 
 <h2 id="conclusion">Conclusion</h2>
 
-<p><code>Span&lt;T&gt;</code> provides safe and easy to use alternative to <code>stackallock</code> which allows easy to get performance improvement. While gain from each usage of it is relatively small the consistent usage of it allows to avoid what is known as a death by thousand cuts. <code>Span&lt;T&gt;</code> is widely used across .NET Core 3.0 codebase wich allowed to get a <a href="https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-core-3-0/">perfomance improvement comparing to the previous version</a>.</p>
+<p><code>Span&lt;T&gt;</code> provides safe and easy to use alternative to <code>stackallock</code> which allows easy to get performance improvement. While gain from each usage of it is relatively small the consistent usage of it allows to avoid what is known as a death by thousand cuts. <code>Span&lt;T&gt;</code> is widely used across .NET Core 3.0 codebase which allowed to get a <a href="https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-core-3-0/">perfomance improvement comparing to the previous version</a>.</p>
 
     </div>
     <div class="post-footer">

@@ -6,7 +6,7 @@
     <description>Recent content in Posts on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Using Span&lt;T&gt; to improve performance of C# code</title>
       <link>https://wkalmar.github.io/post/improving-performance-with-span/</link>
-      <pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 30 May 2020 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/improving-performance-with-span/</guid>
       <description>In my experience, the main thing to do in order to improve application performance is to reduce the number and duration of IO-calls. However, once this option is exercised another path that developers take is using memory on stack. Stack allows very fast allocation and deallocation although it should be used only for allocating small portions since stack size is pretty small. Also, using stack allows reducing pressure on GC.</description>
