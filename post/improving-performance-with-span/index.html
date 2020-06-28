@@ -70,7 +70,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          6 min read
+          7 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -153,9 +153,11 @@ Note <code>ref</code> modifier near the pointer field. Such construct can&rsquo;
 
 <p>To ensure that the <code>ref struct</code> is always used on stack it possesses a number of limitations i.e. including that they can&rsquo;t be boxed, they can&rsquo;t be assigned to variables of type <code>object</code>, <code>dynamic</code> or to any interface type, they can&rsquo;t be fields in a reference type, and they can&rsquo;t be used across <code>await</code> and <code>yield</code> boundaries. In addition, calls to two methods, <code>Equals</code> and <code>GetHashCode</code>, throw a <code>NotSupportedException</code>. <code>Span&lt;T&gt;</code> is a <code>ref struct</code>.</p>
 
-<h2 id="reworking-existing-codebase-to-use-span-t">Reworking existing codebase to use Span<T></h2>
+<h2 id="using-span-t-instead-of-string">Using Span<T> instead of string</h2>
 
-<p>Let&rsquo;s examine code that converts Linux permissions to octal representation. You can access it <a href="https://github.com/Wkalmar/Orckestra/tree/span">here</a>
+<h3 id="reworking-existing-codebase">Reworking existing codebase</h3>
+
+<p>Let&rsquo;s examine code that converts <a href="https://www.linux.com/training-tutorials/understanding-linux-file-permissions/">Linux permissions</a> to octal representation. You can access it <a href="https://github.com/Wkalmar/Orckestra/tree/span">here</a>
 Here is the original code
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SymbolicPermission</span>
 {
@@ -274,7 +276,7 @@ Here is the original code
 }
 </code></pre></div></p>
 
-<h2 id="evaluation">Evaluation</h2>
+<h3 id="evaluation">Evaluation</h3>
 
 <p>Let&rsquo;s measure the outcome</p>
 
@@ -287,6 +289,36 @@ Here is the original code
 <p><img src="/7/2.PNG" width="600"/></p>
 
 <p>As you can see we&rsquo;ve managed to gain 0.5 microsecond or 5% performance improvement. Again it may look like a modest achievement. But remember that this was really low hanging fruit.</p>
+
+<h2 id="using-span-t-instead-of-arrays">Using Span<T> instead of arrays</h2>
+
+<p>Let&rsquo;s expand on arrays of other types. Consider the example from <a href="https://github.com/davidfowl/Channels/blob/master/src/Channels.Text.Primitives/ReadableBufferExtensions.cs#L81">ASP.NET Channels pipeline</a>. The reasoning behind the code below is that data often arives in chunks over the network wich means that the piece of data may reside in multiple buffers simultaneously. in the example such data is parsed to <code>int</code>.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">unsafe</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">uint</span> GetUInt32(<span style="color:#66d9ef">this</span> ReadableBuffer buffer) {
+    ReadOnlySpan&lt;<span style="color:#66d9ef">byte</span>&gt; textSpan;
+
+    <span style="color:#66d9ef">if</span> (buffer.IsSingleSpan) { <span style="color:#75715e">// if data in single buffer, it’s easy
+</span><span style="color:#75715e"></span>        textSpan = buffer.First.Span;
+    }
+    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (buffer.Length &lt; <span style="color:#ae81ff">128</span>) { <span style="color:#75715e">// else, consider temp buffer on stack
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">stackalloc</span> <span style="color:#66d9ef">byte</span><span style="color:#a6e22e">[128]</span>;
+        <span style="color:#66d9ef">var</span> destination = <span style="color:#66d9ef">new</span> Span&lt;<span style="color:#66d9ef">byte</span>&gt;(data, <span style="color:#ae81ff">128</span>);
+        buffer.CopyTo(destination);
+        textSpan = destination.Slice(<span style="color:#ae81ff">0</span>, buffer.Length);
+    }
+    <span style="color:#66d9ef">else</span> {
+        <span style="color:#75715e">// else pay the cost of allocating an array
+</span><span style="color:#75715e"></span>        textSpan = <span style="color:#66d9ef">new</span> ReadOnlySpan&lt;<span style="color:#66d9ef">byte</span>&gt;(buffer.ToArray());
+    }
+
+    <span style="color:#66d9ef">uint</span> <span style="color:#66d9ef">value</span>;
+    <span style="color:#75715e">// yet the actual parsing routine is always the same and simple
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (!Utf8Parser.TryParse(textSpan, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">value</span>)) {
+        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InvalidOperationException();
+    }
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">value</span>;
+}
+</code></pre></div>
 
 <h2 id="conclusion">Conclusion</h2>
 
