@@ -292,7 +292,7 @@ Here is the original code
 
 <h2 id="using-span-t-instead-of-arrays">Using Span<T> instead of arrays</h2>
 
-<p>Let&rsquo;s expand on arrays of other types. Consider the example from <a href="https://github.com/davidfowl/Channels/blob/master/src/Channels.Text.Primitives/ReadableBufferExtensions.cs#L81">ASP.NET Channels pipeline</a>. The reasoning behind the code below is that data often arives in chunks over the network wich means that the piece of data may reside in multiple buffers simultaneously. in the example such data is parsed to <code>int</code>.</p>
+<p>Let&rsquo;s expand on arrays of other types. Consider the example from <a href="https://github.com/davidfowl/Channels/blob/master/src/Channels.Text.Primitives/ReadableBufferExtensions.cs#L81">ASP.NET Channels pipeline</a>. The reasoning behind the code below is that data often arrives in chunks over the network which means that the piece of data may reside in multiple buffers simultaneously. In the example such data is parsed to <code>int</code>.</p>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">unsafe</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">uint</span> GetUInt32(<span style="color:#66d9ef">this</span> ReadableBuffer buffer) {
     ReadOnlySpan&lt;<span style="color:#66d9ef">byte</span>&gt; textSpan;
