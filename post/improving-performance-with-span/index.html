@@ -70,7 +70,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          7 min read
+          8 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -320,9 +320,41 @@ Here is the original code
 }
 </code></pre></div>
 
+<p>Let&rsquo;s break it down a bit about what happens here. Our goal is to parse the sequence of bytes <code>textSpan</code> into <code>uint</code>.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (!Utf8Parser.TryParse(textSpan, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">value</span>)) {
+	<span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InvalidOperationException();
+}
+<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">value</span>;
+</code></pre></div>
+Now let&rsquo;s have a look at how we populate our input parameter into <code>textSpan</code>. The input parameter is an instance of a buffer that can read a sequential series of bytes. <code>ReadableBuffer</code> is inherited from <code>ISequence&lt;ReadOnlyMemory&lt;byte&gt;&gt;</code> which basically means that it consists of multiple memory segments.</p>
+
+<p>In case buffer consists of a single segment we just use the underlying <code>Span</code> from the first segment.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">if</span> (buffer.IsSingleSpan) {
+	textSpan = buffer.First.Span;
+}
+</code></pre></div>
+Otherwise, we allocate data on the stack and create a <code>Span&lt;byte&gt;</code> based on it.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">stackalloc</span> <span style="color:#66d9ef">byte</span><span style="color:#a6e22e">[128]</span>;
+<span style="color:#66d9ef">var</span> destination = <span style="color:#66d9ef">new</span> Span&lt;<span style="color:#66d9ef">byte</span>&gt;(data, <span style="color:#ae81ff">128</span>);
+</code></pre></div>
+Then we use method <code>buffer.CopyTo(destination)</code> wich iterates over each memory segment of a buffer and copies it to a destination <code>Span</code>. After that we just slice a <code>Span</code> of buffer&rsquo;s length.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">textSpan = destination.Slice(<span style="color:#ae81ff">0</span>, buffer.Length);
+</code></pre></div>
+This example shows us that the new <code>Span&lt;T&gt;</code> API allows us to work with memory manually allocated on a stack in a much more convenient fashion than prior to its arrival.</p>
+
 <h2 id="conclusion">Conclusion</h2>
 
-<p><code>Span&lt;T&gt;</code> provides safe and easy to use alternative to <code>stackallock</code> which allows easy to get performance improvement. While gain from each usage of it is relatively small the consistent usage of it allows to avoid what is known as a death by thousand cuts. <code>Span&lt;T&gt;</code> is widely used across .NET Core 3.0 codebase which allowed to get a <a href="https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-core-3-0/">perfomance improvement comparing to the previous version</a>.</p>
+<p><code>Span&lt;T&gt;</code> provides safe and easy to use alternative to <code>stackalloc</code> which allows easy to get performance improvement. While gain from each usage of it is relatively small the consistent usage of it allows to avoid what is known as a death by thousand cuts. <code>Span&lt;T&gt;</code> is widely used across .NET Core 3.0 codebase which allowed to get a <a href="https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-core-3-0/">perfomance improvement comparing to the previous version</a>.</p>
+
+<p>Here are some things you might consider when you decide whether you should use <code>Span&lt;T&gt;</code>:</p>
+
+<ul>
+<li><p>If your method accepts an array of data and doesn&rsquo;t change its size. If you don&rsquo;t modify an input you might consider <code>ReadOnlySpan&lt;T&gt;</code>.</p></li>
+
+<li><p>If your method accepts a string to count some statistics or to perform a syntactical analysis you should accept <code>ReadOnlySpan&lt;char&gt;</code>.</p></li>
+
+<li><p>If your method returns a short array of data you can return <code>Span&lt;T&gt;</code> with the help of <code>Span&lt;T&gt; buf = stackalloc T[size]</code>. Remember that <code>T</code> should be a value type.</p></li>
+</ul>
 
     </div>
     <div class="post-footer">
