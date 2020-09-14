@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Dependency Injection for Quartz.NET in .NET Core // Bohdan Stupak&#39;s blog</title>
+    <title>Understanding Dependency Injection in .NET Core with Quartz.NET example // Bohdan Stupak&#39;s blog</title>
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.55.6" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,11 +11,11 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Dependency Injection for Quartz.NET in .NET Core"/>
+<meta name="twitter:title" content="Understanding Dependency Injection in .NET Core with Quartz.NET example"/>
 <meta name="twitter:description" content="Introduction Quartz.NET is a handy library that allows you to schedule recurring tasks via implementing IJob interface. Yet the limitation of it is that, by default, it supports only parameterless constructor which complicates injecting external service inside of it, i.e., for implementing repository pattern. In this article, we&rsquo;ll take a look at how we can tackle this problem using standard .NET Core DI container.
 The whole project referred in the article is provided inside the following [Github repository]()."/>
 
-    <meta property="og:title" content="Dependency Injection for Quartz.NET in .NET Core" />
+    <meta property="og:title" content="Understanding Dependency Injection in .NET Core with Quartz.NET example" />
 <meta property="og:description" content="Introduction Quartz.NET is a handy library that allows you to schedule recurring tasks via implementing IJob interface. Yet the limitation of it is that, by default, it supports only parameterless constructor which complicates injecting external service inside of it, i.e., for implementing repository pattern. In this article, we&rsquo;ll take a look at how we can tackle this problem using standard .NET Core DI container.
 The whole project referred in the article is provided inside the following [Github repository]()." />
 <meta property="og:type" content="article" />
@@ -58,7 +58,7 @@ The whole project referred in the article is provided inside the following [Gith
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Dependency Injection for Quartz.NET in .NET Core</h1>
+      <h1 class ="post-title">Understanding Dependency Injection in .NET Core with Quartz.NET example</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
@@ -72,7 +72,7 @@ The whole project referred in the article is provided inside the following [Gith
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          4 min read
+          6 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -208,6 +208,97 @@ serviceCollection.AddScoped&lt;IDemoService, DemoService&gt;();
 The final piece of a puzzle is to make Quartz.NET use our factory. <code>IScheduler</code> has property <code>JobFactory</code> just for that matter.
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs">sched.JobFactory = <span style="color:#66d9ef">new</span> DemoJobFactory(serviceProvider);
 </code></pre></div></p>
+
+<h3 id="understanding-service-lifetimes">Understanding service lifetimes</h3>
+
+<p>In the previous section, we have registered our services with scoped lifetime. However, there is no actual thinking presented here why we have chosen it over other options such as transient or singleton lifetime.</p>
+
+<p>Let&rsquo;s examine what are the other options. In order to achieve this, we&rsquo;ll add some trace statements to our classes constructors.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">public</span> DemoService()
+{
+    Console.WriteLine(<span style="color:#e6db74">&#34;DemoService started&#34;</span>);
+}
+</code></pre></div>
+And the job constructor
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">public</span> DemoJob(IDemoService demoService, IOptions&lt;DemoJobOptions&gt; options)
+{
+    _demoService = demoService;
+    _options = options.Value;
+    Console.WriteLine(<span style="color:#e6db74">&#34;Job started&#34;</span>);
+}
+</code></pre></div>
+The service registration is as follows:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs">serviceCollection.AddTransient&lt;DemoJob&gt;();
+serviceCollection.AddTransient&lt;IDemoService, DemoService&gt;();
+</code></pre></div>
+After we run the program we&rsquo;ll observe the following output:</p>
+
+<pre><code>DemoService started
+Job started
+calling http://i.ua
+DemoService started
+Job started
+calling http://i.ua
+DemoService started
+Job started
+calling http://i.ua
+</code></pre>
+
+<p>The output is pretty self-explanatory: we create a new instance each time we call service.
+Changing both registrations to <code>AddScoped</code> or <code>AddSingleton</code> produces the same result:</p>
+
+<pre><code>DemoService started
+Job started
+calling http://i.ua
+calling http://i.ua
+calling http://i.ua
+</code></pre>
+
+<p>Both instances are constructed just once at application startup. Let&rsquo;s consult with the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-3.1#service-lifetimes">documentation</a> to see what are the difference between those lifetimes and why the produce the same result for a given example.</p>
+
+<blockquote>
+<p>Scoped lifetime services are created once per client request (connection).</p>
+</blockquote>
+
+<p>Here is what singleton does</p>
+
+<blockquote>
+<p>Singleton lifetime services are created the first time they&rsquo;re requested.</p>
+</blockquote>
+
+<p>So in our case, we have a single request because we use console application. This is the reason why both service lifetimes act the same.</p>
+
+<p>The last topic most of DI-related articles do not cover is a composition of services with different lifetimes. Although there is something worth mentioning. Here is the example of registration.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs">serviceCollection.AddSingleton&lt;DemoJob&gt;();
+serviceCollection.AddTransient&lt;IDemoService, DemoService&gt;();
+</code></pre></div>
+which means that we inject transient dependency into singleton service. One might expect that since we declared <code>IDemoService</code> as transient it will be constructed each time. The output, however, is quite different:</p>
+
+<pre><code>DemoService started
+Job started
+calling http://i.ua
+calling http://i.ua
+calling http://i.ua
+</code></pre>
+
+<p>So again both services are constructed at the application startup. Here we see that lifetime of transient service gets promoted by the service that uses it. This leads to an important application. The service we&rsquo;ve registered as transient might be not designed to be used as a singleton because it is not written in thread-safe fashion or for some other reasons. However, it becomes singleton in this case which may lead to some subtle bugs. This brings us to the conclusion that we shouldn&rsquo;t register services as singletons unless we have some good reason for it i.e. service that manages global state. It&rsquo;s is preferable to register services as transient.</p>
+
+<p>The opposite, however, yields no surprises.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs">serviceCollection.AddTransient&lt;DemoJob&gt;();
+serviceCollection.AddSingleton&lt;IDemoService, DemoService&gt;();
+</code></pre></div>
+produces</p>
+
+<pre><code>DemoService started
+Job started
+calling http://i.ua
+Job started
+calling http://i.ua
+Job started
+calling http://i.ua
+</code></pre>
+
+<p>Here each new instance of a job reuses the same singleton <code>DemoService</code>.</p>
 
 <h2 id="using-options-pattern">Using Options Pattern</h2>
 
