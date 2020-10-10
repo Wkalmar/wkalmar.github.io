@@ -70,7 +70,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          8 min read
+          9 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -341,6 +341,45 @@ Then we use method <code>buffer.CopyTo(destination)</code> wich iterates over ea
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">textSpan = destination.Slice(<span style="color:#ae81ff">0</span>, buffer.Length);
 </code></pre></div>
 This example shows us that the new <code>Span&lt;T&gt;</code> API allows us to work with memory manually allocated on a stack in a much more convenient fashion than prior to its arrival.</p>
+
+<h2 id="f-support">F# support</h2>
+
+<p>.NET Core is not limited to C# only. In <a href="https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/">one of my previous blogposts</a> I&rsquo;ve mentioned some reasons why you might consider F#. Since 4.5 version F# also supports <code>Span&lt;T&gt;</code> so let&rsquo;s delegate some of the converting Linux permissions functionality to F# helper and see if it can keep up with C# in terms of performance.</p>
+
+<p>We&rsquo;ll declare <code>Helpers</code> type which will calculate octal representation.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Struct</span><span style="color:#f92672">&gt;]</span>
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">PermissionInfo</span><span style="color:#f92672">(</span>symbol<span style="color:#f92672">:</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">value</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span>
+    member x<span style="color:#f92672">.</span><span style="color:#a6e22e">Symbol</span> <span style="color:#f92672">=</span> symbol
+    member x<span style="color:#f92672">.</span><span style="color:#a6e22e">Value</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">value</span>
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Helpers</span> <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">val</span> <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">Permissions</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">PermissionInfo</span>[]
+    <span style="color:#66d9ef">new</span> () <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>
+        <span style="color:#a6e22e">Permissions</span> <span style="color:#f92672">=</span>
+        <span style="color:#f92672">[|</span><span style="color:#a6e22e">PermissionInfo</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#39;r&#39;</span><span style="color:#f92672">,</span> 4<span style="color:#f92672">);</span>
+        <span style="color:#a6e22e">PermissionInfo</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#39;w&#39;</span><span style="color:#f92672">,</span> 2<span style="color:#f92672">);</span>
+        <span style="color:#a6e22e">PermissionInfo</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#39;x&#39;</span><span style="color:#f92672">,</span> 1<span style="color:#f92672">);</span> <span style="color:#f92672">|]</span>
+    <span style="color:#f92672">}</span>
+
+    member x<span style="color:#f92672">.</span><span style="color:#a6e22e">ConvertBlockToOctal</span> <span style="color:#f92672">(</span>block <span style="color:#f92672">:</span> <span style="color:#a6e22e">ReadOnlySpan</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">char</span><span style="color:#f92672">&gt;)</span> <span style="color:#f92672">=</span>
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mutable</span> acc <span style="color:#f92672">=</span> 0
+        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">=</span> 0 <span style="color:#66d9ef">to</span> x<span style="color:#f92672">.</span>Permissions.<span style="color:#a6e22e">Length</span> <span style="color:#f92672">-</span> 1 <span style="color:#66d9ef">do</span>
+            <span style="color:#66d9ef">if</span> block<span style="color:#f92672">.[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>Permissions.<span style="color:#f92672">[</span>i<span style="color:#f92672">].</span><span style="color:#a6e22e">Symbol</span> <span style="color:#66d9ef">then</span>
+                acc <span style="color:#f92672">&lt;-</span> acc <span style="color:#f92672">+</span> x<span style="color:#f92672">.</span>Permissions.<span style="color:#f92672">[</span>i<span style="color:#f92672">].</span><span style="color:#a6e22e">Value</span>
+            <span style="color:#66d9ef">else</span>
+                acc <span style="color:#f92672">&lt;-</span> acc
+        acc</code></pre></div>
+One notable point here is that <code>Permissions</code> array is marked as <code>val</code>. As <a href="https://docs.microsoft.com/ru-ru/dotnet/fsharp/language-reference/members/explicit-fields-the-val-keyword">documentation</a> states it allows declaring a location to store a value in a class or structure type, without initializing it.</p>
+
+<p>Calling it in C# is seamless.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> block = GetBlock(i);
+res += <span style="color:#66d9ef">new</span> Helpers().ConvertBlockToOctal(block) * (<span style="color:#66d9ef">int</span>)Math.Pow(<span style="color:#ae81ff">10</span>, BlockCount - i - <span style="color:#ae81ff">1</span>);
+</code></pre></div>
+Here are the benchmarks</p>
+
+<p><img src="/7/3.PNG" width="600"/></p>
+
+<p>Although F# version allocates more memory execution time difference is quite impressive.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 
