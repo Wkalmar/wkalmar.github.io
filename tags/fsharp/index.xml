@@ -6,10 +6,19 @@
     <description>Recent content in Fsharp on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 21 Feb 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/fsharp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Converting video with FFmpegCore</title>
+      <link>https://wkalmar.github.io/post/converting-video-with-ffmpeg-core/</link>
+      <pubDate>Sun, 21 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/converting-video-with-ffmpeg-core/</guid>
+      <description>Working with multimedia is terra incognita for most of the developers since it&amp;rsquo;s something that one rarely encounters while working with usual business applications. So when I was tasked to convert video for the project I&amp;rsquo;m currently working on I was expecting to deal with some sort of old poorly maintained C++ library. So FFmpegCore was a pleasant surprise since it enables working with .Net Core which is an area of my expertise.</description>
+    </item>
     
     <item>
       <title>Ignoring Operation Result when using F# async Computation Expression</title>

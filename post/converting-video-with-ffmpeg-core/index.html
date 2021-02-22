@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Converting video with FFmpegCore // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Converting video with FFmpegCore"/>
+<meta name="twitter:description" content="Working with multimedia is terra incognita for most of the developers since it&rsquo;s something that one rarely encounters while working with usual business applications. So when I was tasked to convert video for the project I&rsquo;m currently working on I was expecting to deal with some sort of old poorly maintained C&#43;&#43; library. So FFmpegCore was a pleasant surprise since it enables working with .Net Core which is an area of my expertise."/>
+
+    <meta property="og:title" content="Converting video with FFmpegCore" />
+<meta property="og:description" content="Working with multimedia is terra incognita for most of the developers since it&rsquo;s something that one rarely encounters while working with usual business applications. So when I was tasked to convert video for the project I&rsquo;m currently working on I was expecting to deal with some sort of old poorly maintained C&#43;&#43; library. So FFmpegCore was a pleasant surprise since it enables working with .Net Core which is an area of my expertise." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/converting-video-with-ffmpeg-core/" />
+<meta property="article:published_time" content="2021-02-21T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2021-02-21T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Converting video with FFmpegCore</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 21, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          5 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/fsharp/">Fsharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a><a class="tag" href="https://wkalmar.github.io/tags/ffmpeg/">Ffmpeg</a><a class="tag" href="https://wkalmar.github.io/tags/multimedia/">Multimedia</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>Working with multimedia is terra incognita for most of the developers since it&rsquo;s something that one rarely encounters while working with usual business applications. So when I was tasked to convert video for the project I&rsquo;m currently working on I was expecting to deal with some sort of old poorly maintained C++ library. So <a href="https://github.com/rosenbjerg/FFMpegCore">FFmpegCore</a> was a pleasant surprise since it enables working with .Net Core which is an area of my expertise.</p>
+
+<p>Examples in this article will be provided in F# <a href="https://wkalmar.github.io/post/querying-last-fm-web-api-with-fsharp/">which I&rsquo;m a big fan of</a> but they are pretty straightforward so it should be no problem in translating them to C#.</p>
+
+<h2 id="installing-ffmpeg">Installing FFmpeg</h2>
+
+<p>While documentation reads that this core is &ldquo;A .NET Standard FFMpeg/FFProbe wrapper&rdquo; this tells nothing about the fact that Ffmpeg/fmprobe should be installed on the machine where the application is running.</p>
+
+<p>Furthermore, I think it is worth clarifying that <a href="https://ffmpeg.org/">FFMpeg</a> is a cross-platform command-line tool that allows working with video.</p>
+
+<p>While on Linux once you do <code>apt install</code> you&rsquo;re good to go on Windows there is a point of interest. Installing FFmpeg on Windows is a matter of downloading the binaries and putting them in a folder you will but once running the tool you may face the error:</p>
+
+<pre><code>system.componentmodel.win32exception: the system cannot find the the file specified
+</code></pre>
+
+<p>which is fixed with the help of static class <code>FFMpegOptions</code>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> options <span style="color:#f92672">=</span> <span style="color:#a6e22e">FFMpegOptions</span>()
+options<span style="color:#f92672">.</span><span style="color:#a6e22e">RootDirectory</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;path to your binaries&#34;</span>
+FFMpegOptions.<span style="color:#a6e22e">Configure</span><span style="color:#f92672">(</span>options<span style="color:#f92672">)</span></code></pre></div></p>
+
+<h2 id="querying-video-information">Querying video information</h2>
+
+<p>In order to query information about the video, we use static <code>FFProbe</code> which has both synchronous and asynchronous API for video analysis. Let&rsquo;s stick with the async version and serialize the output to examine the wealth of information that <code>FFProbe</code> provides us.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml">async <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">let</span><span style="color:#f92672">!</span> videoInfo <span style="color:#f92672">=</span> FFProbe.<span style="color:#a6e22e">AnalyseAsync</span> fileName <span style="color:#f92672">|&gt;</span> Async.<span style="color:#a6e22e">AwaitTask</span>
+    return JsonSerializer.<span style="color:#a6e22e">Serialize</span> videoInfo
+<span style="color:#f92672">}</span></code></pre></div>
+The output may be as rich a below</p>
+
+<pre><code>{
+   &quot;Path&quot;:&quot;D:\\giphy.mp4&quot;,
+   &quot;Extension&quot;:&quot;.mp4&quot;,
+   &quot;Duration&quot;:{
+      &quot;Ticks&quot;:17200000,
+      &quot;Days&quot;:0,
+      &quot;Hours&quot;:0,
+      &quot;Milliseconds&quot;:720,
+      &quot;Minutes&quot;:0,
+      &quot;Seconds&quot;:1,
+      &quot;TotalDays&quot;:1.990740740740741E-05,
+      &quot;TotalHours&quot;:0.00047777777777777776,
+      &quot;TotalMilliseconds&quot;:1720,
+      &quot;TotalMinutes&quot;:0.028666666666666667,
+      &quot;TotalSeconds&quot;:1.72
+   },
+   &quot;Format&quot;:{
+      &quot;Duration&quot;:{
+         &quot;Ticks&quot;:17200000,
+         &quot;Days&quot;:0,
+         &quot;Hours&quot;:0,
+         &quot;Milliseconds&quot;:720,
+         &quot;Minutes&quot;:0,
+         &quot;Seconds&quot;:1,
+         &quot;TotalDays&quot;:1.990740740740741E-05,
+         &quot;TotalHours&quot;:0.00047777777777777776,
+         &quot;TotalMilliseconds&quot;:1720,
+         &quot;TotalMinutes&quot;:0.028666666666666667,
+         &quot;TotalSeconds&quot;:1.72
+      },
+      &quot;FormatName&quot;:&quot;mov,mp4,m4a,3gp,3g2,mj2&quot;,
+      &quot;FormatLongName&quot;:&quot;QuickTime / MOV&quot;,
+      &quot;StreamCount&quot;:1,
+      &quot;ProbeScore&quot;:100,
+      &quot;BitRate&quot;:458339,
+      &quot;Tags&quot;:{
+         &quot;major_brand&quot;:&quot;isom&quot;,
+         &quot;minor_version&quot;:&quot;512&quot;,
+         &quot;compatible_brands&quot;:&quot;isomiso2avc1mp41&quot;,
+         &quot;encoder&quot;:&quot;Lavf56.40.101&quot;
+      }
+   },
+   &quot;PrimaryAudioStream&quot;:null,
+   &quot;PrimaryVideoStream&quot;:{
+      &quot;AvgFrameRate&quot;:25,
+      &quot;BitsPerRawSample&quot;:8,
+      &quot;DisplayAspectRatio&quot;:{
+
+      },
+      &quot;Profile&quot;:&quot;Constrained Baseline&quot;,
+      &quot;Width&quot;:480,
+      &quot;Height&quot;:264,
+      &quot;FrameRate&quot;:25,
+      &quot;PixelFormat&quot;:&quot;yuv420p&quot;,
+      &quot;Rotation&quot;:0,
+      &quot;Index&quot;:0,
+      &quot;CodecName&quot;:&quot;h264&quot;,
+      &quot;CodecLongName&quot;:&quot;H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10&quot;,
+      &quot;BitRate&quot;:453744,
+      &quot;Duration&quot;:{
+         &quot;Ticks&quot;:17200000,
+         &quot;Days&quot;:0,
+         &quot;Hours&quot;:0,
+         &quot;Milliseconds&quot;:720,
+         &quot;Minutes&quot;:0,
+         &quot;Seconds&quot;:1,
+         &quot;TotalDays&quot;:1.990740740740741E-05,
+         &quot;TotalHours&quot;:0.00047777777777777776,
+         &quot;TotalMilliseconds&quot;:1720,
+         &quot;TotalMinutes&quot;:0.028666666666666667,
+         &quot;TotalSeconds&quot;:1.72
+      },
+      &quot;Language&quot;:&quot;und&quot;,
+      &quot;Tags&quot;:{
+         &quot;language&quot;:&quot;und&quot;,
+         &quot;handler_name&quot;:&quot;VideoHandler&quot;,
+         &quot;vendor_id&quot;:&quot;[0][0][0][0]&quot;
+      }
+   },
+   &quot;VideoStreams&quot;:[
+      {
+         &quot;AvgFrameRate&quot;:25,
+         &quot;BitsPerRawSample&quot;:8,
+         &quot;DisplayAspectRatio&quot;:{
+
+         },
+         &quot;Profile&quot;:&quot;Constrained Baseline&quot;,
+         &quot;Width&quot;:480,
+         &quot;Height&quot;:264,
+         &quot;FrameRate&quot;:25,
+         &quot;PixelFormat&quot;:&quot;yuv420p&quot;,
+         &quot;Rotation&quot;:0,
+         &quot;Index&quot;:0,
+         &quot;CodecName&quot;:&quot;h264&quot;,
+         &quot;CodecLongName&quot;:&quot;H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10&quot;,
+         &quot;BitRate&quot;:453744,
+         &quot;Duration&quot;:{
+            &quot;Ticks&quot;:17200000,
+            &quot;Days&quot;:0,
+            &quot;Hours&quot;:0,
+            &quot;Milliseconds&quot;:720,
+            &quot;Minutes&quot;:0,
+            &quot;Seconds&quot;:1,
+            &quot;TotalDays&quot;:1.990740740740741E-05,
+            &quot;TotalHours&quot;:0.00047777777777777776,
+            &quot;TotalMilliseconds&quot;:1720,
+            &quot;TotalMinutes&quot;:0.028666666666666667,
+            &quot;TotalSeconds&quot;:1.72
+         },
+         &quot;Language&quot;:&quot;und&quot;,
+         &quot;Tags&quot;:{
+            &quot;language&quot;:&quot;und&quot;,
+            &quot;handler_name&quot;:&quot;VideoHandler&quot;,
+            &quot;vendor_id&quot;:&quot;[0][0][0][0]&quot;
+         }
+      }
+   ],
+   &quot;AudioStreams&quot;:[
+
+   ]
+}
+</code></pre>
+
+<h2 id="converting-video">Converting video</h2>
+
+<p>In order to convert video, one uses static <code>FFMpegArguments</code> class which enables some sort of static builder pattern. Again it exhibits both synchronous and asynchronous API and we&rsquo;ll stick to the latter
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml">async <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">let</span><span style="color:#f92672">!</span> <span style="color:#f92672">_</span> <span style="color:#f92672">=</span>
+        FFMpegArguments
+            .<span style="color:#a6e22e">FromFileInput</span><span style="color:#f92672">(</span>fileName<span style="color:#f92672">)</span>
+            <span style="color:#f92672">.</span><span style="color:#a6e22e">OutputToFile</span><span style="color:#f92672">(</span>outputFileName<span style="color:#f92672">,</span>
+                true<span style="color:#f92672">,</span>
+                <span style="color:#66d9ef">fun</span> options <span style="color:#f92672">-&gt;</span> options
+                                <span style="color:#f92672">.</span><span style="color:#a6e22e">WithVideoCodec</span><span style="color:#f92672">(</span>VideoCodec.<span style="color:#a6e22e">LibX264</span><span style="color:#f92672">)</span>
+                                <span style="color:#f92672">.</span><span style="color:#a6e22e">WithAudioCodec</span><span style="color:#f92672">(</span>AudioCodec.<span style="color:#a6e22e">Aac</span><span style="color:#f92672">)</span>
+                                <span style="color:#f92672">.</span><span style="color:#a6e22e">WithVariableBitrate</span><span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>
+                                <span style="color:#f92672">.</span><span style="color:#a6e22e">Resize</span><span style="color:#f92672">(</span>newWidth<span style="color:#f92672">,</span> newHeight<span style="color:#f92672">)</span>
+                                <span style="color:#f92672">|&gt;</span> ignore<span style="color:#f92672">)</span>
+            <span style="color:#f92672">.</span><span style="color:#a6e22e">ProcessAsynchronously</span>() <span style="color:#f92672">|&gt;</span> Async.<span style="color:#a6e22e">AwaitTask</span>
+    ()
+<span style="color:#f92672">}</span></code></pre></div>
+Upon some circumstances <code>FFMpeg</code> may return an error.</p>
+
+<pre><code>&quot;ffmpeg version 2021-01-24-git-1775688292-full_build-www.gyan.dev Copyright (c) 2000-2021 the FFmpeg developers\n  built with gcc 10.2.0 (Rev6, Built by MSYS2 project)\n  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-fontconfig --enable-iconv --enable-gnutls --enable-libxml2 --enable-gmp --enable-lzma --enable-libsnappy --enable-zlib --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-sdl2 --enable-libdav1d --enable-libzvbi --enable-librav1e --enable-libsvtav1 --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxvid --enable-libaom --enable-libopenjpeg --enable-libvpx --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-ffnvcodec --enable-nvdec --enable-nvenc --enable-d3d11va --enable-dxva2 --enable-libmfx --enable-libglslang --enable-vulkan --enable-opencl --enable-libcdio --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libilbc --enable-libgsm --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint\n  libavutil      56. 63.101 / 56. 63.101\n  libavcodec     58.117.101 / 58.117.101\n  libavformat    58. 65.101 / 58. 65.101\n  libavdevice    58. 11.103 / 58. 11.103\n  libavfilter     7. 96.100 /  7. 96.100\n  libswscale      5.  8.100 /  5.  8.100\n  libswresample   3.  8.100 /  3.  8.100\n  libpostproc    55.  8.100 / 55.  8.100\nInput #0, mov,mp4,m4a,3gp,3g2,mj2, from 'D:\\giphy.mp4':\n  Metadata:\n    major_brand     : isom\n    minor_version   : 512\n    compatible_brands: isomiso2avc1mp41\n    encoder         : Lavf56.40.101\n  Duration: 00:00:01.72, start: 0.000000, bitrate: 458 kb/s\n    Stream #0:0(und): Video: h264 (Constrained Baseline) (avc1 / 0x31637661), yuv420p, 480x264 [SAR 1:1 DAR 20:11], 453 kb/s, 25 fps, 25 tbr, 12800 tbn, 50 tbc (default)\n    Metadata:\n      handler_name    : VideoHandler\n      vendor_id       : [0][0][0][0]\nCodec AVOption vbr (Variable bit rate mode) specified for output file #0 (D:\\kek.mp4) has not been used for any stream. The most likely reason is either wrong type (e.g. a video option with no video streams) or that it is a private option of some encoder which was not actually used for any stream.\nStream mapping:\n  Stream #0:0 -&gt; #0:0 (h264 (native) -&gt; h264 (libx264))\nPress [q] to stop, [?] for help\n[libx264 @ 000001cd5ac43100] width not divisible by 2 (101x101)\nError initializing output stream 0:0 -- Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height\nConversion failed!&quot;
+</code></pre>
+
+<p>While stacktrace is rather intimidating the &ldquo;width not divisible by 2&rdquo; suggests that <code>FFMpeg</code> has a thing for odd width and height. I use this simple hack to trick it and force it to convert my video
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> newHeight <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">if</span> videoInfo<span style="color:#f92672">.</span>PrimaryVideoStream.<span style="color:#a6e22e">Height</span> <span style="color:#f92672">%</span> 2 <span style="color:#f92672">=</span> 0 <span style="color:#66d9ef">then</span>
+        videoInfo<span style="color:#f92672">.</span>PrimaryVideoStream.<span style="color:#a6e22e">Height</span>
+    <span style="color:#66d9ef">else</span> videoInfo<span style="color:#f92672">.</span>PrimaryVideoStream.<span style="color:#a6e22e">Height</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span></code></pre></div>
+<code>videoInfo</code> here is a result of <code>FFProbe</code> work couple of paragraphs above.</p>
+
+<p>FFmpegCore is capable of much more i.e. capturing screenshots, changing video thumbnail, etc but I&rsquo;ll leave it to research for a curious reader.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
