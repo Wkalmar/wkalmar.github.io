@@ -257,10 +257,10 @@ Upon some circumstances <code>FFMpeg</code> may return an error.</p>
 </code></pre>
 
 <p>While stacktrace is rather intimidating the &ldquo;width not divisible by 2&rdquo; suggests that <code>FFMpeg</code> has a thing for odd width and height. I use this simple hack to trick it and force it to convert my video
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> newHeight <span style="color:#f92672">=</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> newWidth <span style="color:#f92672">=</span>
     <span style="color:#66d9ef">if</span> videoInfo<span style="color:#f92672">.</span>PrimaryVideoStream.<span style="color:#a6e22e">Height</span> <span style="color:#f92672">%</span> 2 <span style="color:#f92672">=</span> 0 <span style="color:#66d9ef">then</span>
         videoInfo<span style="color:#f92672">.</span>PrimaryVideoStream.<span style="color:#a6e22e">Height</span>
-    <span style="color:#66d9ef">else</span> videoInfo<span style="color:#f92672">.</span>PrimaryVideoStream.<span style="color:#a6e22e">Height</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span></code></pre></div>
+    <span style="color:#66d9ef">else</span> videoInfo<span style="color:#f92672">.</span>PrimaryVideoStream.<span style="color:#a6e22e">Height</span> <span style="color:#f92672">-</span> 1</code></pre></div>
 <code>videoInfo</code> here is a result of <code>FFProbe</code> work couple of paragraphs above.</p>
 
 <p>FFmpegCore is capable of much more i.e. capturing screenshots, changing video thumbnail, etc but I&rsquo;ll leave it to research for a curious reader.</p>
