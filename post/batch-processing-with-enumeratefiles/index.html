@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Batch processing with Directory.EnumerateFiles // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Batch processing with Directory.EnumerateFiles"/>
+<meta name="twitter:description" content="In case one wants to retrieve files from catalog Directory.GetFiles is a simple answer sufficient for most scenarios. However, when you deal with a large amount of data you might need more advanced techniques.
+Example Let&rsquo;s assume you have a big data solution and you need to process a directory that contains 200000 files. For each file, you extract some basic info public record FileProcessingDto{public string FullPath { get; set; }public long Size { get; set; }public string FileNameWithoutExtension { get; set; }public string Hash { get; internal set; }}"/>
+
+    <meta property="og:title" content="Batch processing with Directory.EnumerateFiles" />
+<meta property="og:description" content="In case one wants to retrieve files from catalog Directory.GetFiles is a simple answer sufficient for most scenarios. However, when you deal with a large amount of data you might need more advanced techniques.
+Example Let&rsquo;s assume you have a big data solution and you need to process a directory that contains 200000 files. For each file, you extract some basic info public record FileProcessingDto{public string FullPath { get; set; }public long Size { get; set; }public string FileNameWithoutExtension { get; set; }public string Hash { get; internal set; }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/batch-processing-with-enumeratefiles/" />
+<meta property="article:published_time" content="2021-03-28T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2021-03-28T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Batch processing with Directory.EnumerateFiles</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Mar 28, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          4 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/csharp/">Csharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a><a class="tag" href="https://wkalmar.github.io/tags/performance/">Performance</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>In case one wants to retrieve files from catalog <code>Directory.GetFiles</code> is a simple answer sufficient for most scenarios. However, when you deal with a large amount of data you might need more advanced techniques.</p>
+
+<h2 id="example">Example</h2>
+
+<p>Let&rsquo;s assume you have a big data solution and you need to process a directory that contains 200000 files. For each file, you extract some basic info
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> record FileProcessingDto
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> FullPath { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> Size { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> FileNameWithoutExtension { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Hash { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div></p>
+
+<p>Note how we conveniently use novel C# 9 <a href="https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records">record types</a> for our DTO here.</p>
+
+<p>After that, we send extracted info for further processing. Let&rsquo;s emulate it with the following snippet
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FileProcessingService</span>
+{
+    <span style="color:#66d9ef">public</span> Task Process(IReadOnlyCollection&lt;FileProcessingDto&gt; files, CancellationToken cancellationToken = <span style="color:#66d9ef">default</span>)
+    {
+        files.Select(p =&gt;
+        {
+            Console.WriteLine(<span style="color:#e6db74">$&#34;Processing {p.FileNameWithoutExtension} located at {p.FullPath} of size {p.Size} bytes&#34;</span>);
+            <span style="color:#66d9ef">return</span> p;
+        });
+
+        <span style="color:#66d9ef">return</span> Task.Delay(TimeSpan.FromMilliseconds(<span style="color:#ae81ff">20</span>), cancellationToken);
+    }
+}
+</code></pre></div></p>
+
+<p>Now the final piece is extracting info and calling the service
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Worker</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Path = <span style="color:#e6db74">@&#34;path to 200k files&#34;</span>;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> FileProcessingService _processingService;
+
+    <span style="color:#66d9ef">public</span> Worker()
+    {
+        _processingService = <span style="color:#66d9ef">new</span> FileProcessingService();
+    }
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> CalculateHash(<span style="color:#66d9ef">string</span> file)
+    {
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> md5Instance = MD5.Create())
+        {
+            <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> stream = File.OpenRead(file))
+            {
+                <span style="color:#66d9ef">var</span> hashResult = md5Instance.ComputeHash(stream);
+                <span style="color:#66d9ef">return</span> BitConverter.ToString(hashResult)
+                    .Replace(<span style="color:#e6db74">&#34;-&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, StringComparison.OrdinalIgnoreCase)
+                    .ToLowerInvariant();
+            }
+        }
+    }
+
+    <span style="color:#66d9ef">private</span> FileProcessingDto MapToDto(<span style="color:#66d9ef">string</span> file)
+    {
+        <span style="color:#66d9ef">var</span> fileInfo = <span style="color:#66d9ef">new</span> FileInfo(file);
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> FileProcessingDto()
+        {
+            FullPath = file,
+            Size = fileInfo.Length,
+            FileNameWithoutExtension = fileInfo.Name,
+            Hash = CalculateHash(file)
+        };
+    }
+
+    <span style="color:#66d9ef">public</span> Task DoWork()
+    {
+        <span style="color:#66d9ef">var</span> files = Directory.GetFiles(Path)
+            .Select(p =&gt; MapToDto(p))
+            .ToList();
+
+        <span style="color:#66d9ef">return</span> _processingService.Process(files);
+    }
+}
+</code></pre></div></p>
+
+<p>Note that here we act in a naive fashion and extract all files via <code>Directory.GetFiles(Path)</code> in one take.</p>
+
+<p>However, once you run this code via
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">new</span> Worker().DoWork()
+</code></pre></div></p>
+
+<p>you&rsquo;ll notice that results are far from satisfying and the application is consuming memory extensively.</p>
+
+<h2 id="directory-enumeratefiles-to-the-rescue">Directory.EnumerateFiles to the rescue</h2>
+
+<p>The thing with <a href="https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.enumeratefiles?view=net-5.0">Directory.EnumerateFiles</a> is that it returns <code>IEnumerable&lt;string&gt;</code> thus allowing us to fetch collection items one by one. This in turn prevents us from excessive use of memory while loading huge amounts of data at once.</p>
+
+<p>Still, as you may have noticed <code>FileProcessingService.Process</code> has delay coded in it (sort of I/O operation we emulate with simple delay). In a real-world scenario, this might be a call to an external HTTP-endpoint or work with the storage. This brings us to the conclusion that calling <code>FileProcessingService.Process</code> 200 000 times might be inefficient. That&rsquo;s why we&rsquo;re going to load reasonable batches of data into memory at once.</p>
+
+<p>The reworked code looks as follows
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WorkerImproved</span>
+{
+    <span style="color:#75715e">//omitted for brevity
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task DoWork()
+    {
+        <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> batchSize = <span style="color:#ae81ff">10000</span>;
+        <span style="color:#66d9ef">var</span> files = Directory.EnumerateFiles(Path);
+        <span style="color:#66d9ef">var</span> count = <span style="color:#ae81ff">0</span>;
+        <span style="color:#66d9ef">var</span> filesToProcess = <span style="color:#66d9ef">new</span> List&lt;FileProcessingDto&gt;(batchSize);
+
+        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> file <span style="color:#66d9ef">in</span> files)
+        {
+            count++;
+            filesToProcess.Add(MapToDto(file));
+            <span style="color:#66d9ef">if</span> (count == batchSize)
+            {
+                <span style="color:#66d9ef">await</span> _processingService.Process(filesToProcess);
+                count = <span style="color:#ae81ff">0</span>;
+                filesToProcess.Clear();
+            }
+
+        }
+        <span style="color:#66d9ef">if</span> (filesToProcess.Any())
+        {
+            <span style="color:#66d9ef">await</span> _processingService.Process(filesToProcess);
+        }
+    }
+}
+</code></pre></div></p>
+
+<p>Here we enumerate collection with <code>foreach</code> and once we reach the size of the batch we process it and flush the collection. The only interesting moment here is to call service one last time after we exit the loop in order to flush remaining items.</p>
+
+<h3 id="evaluation">Evaluation</h3>
+
+<p>Results produced by Benchmark.NET are pretty convincing</p>
+
+<p><img src="/8/1.PNG" width="600"/></p>
+
+<h2 id="few-words-on-batch-processing">Few words on batch processing</h2>
+
+<p>In this article we took a glance at the common pattern in software engineering. Batches of reasonable amount help us to beat both I/O penalty of working in an item-by-item fashion and excessive memory consumption of loading all items in memory at once.</p>
+
+<p>As a rule, you should strive for using batch APIs when doing I/O operations for multiple items. And once the number of items becomes high you should think about splitting these items into batches.</p>
+
+<h2 id="few-words-on-return-types">Few words on return types</h2>
+
+<p>Quite often when dealing with codebases I see code similar to the following
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;<span style="color:#66d9ef">int</span>&gt; Numbers =&gt; <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">int</span>&gt; { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span> };
+</code></pre></div>
+I would argue that this code violates <a href="https://en.wikipedia.org/wiki/Robustness_principle">Postel&rsquo;s principle</a> and the thing that follows from it is that as a consumer of a property I have can&rsquo;t figure out whether I can enumerate items one by one or if they are just loaded at once in memory.</p>
+
+<p>This is a reason I suggest being more specific about return type i.e.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IList&lt;<span style="color:#66d9ef">int</span>&gt; Numbers =&gt; <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">int</span>&gt; { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span> };
+</code></pre></div></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Batching is a nice technique that allows you to handle big amounts of data gracefully. <code>Directory.EnumerateFiles</code> is the API that allows you to organize batch processing for the directory with a large number of files.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

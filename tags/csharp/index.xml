@@ -6,10 +6,20 @@
     <description>Recent content in Csharp on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 30 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 28 Mar 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Batch processing with Directory.EnumerateFiles</title>
+      <link>https://wkalmar.github.io/post/batch-processing-with-enumeratefiles/</link>
+      <pubDate>Sun, 28 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/batch-processing-with-enumeratefiles/</guid>
+      <description>In case one wants to retrieve files from catalog Directory.GetFiles is a simple answer sufficient for most scenarios. However, when you deal with a large amount of data you might need more advanced techniques.
+Example Let&amp;rsquo;s assume you have a big data solution and you need to process a directory that contains 200000 files. For each file, you extract some basic info public record FileProcessingDto{public string FullPath { get; set; }public long Size { get; set; }public string FileNameWithoutExtension { get; set; }public string Hash { get; internal set; }}</description>
+    </item>
     
     <item>
       <title>Using Span&lt;T&gt; to improve performance of C# code</title>
