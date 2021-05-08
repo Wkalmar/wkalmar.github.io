@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 28 Mar 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 04 May 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>DateTime.TryParse and the case of Z letter</title>
+      <link>https://wkalmar.github.io/post/date-time-parse/</link>
+      <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/date-time-parse/</guid>
+      <description>Recently I&amp;rsquo;ve been tasked to provide date in a specific format for a backend and I&amp;rsquo;ve noticed a behavior that I&amp;rsquo;ve found a bit odd. private static void OutputDateInfo(string value){Console.WriteLine($&amp;#34;Input: {value}&amp;#34;);if (DateTime.TryParse(value, out DateTime dateTimeValue)){Console.WriteLine($&amp;#34;Setialized to universal format {dateTimeValue.ToString(&amp;#34;yyyy-MM-dd&amp;#39;T&amp;#39;HHssZ&amp;#34;)}&amp;#34;);}Console.WriteLine();}//somewhere in mainOutputDateInfo(&amp;#34;2021-04-15T2100.0000000Z&amp;#34;);OutputDateInfo(&amp;#34;2021-04-15T2100.0000000&amp;#34;);  Produces the output
+Input: 2021-04-15T21:01:00.0000000Z Setialized to universal format 2021-04-16T00:01:00Z Input: 2021-04-15T21:01:00.0000000 Setialized to universal format 2021-04-15T21:01:00Z  So as I was in Kyiv which is in UTC+3 timezone it looked as letter Z forced ToString method to convert date to local time.</description>
+    </item>
     
     <item>
       <title>Batch processing with Directory.EnumerateFiles</title>

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>DateTime.TryParse and the case of Z letter // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="DateTime.TryParse and the case of Z letter"/>
+<meta name="twitter:description" content="Recently I&rsquo;ve been tasked to provide date in a specific format for a backend and I&rsquo;ve noticed a behavior that I&rsquo;ve found a bit odd. private static void OutputDateInfo(string value){Console.WriteLine($&#34;Input: {value}&#34;);if (DateTime.TryParse(value, out DateTime dateTimeValue)){Console.WriteLine($&#34;Setialized to universal format {dateTimeValue.ToString(&#34;yyyy-MM-dd&#39;T&#39;HHssZ&#34;)}&#34;);}Console.WriteLine();}//somewhere in mainOutputDateInfo(&#34;2021-04-15T2100.0000000Z&#34;);OutputDateInfo(&#34;2021-04-15T2100.0000000&#34;);  Produces the output
+Input: 2021-04-15T21:01:00.0000000Z Setialized to universal format 2021-04-16T00:01:00Z Input: 2021-04-15T21:01:00.0000000 Setialized to universal format 2021-04-15T21:01:00Z  So as I was in Kyiv which is in UTC&#43;3 timezone it looked as letter Z forced ToString method to convert date to local time."/>
+
+    <meta property="og:title" content="DateTime.TryParse and the case of Z letter" />
+<meta property="og:description" content="Recently I&rsquo;ve been tasked to provide date in a specific format for a backend and I&rsquo;ve noticed a behavior that I&rsquo;ve found a bit odd. private static void OutputDateInfo(string value){Console.WriteLine($&#34;Input: {value}&#34;);if (DateTime.TryParse(value, out DateTime dateTimeValue)){Console.WriteLine($&#34;Setialized to universal format {dateTimeValue.ToString(&#34;yyyy-MM-dd&#39;T&#39;HHssZ&#34;)}&#34;);}Console.WriteLine();}//somewhere in mainOutputDateInfo(&#34;2021-04-15T2100.0000000Z&#34;);OutputDateInfo(&#34;2021-04-15T2100.0000000&#34;);  Produces the output
+Input: 2021-04-15T21:01:00.0000000Z Setialized to universal format 2021-04-16T00:01:00Z Input: 2021-04-15T21:01:00.0000000 Setialized to universal format 2021-04-15T21:01:00Z  So as I was in Kyiv which is in UTC&#43;3 timezone it looked as letter Z forced ToString method to convert date to local time." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/date-time-parse/" />
+<meta property="article:published_time" content="2021-05-04T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2021-05-04T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">DateTime.TryParse and the case of Z letter</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          May 4, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/csharp/">Csharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>Recently I&rsquo;ve been tasked to provide date in a specific format for a backend and I&rsquo;ve noticed a behavior that I&rsquo;ve found a bit odd.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> OutputDateInfo(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
+{
+    Console.WriteLine(<span style="color:#e6db74">$&#34;Input: {value}&#34;</span>);
+    <span style="color:#66d9ef">if</span> (DateTime.TryParse(<span style="color:#66d9ef">value</span>, <span style="color:#66d9ef">out</span> DateTime dateTimeValue))
+    {
+        Console.WriteLine(<span style="color:#e6db74">$&#34;Setialized to universal format {dateTimeValue.ToString(&#34;</span>yyyy-MM-dd<span style="color:#e6db74">&#39;T&#39;</span>HHssZ<span style="color:#e6db74">&#34;)}&#34;</span>);
+    }
+    Console.WriteLine();
+}
+
+<span style="color:#75715e">//somewhere in main
+</span><span style="color:#75715e"></span>OutputDateInfo(<span style="color:#e6db74">&#34;2021-04-15T2100.0000000Z&#34;</span>);
+OutputDateInfo(<span style="color:#e6db74">&#34;2021-04-15T2100.0000000&#34;</span>);
+</code></pre></div>
+Produces the output</p>
+
+<pre><code>Input: 2021-04-15T21:01:00.0000000Z
+Setialized to universal format 2021-04-16T00:01:00Z
+
+Input: 2021-04-15T21:01:00.0000000
+Setialized to universal format 2021-04-15T21:01:00Z
+</code></pre>
+
+<p>So as I was in Kyiv which is in UTC+3 timezone it looked as letter Z forced <code>ToString</code> method to convert date to local time.</p>
+
+<p>As <a href="https://docs.microsoft.com/en-us/dotnet/api/system.datetime.tryparse?view=net-5.0">documentation</a> reads</p>
+
+<blockquote>
+<p>If s contains no time zone information, result contains a DateTime value whose Kind property is DateTimeKind.Unspecified when the method returns. If the string to be parsed contains time zone information, result contains a DateTime value whose Kind property is DateTimeKind.Local when the method returns.</p>
+</blockquote>
+
+<p>Is this <code>DateTimeKind</code> that makes <code>ToString</code> cast date to the local timezone? Let&rsquo;s log more properties to see if it is the case
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> OutputDateInfo(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
+{
+    Console.WriteLine(<span style="color:#e6db74">$&#34;Input: {value}&#34;</span>);
+    <span style="color:#66d9ef">if</span> (DateTime.TryParse(<span style="color:#66d9ef">value</span>, <span style="color:#66d9ef">out</span> DateTime dateTimeValue))
+    {
+        Console.WriteLine(<span style="color:#e6db74">$&#34;Setialized to universal format {dateTimeValue.ToString(&#34;</span>yyyy-MM-dd<span style="color:#e6db74">&#39;T&#39;</span>HHssZ<span style="color:#e6db74">&#34;)}&#34;</span>);
+        Console.WriteLine(<span style="color:#e6db74">$&#34;Setialized to default format {dateTimeValue}&#34;</span>);
+        Console.WriteLine(<span style="color:#e6db74">$&#34;Setialized with conversion to universal time {dateTimeValue.ToUniversalTime()}&#34;</span>);
+        Console.WriteLine(<span style="color:#e6db74">$&#34;Kind: {dateTimeValue.Kind}&#34;</span>);
+    }
+    Console.WriteLine();
+}
+</code></pre></div>
+Now we see in a console:</p>
+
+<pre><code>Input: 2021-04-15T21:01:00.0000000Z
+Setialized to universal format 2021-04-16T00:01:00Z
+Setialized to default format 16.04.2021 0:01:00
+Setialized with conversion to universal time 15.04.2021 21:01:00
+Kind: Local
+
+Input: 2021-04-15T21:01:00.0000000
+Setialized to universal format 2021-04-15T21:01:00Z
+Setialized to default format 15.04.2021 21:01:00
+Setialized with conversion to universal time 15.04.2021 18:01:00
+Kind: Unspecified
+</code></pre>
+
+<p>So indeed when we call <code>ToString</code> on a <code>DateTimeKind.Local</code> instance it will be adjusted according to server timezone.</p>
+
+<p>But why letter Z is treated as timezone information? The documentation referred above has no example with Z letter. The answer is that format in question is <a href="https://www.utctime.net/">ISO-8601 format</a> and Z stands for &ldquo;Zero UTC offset&rdquo;. Does string of this format is treated just as any other string with timezone specified or is this some kind of special treatment? We&rsquo;ll get an answer by comparing them.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">OutputDateInfo(<span style="color:#e6db74">&#34;2021-04-15T2100.0000000Z&#34;</span>);
+OutputDateInfo(<span style="color:#e6db74">&#34;2021-04-15T2100.0000000&#34;</span>);
+OutputDateInfo(<span style="color:#e6db74">&#34;2021-04-15T1400.0000000 -7:00&#34;</span>);
+</code></pre></div>
+yeilds</p>
+
+<pre><code>Input: 2021-04-15T21:01:00.0000000Z
+Setialized to universal format 2021-04-16T00:01:00Z
+Setialized to default format 16.04.2021 0:01:00
+Setialized with conversion to universal time 15.04.2021 21:01:00
+Kind: Local
+
+Input: 2021-04-15T21:01:00.0000000
+Setialized to universal format 2021-04-15T21:01:00Z
+Setialized to default format 15.04.2021 21:01:00
+Setialized with conversion to universal time 15.04.2021 18:01:00
+Kind: Unspecified
+
+Input: 2021-04-15T14:01:00.0000000 -7:00
+Setialized to universal format 2021-04-16T00:01:00Z
+Setialized to default format 16.04.2021 0:01:00
+Setialized with conversion to universal time 15.04.2021 21:01:00
+Kind: Local
+</code></pre>
+
+<p>As you can see string of ISO-8601 format is treated just as any other date string with timezone specified.</p>
+
+<p>My intent though wasn&rsquo;t to treat it as local time but instead as UTC time. My goal was to provide universal time to front end so it will adjust it to end-user&rsquo;s local time. How can we trick .NET into thinking that this is universal time without any timezone? The answer is the overload that accepts <code>DateTimeStyles</code>:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> OutputDateInfo(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
+{
+    Console.WriteLine(<span style="color:#e6db74">$&#34;Input: {value}&#34;</span>);
+    <span style="color:#66d9ef">if</span> (DateTime.TryParse(<span style="color:#66d9ef">value</span>, <span style="color:#66d9ef">null</span>, DateTimeStyles.AdjustToUniversal, <span style="color:#66d9ef">out</span> DateTime universalTime))
+    {
+        Console.WriteLine(<span style="color:#e6db74">$&#34;Adjusted to universal {universalTime}&#34;</span>);
+    }
+
+    Console.WriteLine();
+}
+</code></pre></div>
+Outputs</p>
+
+<pre><code>Input: 2021-04-15T21:01:00.0000000Z
+Adjusted to universal 15.04.2021 21:01:00
+
+Input: 2021-04-15T21:01:00.0000000
+Adjusted to universal 15.04.2021 21:01:00
+
+Input: 2021-04-15T14:01:00.0000000 -7:00
+Adjusted to universal 15.04.2021 21:01:00
+</code></pre>
+
+<p>Job done!</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In my opinion, <code>DateTimeKind</code> is underrepresented in literature and blogs. However, this is the thing that should be definitely taken into account when parsing date strings and converting dates back to string. Also, it worth remembering that ISO-8601 format date strings are treated just as any other string with timezone info specified, although it might be unobvious at the first glance.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
