@@ -6,10 +6,20 @@
     <description>Recent content in .NET on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 08 May 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 25 Jul 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/.net/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Prefer using Stream to byte[]</title>
+      <link>https://wkalmar.github.io/post/prefer-stream-to-byte-array/</link>
+      <pubDate>Sun, 25 Jul 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/prefer-stream-to-byte-array/</guid>
+      <description>When working with files there are often both APIs operating byte[] and Stream so quite often people chose byte[] counterpart as it requires less ceremony or just intuitively more clear.
+You may think of this conclusion as far-fetched but I&amp;rsquo;ve decided to write about it after reviewing and refactoring some real-world production code. So you may find this simple trick neglected in your codebase as some other simple things I&amp;rsquo;ve mentioned in my previous articles.</description>
+    </item>
     
     <item>
       <title>DateTime.TryParse and the case of Z letter</title>
