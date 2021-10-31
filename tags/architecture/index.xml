@@ -6,10 +6,30 @@
     <description>Recent content in Architecture on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 19 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 31 Oct 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/architecture/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Strive for short-lived synchronous communication</title>
+      <link>https://wkalmar.github.io/post/make-synchronous-communication-short-lived/</link>
+      <pubDate>Sun, 31 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/make-synchronous-communication-short-lived/</guid>
+      <description>When interacting with a service asynchronous communication often is a preferred way. &amp;ldquo;Enterprise integration patterns&amp;rdquo; book puts it that way (which also might be a TL;DR; for the rest of the article)
+ With synchronous communication, the caller must wait for the receiver to finish processing the call before the caller can receive the result and continue. In this way, the caller can only make calls as fast as the receiver can perform them.</description>
+    </item>
+    
+    <item>
+      <title>Building auth endpoint with Go and AWS Lambda</title>
+      <link>https://wkalmar.github.io/post/building-auth-endpoint-with-go-and-aws-lambda/</link>
+      <pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/building-auth-endpoint-with-go-and-aws-lambda/</guid>
+      <description>When I was playing around with my pet-project Kyiv Station Walk I’ve noticed that manually removing test data is tedious and I need to come up with a concept of the admin page. This required some sort of authentication endpoint. Some super-lightweight service which would check login and password against as a pair of super-user credentials.
+Serverless is quite useful for this simple nanoservice. This brings some cost-saving as serverless comes to me almost free due to low execution rate that I anticipate for the admin page of my low-popular service.</description>
+    </item>
     
     <item>
       <title>Leader election with Redlock.net</title>
