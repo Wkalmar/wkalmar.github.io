@@ -6,10 +6,19 @@
     <description>Recent content in .NET on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 25 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Dec 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/.net/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Overriding JSON serializer in Giraffe</title>
+      <link>https://wkalmar.github.io/post/overriding-json-serializer-in-giraffe/</link>
+      <pubDate>Thu, 23 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/overriding-json-serializer-in-giraffe/</guid>
+      <description>I use my side-project KyivStationWalk as a set of my opinionated takes on software architecture. No wonder I use F# here. One of the types I use in this project to describe my domain is the subway station branch. There are 3 branches in Kyiv named by their traditional colors. type Branch =| Red| Blue| Green By default Giraffe, the framework which I use as a web server, uses Newtonsoft.</description>
+    </item>
     
     <item>
       <title>Prefer using Stream to byte[]</title>
