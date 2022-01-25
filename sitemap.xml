@@ -3,13 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://wkalmar.github.io/tags/.net/</loc>
-    <lastmod>2021-12-23T00:00:00+00:00</lastmod>
+    <loc>https://wkalmar.github.io/</loc>
+    <lastmod>2022-01-25T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/</loc>
+    <loc>https://wkalmar.github.io/tags/elasticsearch/</loc>
+    <lastmod>2022-01-25T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/improving-autocomplete/</loc>
+    <lastmod>2022-01-25T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/</loc>
+    <lastmod>2022-01-25T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/</loc>
+    <lastmod>2022-01-25T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/.net/</loc>
     <lastmod>2021-12-23T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -23,18 +46,6 @@
   <url>
     <loc>https://wkalmar.github.io/post/overriding-json-serializer-in-giraffe/</loc>
     <lastmod>2021-12-23T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/post/</loc>
-    <lastmod>2021-12-23T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/</loc>
-    <lastmod>2021-12-23T00:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

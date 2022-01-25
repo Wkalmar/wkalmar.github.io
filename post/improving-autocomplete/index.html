@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Improving Elasticsearch-based autocomplete // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Improving Elasticsearch-based autocomplete"/>
+<meta name="twitter:description" content="Recently I&rsquo;ve investigated autocomplete functionality of our system as there were a lot of complaints that it returns irrelevant results. The approach we&rsquo;ve taken was pretty naive: our backend wrapped query into wildcard symbols and executed it as query_string on fields __title, title and commonInfo.RealName. Index we&rsquo;ve executed search upon contained entity with _title equal 3 foxes but autocomplete query 3 foxes suggested BRN-3 / QCK 3 / 19 foxes, AC d / 3 foxes, 3 BRW / 1 foxes."/>
+
+    <meta property="og:title" content="Improving Elasticsearch-based autocomplete" />
+<meta property="og:description" content="Recently I&rsquo;ve investigated autocomplete functionality of our system as there were a lot of complaints that it returns irrelevant results. The approach we&rsquo;ve taken was pretty naive: our backend wrapped query into wildcard symbols and executed it as query_string on fields __title, title and commonInfo.RealName. Index we&rsquo;ve executed search upon contained entity with _title equal 3 foxes but autocomplete query 3 foxes suggested BRN-3 / QCK 3 / 19 foxes, AC d / 3 foxes, 3 BRW / 1 foxes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/improving-autocomplete/" />
+<meta property="article:published_time" content="2022-01-25T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2022-01-25T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Improving Elasticsearch-based autocomplete</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jan 25, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          7 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/elasticsearch/">Elasticsearch</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>Recently I&rsquo;ve investigated autocomplete functionality of our system as there were a lot of complaints that it returns irrelevant results. The approach we&rsquo;ve taken was pretty naive: our backend wrapped query into wildcard symbols and executed it as <code>query_string</code> on fields <code>__title</code>, <code>title</code> and <code>commonInfo.RealName</code>. Index we&rsquo;ve executed search upon contained entity with <code>_title</code> equal <code>3 foxes</code> but autocomplete query <code>3 foxes</code> suggested <code>BRN-3 / QCK 3 / 19 foxes</code>, <code>AC d / 3 foxes</code>, <code>3 BRW / 1 foxes</code>. The exact match was nowhere at sight!</p>
+
+<p>So I&rsquo;ve chosen <code>3 foxes</code> as my relevance baseline and turned my head on specific Elasticsearch queries that facilitate autocomplete functionality.</p>
+
+<h2 id="search-as-you-type">Search as you type</h2>
+
+<p>As the name implies <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-as-you-type.html">search as you type</a> seemed as a perfect fit for autocomplete functionality. To start off I&rsquo;ve changed the mapping of my <code>__title</code> field to <code>search_as_you_type</code> and performed <code>bool_prefix</code> query straight from the documentation.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;_source&#34;</span>: [
+    <span style="color:#e6db74">&#34;__title&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;from&#34;</span>: <span style="color:#ae81ff">0</span>,
+  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">3</span>,
+  <span style="color:#f92672">&#34;query&#34;</span>: {
+      <span style="color:#f92672">&#34;multi_match&#34;</span>: {
+      <span style="color:#f92672">&#34;query&#34;</span>: <span style="color:#e6db74">&#34;3 foxe&#34;</span>,
+      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;bool_prefix&#34;</span>,
+      <span style="color:#f92672">&#34;fields&#34;</span>: [
+        <span style="color:#e6db74">&#34;__title&#34;</span>,
+        <span style="color:#e6db74">&#34;__title.2gram&#34;</span>,
+        <span style="color:#e6db74">&#34;__title.3gram&#34;</span>
+      ]
+    }
+  }
+}</code></pre></div>
+Now this was better!
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;took&#34;</span>: <span style="color:#ae81ff">21</span>,
+    <span style="color:#f92672">&#34;timed_out&#34;</span>: <span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;_shards&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;skipped&#34;</span>: <span style="color:#ae81ff">0</span>,
+        <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+    },
+    <span style="color:#f92672">&#34;hits&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">272</span>,
+            <span style="color:#f92672">&#34;relation&#34;</span>: <span style="color:#e6db74">&#34;eq&#34;</span>
+        },
+        <span style="color:#f92672">&#34;max_score&#34;</span>: <span style="color:#ae81ff">4.5528774</span>,
+        <span style="color:#f92672">&#34;hits&#34;</span>: [
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;cdf7f3aded8745d1827e9c92dea1e8b7&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">4.5528774</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;3 oxe/ 3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;1a42873cead94f18a31d0b102b4fbdcd&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">4.285463</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;6f1588bbe1a440028af1de4337bf8fac&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">3.9906564</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;9 mfx/ 3 oxe/ 3 foxes&#34;</span>
+                }
+            }
+        ]
+    }
+}</code></pre></div>
+But still it was not good enough since the exact match was only second. Since out of the box solution didn&rsquo;t help I&rsquo;ve decided to read on about <code>search_as_you_type</code> mapping and <code>n-gram</code> fields. After reading for a while I&rsquo;ve learned that <code>n-gram</code>s are basically sequences of words extracted from the text mixed in a random order which allows searching words out of order in my autocomplete query. The downside of this is that Elasticsearch cluster consumes extra memory to store <code>n-gram</code>s which may affect cluster state. And fancy <code>search_as_you_type</code> mapping just means that <code>n-gram</code> fields are created automatically.</p>
+
+<p>Since typing out-of-order words wasn&rsquo;t my use case I&rsquo;ve decided not to mess with it and improve my relevance <em>query-time</em> instead of <em>index-time</em>.</p>
+
+<h2 id="match-phrase-query">Match phrase query</h2>
+
+<p>In order to boost exact match relevance, I&rsquo;ve switched to <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase-prefix.html">match phrase prefix query</a>.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;_source&#34;</span>: [
+    <span style="color:#e6db74">&#34;__title&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;from&#34;</span>: <span style="color:#ae81ff">0</span>,
+  <span style="color:#f92672">&#34;size&#34;</span>: <span style="color:#ae81ff">3</span>,
+  <span style="color:#f92672">&#34;query&#34;</span>: {
+    <span style="color:#f92672">&#34;match_phrase_prefix&#34;</span>: {
+      <span style="color:#f92672">&#34;__title&#34;</span>: {
+        <span style="color:#f92672">&#34;query&#34;</span>: <span style="color:#e6db74">&#34;3 foxe&#34;</span>
+      }
+    }
+  }
+}</code></pre></div>
+Now that was what I was looking for!
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;took&#34;</span>: <span style="color:#ae81ff">10</span>,
+    <span style="color:#f92672">&#34;timed_out&#34;</span>: <span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;_shards&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;skipped&#34;</span>: <span style="color:#ae81ff">0</span>,
+        <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+    },
+    <span style="color:#f92672">&#34;hits&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">28</span>,
+            <span style="color:#f92672">&#34;relation&#34;</span>: <span style="color:#e6db74">&#34;eq&#34;</span>
+        },
+        <span style="color:#f92672">&#34;max_score&#34;</span>: <span style="color:#ae81ff">12.053555</span>,
+        <span style="color:#f92672">&#34;hits&#34;</span>: [
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;1a42873cead94f18a31d0b102b4fbdcd&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">12.053555</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>
+                }
+            },
+            <span style="color:#960050;background-color:#1e0010">//omited</span> <span style="color:#960050;background-color:#1e0010">for</span> <span style="color:#960050;background-color:#1e0010">brevity</span>
+        ]
+    }
+}</code></pre></div>
+Can we wrap up at this point? Not so soon! As you may recall our autocomplete functionality uses 3 fields, but we&rsquo;ve examined only one of them. So how do we combine multiple fields? Since <code>match_phrase_prefix</code> doesn&rsquo;t support multiple fields the first guess was the plain old <code>bool</code> query.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+   <span style="color:#f92672">&#34;_source&#34;</span>:[
+      <span style="color:#e6db74">&#34;__title&#34;</span>,
+      <span style="color:#e6db74">&#34;title&#34;</span>,
+      <span style="color:#e6db74">&#34;commonInfo.RealNameShort&#34;</span>
+   ],
+   <span style="color:#f92672">&#34;explain&#34;</span>:<span style="color:#66d9ef">false</span>,
+   <span style="color:#f92672">&#34;from&#34;</span>:<span style="color:#ae81ff">0</span>,
+   <span style="color:#f92672">&#34;size&#34;</span>:<span style="color:#ae81ff">3</span>,
+   <span style="color:#f92672">&#34;query&#34;</span>:{
+      <span style="color:#f92672">&#34;bool&#34;</span>:{
+         <span style="color:#f92672">&#34;should&#34;</span>:[
+            {
+               <span style="color:#f92672">&#34;match_phrase_prefix&#34;</span>:{
+                  <span style="color:#f92672">&#34;__title&#34;</span>:{
+                     <span style="color:#f92672">&#34;query&#34;</span>:<span style="color:#e6db74">&#34;3 foxe&#34;</span>
+                  }
+               }
+            },
+            {
+               <span style="color:#f92672">&#34;match_phrase_prefix&#34;</span>:{
+                  <span style="color:#f92672">&#34;title&#34;</span>:{
+                     <span style="color:#f92672">&#34;query&#34;</span>:<span style="color:#e6db74">&#34;3 foxe&#34;</span>
+                  }
+               }
+            },
+            {
+               <span style="color:#f92672">&#34;match_phrase_prefix&#34;</span>:{
+                  <span style="color:#f92672">&#34;commonInfo.RealNameShort&#34;</span>:{
+                     <span style="color:#f92672">&#34;query&#34;</span>:<span style="color:#e6db74">&#34;3 foxe&#34;</span>
+                  }
+               }
+            }
+         ]
+      }
+   }
+}</code></pre></div>
+And the result was
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;took&#34;</span>: <span style="color:#ae81ff">13</span>,
+    <span style="color:#f92672">&#34;timed_out&#34;</span>: <span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;_shards&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;skipped&#34;</span>: <span style="color:#ae81ff">0</span>,
+        <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+    },
+    <span style="color:#f92672">&#34;hits&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">28</span>,
+            <span style="color:#f92672">&#34;relation&#34;</span>: <span style="color:#e6db74">&#34;eq&#34;</span>
+        },
+        <span style="color:#f92672">&#34;max_score&#34;</span>: <span style="color:#ae81ff">28.880083</span>,
+        <span style="color:#f92672">&#34;hits&#34;</span>: [
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;15e4e503cc1d4284aeb34664cb61c5ae&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">28.880083</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;apt 3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;apt 3 foxes&#34;</span>
+                    },
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;apartmetnt 3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;83b2653a851c4ca19d3df0410ab1c41f&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">26.242756</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;rest/ 3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;rest/ 3 foxes&#34;</span>
+                    },
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;restaraunt/ 3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;1a42873cead94f18a31d0b102b4fbdcd&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">23.940828</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;3 completely irrelevant to real name words&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>
+                    }
+                }
+            }
+        ]
+    }
+}</code></pre></div>
+Huh? What happened? Let&rsquo;s run the same query with <code>explain&quot;:true</code> to understand. Since the output is huge I&rsquo;ll focus only on important parts.
+In the topmost document we&rsquo;ll notice
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;value&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#ae81ff">10.268458</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#e6db74">&#34;description&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;weight(__title:\&#34;3 (foxe foxes)\&#34; in 1156) [PerFieldSimilarity], result of:&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#960050;background-color:#1e0010">...</span>
+<span style="color:#e6db74">&#34;value&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#ae81ff">8.497357</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#e6db74">&#34;description&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;weight(title:\&#34;3 foxes\&#34; in 1156) [PerFieldSimilarity], result of:&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#960050;background-color:#1e0010">...</span>
+<span style="color:#e6db74">&#34;value&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#ae81ff">10.114267</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#e6db74">&#34;description&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;weight(commonInfo.RealNameShort:\&#34;3 (foxes foxe)\&#34; in 1156) [PerFieldSimilarity], result of:&#34;</span><span style="color:#960050;background-color:#1e0010">,</span></code></pre></div>
+And here&rsquo;s the document we expect to be the topmost
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;value&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#ae81ff">12.053555</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#e6db74">&#34;description&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;weight(__title:\&#34;3 (foxe foxes)\&#34; in 1180) [PerFieldSimilarity], result of:&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#960050;background-color:#1e0010">...</span>
+<span style="color:#e6db74">&#34;value&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#ae81ff">11.887274</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#e6db74">&#34;description&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;weight(commonInfo.RealNameShort:\&#34;3 (foxes foxe)\&#34; in 1180) [PerFieldSimilarity], result of:&#34;</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#960050;background-color:#1e0010">...</span>
+<span style="color:#e6db74">&#34;value&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#ae81ff">0.0</span><span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#e6db74">&#34;description&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;match on required clause, product of:&#34;</span><span style="color:#960050;background-color:#1e0010">,</span></code></pre></div>
+So as we might expect the document which contains <code>3 foxes</code> in <code>__title</code> scores most by the field <code>__title</code>. But since <code>apt 3 foxes</code> contains somewhat relevant results in each field of interest it outweighs desired document. If only we could somehow order documents by most relevant match!</p>
+
+<h2 id="disjunction-max-query">Disjunction max query</h2>
+
+<p>And indeed we can try <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-dis-max-query.html">Disjunction max query</a> just for that case. Let&rsquo;s try the example right from the docs
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;_source&#34;</span>:[
+      <span style="color:#e6db74">&#34;__title&#34;</span>,
+      <span style="color:#e6db74">&#34;title&#34;</span>,
+      <span style="color:#e6db74">&#34;commonInfo.RealNameShort&#34;</span>
+  ],
+  <span style="color:#f92672">&#34;explain&#34;</span>:<span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;from&#34;</span>:<span style="color:#ae81ff">0</span>,
+  <span style="color:#f92672">&#34;size&#34;</span>:<span style="color:#ae81ff">3</span>,
+  <span style="color:#f92672">&#34;query&#34;</span>: {
+    <span style="color:#f92672">&#34;dis_max&#34;</span>: {
+      <span style="color:#f92672">&#34;queries&#34;</span>: [
+        {
+               <span style="color:#f92672">&#34;match_phrase_prefix&#34;</span>:{
+                  <span style="color:#f92672">&#34;__title&#34;</span>:{
+                     <span style="color:#f92672">&#34;query&#34;</span>:<span style="color:#e6db74">&#34;3 foxe&#34;</span>
+                  }
+               }
+            },
+            {
+               <span style="color:#f92672">&#34;match_phrase_prefix&#34;</span>:{
+                  <span style="color:#f92672">&#34;title&#34;</span>:{
+                     <span style="color:#f92672">&#34;query&#34;</span>:<span style="color:#e6db74">&#34;3 foxe&#34;</span>
+                  }
+               }
+            },
+            {
+               <span style="color:#f92672">&#34;match_phrase_prefix&#34;</span>:{
+                  <span style="color:#f92672">&#34;commonInfo.RealNameShort&#34;</span>:{
+                     <span style="color:#f92672">&#34;query&#34;</span>:<span style="color:#e6db74">&#34;3 foxe&#34;</span>
+                  }
+               }
+            }
+      ],
+      <span style="color:#f92672">&#34;tie_breaker&#34;</span>: <span style="color:#ae81ff">0.7</span>
+    }
+  }
+}</code></pre></div>
+Still not good but at least the scores are closer to eachother.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;took&#34;</span>: <span style="color:#ae81ff">13</span>,
+    <span style="color:#f92672">&#34;timed_out&#34;</span>: <span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;_shards&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;skipped&#34;</span>: <span style="color:#ae81ff">0</span>,
+        <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+    },
+    <span style="color:#f92672">&#34;hits&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">28</span>,
+            <span style="color:#f92672">&#34;relation&#34;</span>: <span style="color:#e6db74">&#34;eq&#34;</span>
+        },
+        <span style="color:#f92672">&#34;max_score&#34;</span>: <span style="color:#ae81ff">23.296595</span>,
+        <span style="color:#f92672">&#34;hits&#34;</span>: [
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;15e4e503cc1d4284aeb34664cb61c5ae&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">23.296595</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;apt 3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;apt 3 foxes&#34;</span>
+                    },
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;apartmetnt 3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;83b2653a851c4ca19d3df0410ab1c41f&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">21.053097</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;rest/ 3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;rest/ 3 foxes&#34;</span>
+                    },
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;restaraunt/ 3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;1a42873cead94f18a31d0b102b4fbdcd&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">20.374645</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;3 completely irrelevant to real name words&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>
+                    }
+                }
+            }
+        ]
+    }
+}</code></pre></div>
+It doesn&rsquo;t seem that obvious what <code>tie_breaker</code> parameter does. Let&rsquo;s tweak it to find out. At first we&rsquo;ll set it to 1.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;took&#34;</span>: <span style="color:#ae81ff">13</span>,
+    <span style="color:#f92672">&#34;timed_out&#34;</span>: <span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;_shards&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;skipped&#34;</span>: <span style="color:#ae81ff">0</span>,
+        <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+    },
+    <span style="color:#f92672">&#34;hits&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">28</span>,
+            <span style="color:#f92672">&#34;relation&#34;</span>: <span style="color:#e6db74">&#34;eq&#34;</span>
+        },
+        <span style="color:#f92672">&#34;max_score&#34;</span>: <span style="color:#ae81ff">28.880083</span>,
+        <span style="color:#f92672">&#34;hits&#34;</span>: [
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;15e4e503cc1d4284aeb34664cb61c5ae&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">28.880083</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;apt 3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;apt 3 foxes&#34;</span>
+                    },
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;apartmetnt 3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;83b2653a851c4ca19d3df0410ab1c41f&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">26.242756</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;rest/ 3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;rest/ 3 foxes&#34;</span>
+                    },
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;restaraunt/ 3 foxes&#34;</span>
+                }
+            },
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;data&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;1a42873cead94f18a31d0b102b4fbdcd&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">23.940828</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;3 completely irrelevant to real name words&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>
+                    }
+                }
+            }
+        ]
+    }
+}</code></pre></div>
+So as we see increasing it leads us in the wrong direction. Let&rsquo;s remove it altogether.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;took&#34;</span>: <span style="color:#ae81ff">15</span>,
+    <span style="color:#f92672">&#34;timed_out&#34;</span>: <span style="color:#66d9ef">false</span>,
+    <span style="color:#f92672">&#34;_shards&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;successful&#34;</span>: <span style="color:#ae81ff">33</span>,
+        <span style="color:#f92672">&#34;skipped&#34;</span>: <span style="color:#ae81ff">0</span>,
+        <span style="color:#f92672">&#34;failed&#34;</span>: <span style="color:#ae81ff">0</span>
+    },
+    <span style="color:#f92672">&#34;hits&#34;</span>: {
+        <span style="color:#f92672">&#34;total&#34;</span>: {
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#ae81ff">28</span>,
+            <span style="color:#f92672">&#34;relation&#34;</span>: <span style="color:#e6db74">&#34;eq&#34;</span>
+        },
+        <span style="color:#f92672">&#34;max_score&#34;</span>: <span style="color:#ae81ff">12.053555</span>,
+        <span style="color:#f92672">&#34;hits&#34;</span>: [
+            {
+                <span style="color:#f92672">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;ont_militaryorganization&#34;</span>,
+                <span style="color:#f92672">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;_doc&#34;</span>,
+                <span style="color:#f92672">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;1a42873cead94f18a31d0b102b4fbdcd&#34;</span>,
+                <span style="color:#f92672">&#34;_score&#34;</span>: <span style="color:#ae81ff">12.053555</span>,
+                <span style="color:#f92672">&#34;_source&#34;</span>: {
+                    <span style="color:#f92672">&#34;__title&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>,
+                    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;3 completely irrelevant to real name words&#34;</span>,
+                    <span style="color:#f92672">&#34;commonInfo&#34;</span>: {
+                        <span style="color:#f92672">&#34;RealNameShort&#34;</span>: <span style="color:#e6db74">&#34;3 foxes&#34;</span>
+                    }
+                }
+            },
+            <span style="color:#960050;background-color:#1e0010">//omited</span> <span style="color:#960050;background-color:#1e0010">for</span> <span style="color:#960050;background-color:#1e0010">brevity</span>
+        ]
+    }
+}</code></pre></div>
+Success! This was exactly what we were looking for!</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>When implementing autocomplete functionality with Elasticsearch don&rsquo;t jump straight away to the naive <code>query_string</code> approach. Explore rich Elasticsearch query language first. Leveraging <code>search_as_you_type</code> mapping at index-time might not be a silver bullet as well as the main aim of it is to combat search queries with out-of-order words by creating <code>n-gram</code> fields for you. So it might be sufficient to resort solely to query-time improvements such as <code>bool_prefix</code> query type if you want to get more lenient results or <code>match_phrase_prefix</code> query type if you want your results to be more strict.</p>
+
+<p>When combining autocomplete on multiple fields you may use <code>dis_max</code> query type. In such a case increasing <code>tie_breaker</code> parameter increases the degree by which all fields influence on resulting score.</p>
+
+<p>And finally once in doubt about why query results don&rsquo;t match your expectations you may resort to <code>explain&quot;:true</code> query parameter.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
