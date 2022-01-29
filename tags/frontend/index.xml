@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Frontend on Bohdan Stupak&#39;s blog</title>
+    <link>https://wkalmar.github.io/tags/frontend/</link>
+    <description>Recent content in Frontend on Bohdan Stupak&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 26 Dec 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://wkalmar.github.io/tags/frontend/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Cooking angular.js with Typescript</title>
+      <link>https://wkalmar.github.io/post/cooking-angular-js-with-typescript/</link>
+      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/cooking-angular-js-with-typescript/</guid>
+      <description>Introduction Typescript starts to gain more and more popularity because of static typing offering its benefits. Still, some developers who are involved in supporting projects with angular.js may be stuck with lack of community offering their recipes of using angular.js together with typescript. This article will try to fill this gap.
+Our strategy involves shipping working product at every stage of development. So in real life, transition to typescript can be performed gradually thus not hurting business goals that development team has to reach.</description>
+    </item>
+    
+    <item>
+      <title>Pure CSS Salesforce-like progressbar Control</title>
+      <link>https://wkalmar.github.io/post/pure-css-salesforce-like-progressbar-control/</link>
+      <pubDate>Sun, 09 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/pure-css-salesforce-like-progressbar-control/</guid>
+      <description>Introduction This article covers several CSS techniques: using LESS, using display: flex and some CSS hacks.
+You can download the complete source code on github.
+Using LESS LESS is CSS preprocessor which allows extending CSS with some useful features. You can learn more about it here. In this project, I use LESS variables and functions which as you can see later, allow me to work with colors in a cleaner way.</description>
+    </item>
+    
+  </channel>
+</rss>
