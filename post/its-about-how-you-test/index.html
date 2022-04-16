@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>It&#39;s not about how you inject your services, it&#39;s about how you test them // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="It&#39;s not about how you inject your services, it&#39;s about how you test them"/>
+<meta name="twitter:description" content="It has been written a lot about the value of unit testing and still a lot of developers may have witnessed codebases with unit tests being too brittle or rarely discovering actual defects in software. Also some have questioned default architectural style supposed to make code testable. These are the reasons why a lot of developers openly question unit-testing while others just silently sabotage the process of writing unit-tests."/>
+
+    <meta property="og:title" content="It&#39;s not about how you inject your services, it&#39;s about how you test them" />
+<meta property="og:description" content="It has been written a lot about the value of unit testing and still a lot of developers may have witnessed codebases with unit tests being too brittle or rarely discovering actual defects in software. Also some have questioned default architectural style supposed to make code testable. These are the reasons why a lot of developers openly question unit-testing while others just silently sabotage the process of writing unit-tests." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/its-about-how-you-test/" />
+<meta property="article:published_time" content="2022-04-16T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2022-04-16T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">It&#39;s not about how you inject your services, it&#39;s about how you test them</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Apr 16, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          7 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/csharp/">Csharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a><a class="tag" href="https://wkalmar.github.io/tags/testing/">Testing</a><a class="tag" href="https://wkalmar.github.io/tags/oop/">OOP</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>It has been written a lot about the value of unit testing and still a lot of developers may have witnessed codebases with unit tests being too brittle or rarely discovering actual defects in software. Also some have <a href="https://dhh.dk/2014/test-induced-design-damage.html">questioned</a> default architectural style supposed to make code testable. These are the reasons why a lot of developers openly question unit-testing while others just silently sabotage the process of writing unit-tests.</p>
+
+<p>In this article I offer my take on the aforementioned issues.</p>
+
+<p>You can check out the code provided <a href="https://github.com/Wkalmar/UnitTestGranularityDemo">in this repository</a>. During the course of the article I present two different designs which reside in two different branches, so feel free to explore them both.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>Let us take a look at simple controller with service injected. Although I use the term &ldquo;controller&rdquo; I don&rsquo;t use any frameworks for the sake of example simplicity. Still you might imagine that we&rsquo;re talking about one of the popular MVC frameworks.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ItemService</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Serialize(Item input)
+    {
+        <span style="color:#66d9ef">switch</span> (input.Type)
+        {
+            <span style="color:#66d9ef">case</span> ItemType.String:
+                <span style="color:#66d9ef">return</span> input.Value;
+            <span style="color:#66d9ef">case</span> ItemType.Geo:
+                <span style="color:#66d9ef">return</span> SeriazlieGeo(input.Value);
+            <span style="color:#66d9ef">case</span> ItemType.Range:
+                <span style="color:#66d9ef">return</span> SerializeRange(input.Value);
+            <span style="color:#66d9ef">default</span>:
+                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentOutOfRangeException(nameof(input.Type));
+        }
+    }
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> SerializeRange(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
+    {
+        <span style="color:#66d9ef">var</span> items = <span style="color:#66d9ef">value</span>.Split(<span style="color:#66d9ef">new</span><span style="color:#a6e22e">[]</span> { <span style="color:#e6db74">&#39;-&#39;</span>, <span style="color:#e6db74">&#39; &#39;</span> }, StringSplitOptions.RemoveEmptyEntries);
+        <span style="color:#66d9ef">if</span> (items.Length != <span style="color:#ae81ff">2</span>)
+        {
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentException(nameof(<span style="color:#66d9ef">value</span>));
+        }
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">$&#34;gte:{items[0]},lte:{items[1]}&#34;</span>;
+    }
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> SeriazlieGeo(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">value</span>)
+    {
+        <span style="color:#66d9ef">var</span> items = <span style="color:#66d9ef">value</span>.Split(<span style="color:#66d9ef">new</span><span style="color:#a6e22e">[]</span> { <span style="color:#e6db74">&#39;,&#39;</span>, <span style="color:#e6db74">&#39; &#39;</span> }, StringSplitOptions.RemoveEmptyEntries);
+        <span style="color:#66d9ef">if</span> (items.Length != <span style="color:#ae81ff">2</span>)
+        {
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentException(nameof(<span style="color:#66d9ef">value</span>));
+        }
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">$&#34;lat:{items[0]},lon:{items[1]}&#34;</span>;
+    }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ItemController</span>
+{
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ItemService _serializer;
+
+    <span style="color:#66d9ef">public</span> ItemController(ItemService serializer)
+    {
+        _serializer = serializer;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Process(Item item)
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">$&#34;Output is: {_serializer.Serialize(item)}&#34;</span>;
+    }
+}
+</code></pre></div>
+Now let&rsquo;s cover this code with tests.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ItemsServiceTests</span>
+{
+    <span style="color:#66d9ef">private</span> ItemController CreateSut()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> ItemController(<span style="color:#66d9ef">new</span> ItemService());
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IEnumerable&lt;<span style="color:#66d9ef">object</span><span style="color:#a6e22e">[]</span>&gt; SerializeTestData =&gt; <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">object</span><span style="color:#a6e22e">[]</span>&gt;
+    {
+        <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span><span style="color:#a6e22e"> []</span> { <span style="color:#66d9ef">new</span> Item
+        {
+            Type = ItemType.String,
+            Value = <span style="color:#e6db74">&#34;test value&#34;</span>
+        }, <span style="color:#e6db74">&#34;Output is: test value&#34;</span> },
+        <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span><span style="color:#a6e22e"> []</span> { <span style="color:#66d9ef">new</span> Item
+        {
+            Type = ItemType.Geo,
+            Value = <span style="color:#e6db74">&#34;45,54&#34;</span>
+        }, <span style="color:#e6db74">&#34;Output is: lat:45,lon:54&#34;</span> },
+        <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span><span style="color:#a6e22e"> []</span> { <span style="color:#66d9ef">new</span> Item
+        {
+            Type = ItemType.Range,
+            Value = <span style="color:#e6db74">&#34;45-54&#34;</span>
+        }, <span style="color:#e6db74">&#34;Output is: gte:45,lte:54&#34;</span> },
+
+    };<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">
+</span><span style="color:#a6e22e">    [Theory]
+</span><span style="color:#a6e22e">    [MemberData(nameof(SerializeTestData))]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Serialize(Item item, <span style="color:#66d9ef">string</span> expectedResult)
+    {
+        <span style="color:#75715e">//arrange
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> sut = CreateSut();
+
+        <span style="color:#75715e">//act
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> actualResult = sut.Process(item);
+
+        <span style="color:#75715e">//assert
+</span><span style="color:#75715e"></span>        Assert.Equal(actualResult, expectedResult);
+    }
+}
+</code></pre></div>
+So is the controller written in a testable fashion? Sure, we&rsquo;ve covered it with tests completely! Can we improve it somehow? I don&rsquo;t think so. But let us examine options we can find in some codebases that I&rsquo;ve encountered myself as well.</p>
+
+<h2 id="introducing-interface">Introducing interface</h2>
+
+<p>Some developers who are striving for loose coupling may object that injecting concrete realization into the controller is a violation of SOLID principles. Namely the principle of dependency inversion. So let&rsquo;s adhere to these principles and introduce an interface and inject it into service.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IItemService
+{
+    <span style="color:#66d9ef">string</span> Serialize(Item input);
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ItemController</span>
+{
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IItemService _serializer;
+
+    <span style="color:#66d9ef">public</span> ItemController(IItemService serializer)
+    {
+        _serializer = serializer;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Process(Item item)
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">$&#34;Output is: {_serializer.Serialize(item)}&#34;</span>;
+    }
+}
+</code></pre></div>
+Now given we don&rsquo;t change out tests we see them still passing. This means that we&rsquo;ve executed refactoring and our test suite assured us that we didn&rsquo;t break things. Exactly why we write our unit tests!</p>
+
+<p>Did adhering to SOLID somehow improved our code in this particular case? I don&rsquo;t think so. It was already concise and testable. Did it make it worse? Some of us (and me as well) who believe that <a href="https://wiki.c2.com/?SoftwareAsLiability">code is a liability, not an asset</a> think so. But is it critical? Frankly speaking, even when I&rsquo;m in charge of processes but my team feels that strictly conforming laws of SOLID has its values, I&rsquo;d rather adhere to the team will than try breaking it.</p>
+
+<h3 id="side-note-abstracting-away-volatile-dependencies">Side note: abstracting away volatile dependencies</h3>
+
+<p>Critical readers may tell that I&rsquo;m battling a strawman here and they might be right. While there is not much sense in abstracting away dependency by the interface in the example I&rsquo;ve provided this is quite a useful technique, the real benefit to testability comes when you abstract away volatile dependencies. By the term &ldquo;volatile dependencies&rdquo; I mean such that provide observable side effects (such as databases, email providers, etc). Using these dependencies directly in your test suite can make your tests unstable since they rely on external resources. So it perfectly makes sense to replace them with a test double that inherits injected interface.</p>
+
+<p>However other techniques are possible. One of them is extracting such side-effectful interactions into separate modules while unit-testing pure logic. I won&rsquo;t dive into details much on that matter since there already exists <a href="https://blog.ploeh.dk/2017/01/27/from-dependency-injection-to-dependency-rejection/">excellent explanation</a> of this technique.</p>
+
+<p>It&rsquo;s worth noting that some frameworks come with a built-in option to abstract-away volatile dependencies not based on interfaces. One such example is <a href="https://docs.microsoft.com/en-us/ef/core/providers/in-memory/?tabs=dotnet-core-cli">EFCore Inmemory Provider</a>.</p>
+
+<h2 id="refactoring-unit-tests">Refactoring(?) unit-tests</h2>
+
+<p>So since both designs are quite fine what is the point? As some of you might have guessed from the article our attention will be devoted to the unit-test suite. As the name implies unit-tests are designed to test separate units contrary to integration tests which test multiple units in integration.</p>
+
+<p>The thinking I find in many codebases is the natural unit of code is class so tests from the example are refactored as follows
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ItemControllerTests</span>
+{
+    <span style="color:#66d9ef">private</span> ItemController CreateSut()
+    {
+        <span style="color:#66d9ef">var</span> itemServiceMock = <span style="color:#66d9ef">new</span> Mock&lt;IItemService&gt;(MockBehavior.Strict);
+        itemServiceMock.Setup(e =&gt; e.Serialize(It.IsAny&lt;Item&gt;())).Returns(<span style="color:#e6db74">&#34;serialized&#34;</span>);
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> ItemController(itemServiceMock.Object);
+    }<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">
+</span><span style="color:#a6e22e">    [Fact]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ProcessWrapsSerializedOutput()
+    {
+        <span style="color:#75715e">//arrange
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> sut = CreateSut();
+
+        <span style="color:#75715e">//act
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> res = sut.Process(<span style="color:#66d9ef">new</span> Item { });
+
+        <span style="color:#75715e">//assert
+</span><span style="color:#75715e"></span>        Assert.Equal(<span style="color:#e6db74">&#34;Output is: serialized&#34;</span>, res);
+    }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ItemsServiceTests</span>
+{
+    <span style="color:#66d9ef">private</span> ItemService CreateSut()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> ItemService();
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IEnumerable&lt;<span style="color:#66d9ef">object</span><span style="color:#a6e22e">[]</span>&gt; SerializeTestData =&gt; <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">object</span><span style="color:#a6e22e">[]</span>&gt;
+    {
+        <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span><span style="color:#a6e22e"> []</span> { <span style="color:#66d9ef">new</span> Item
+        {
+            Type = ItemType.String,
+            Value = <span style="color:#e6db74">&#34;test value&#34;</span>
+        }, <span style="color:#e6db74">&#34;test value&#34;</span> },
+        <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span><span style="color:#a6e22e"> []</span> { <span style="color:#66d9ef">new</span> Item
+        {
+            Type = ItemType.Geo,
+            Value = <span style="color:#e6db74">&#34;45,54&#34;</span>
+        }, <span style="color:#e6db74">&#34;lat:45,lon:54&#34;</span> },
+        <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span><span style="color:#a6e22e"> []</span> { <span style="color:#66d9ef">new</span> Item
+        {
+            Type = ItemType.Range,
+            Value = <span style="color:#e6db74">&#34;45-54&#34;</span>
+        }, <span style="color:#e6db74">&#34;gte:45,lte:54&#34;</span> },
+
+    };<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">
+</span><span style="color:#a6e22e">    [Theory]
+</span><span style="color:#a6e22e">    [MemberData(nameof(SerializeTestData))]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Serialize(Item item, <span style="color:#66d9ef">string</span> expectedResult)
+    {
+        <span style="color:#75715e">//arrange
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> sut = CreateSut();
+
+        <span style="color:#75715e">//act
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> actualResult = sut.Serialize(item);
+
+        <span style="color:#75715e">//assert
+</span><span style="color:#75715e"></span>        Assert.Equal(actualResult, expectedResult);
+    }
+}
+</code></pre></div>
+Now we test both <code>ItemService</code> and also check that the correct method of <code>ItemService</code> is called inside <code>ItemController</code>. Is this design actually better? Let&rsquo;s take a look.</p>
+
+<h2 id="evolution-of-design">Evolution of design</h2>
+
+<p>You may have noticed that some of our business logic (if you can apply this term to such an over-simplistic example) namely wrapping serialized item with supplementary text resides inside <code>ItemController</code>. Let&rsquo;s say we want to follow thin controllers principle and extract this code inside the service.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Process(Item item)
+{
+    <span style="color:#66d9ef">var</span> serializedOutput = _serializer.Serialize(item);
+    <span style="color:#66d9ef">return</span> _serializer.Wrap(serializedOutput);
+}
+</code></pre></div>
+Since we&rsquo;ve refactored our code let&rsquo;s run test suite to check if we didn&rsquo;t break things.</p>
+
+<p><img src="/11/1.PNG" width="600"/></p>
+
+<p>What happened?</p>
+
+<pre><code>Moq.MockException : IItemService.Wrap(&quot;serialized&quot;) invocation failed with mock behavior Strict.
+All invocations on the mock must have a corresponding setup.
+</code></pre>
+
+<p>On the contrary, if we stick to our original testing strategy when testing multiple classes at once, our test suite will be green.</p>
+
+<p><img src="/11/2.PNG" width="600"/></p>
+
+<p>Turns out, the testing style from &ldquo;Refactoring unit-tests&rdquo; section represents a case of <a href="http://xunitpatterns.com/Fragile%20Test.html#Overspecified%20Software">overspecified software</a>. Instead of focusing on verifying the behavior, we&rsquo;re verifying implementation details which are subject to change. Such tests don&rsquo;t provide any additional confidence in our code but are brittle which causes dissatisfaction with unit-tests in general. Think about it this way: would your stakeholders ever care that you call the method of your <code>ItemService</code> two times or exactly once?</p>
+
+<p>That leads us to a conclusion that when we speak about testing a unit we should think about a unit of behavior, not a unit of code! Such tests allow us to focus on important aspects of the system under test thus increasing the value of our test suite.</p>
+
+<h3 id="side-note-respecting-srp">Side note: respecting SRP</h3>
+
+<p>Critical readers may observe that after we introduced another method to <code>ItemService</code> it started to violate the single responsibility principle. In this case, it was made solely to illustrate a case of brittle tests but generally speaking you should always take care when working with classes that have the suffix <code>Service</code> or <code>Manager</code> in their names as this is the first flag that indicates that responsibility of the class is defined not clearly enough.</p>
+
+<h2 id="cocnlusion">Cocnlusion</h2>
+
+<p>The main goal of this article is to show that we as engineers should understand the benefits and shortcomings of the principles we&rsquo;re applying instead of just blindly following them. For that reason, we&rsquo;ve taken a tour over service composition and harnessing a test suite. As we have seen following principles without understanding what they are about, leads us to brittle design. And while our first reaction may be to question principles themselves the main thing we really have to ask ourselves is whether we&rsquo;re applying them correctly.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

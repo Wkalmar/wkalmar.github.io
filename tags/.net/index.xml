@@ -6,10 +6,19 @@
     <description>Recent content in .NET on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 16 Apr 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/.net/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>It&#39;s not about how you inject your services, it&#39;s about how you test them</title>
+      <link>https://wkalmar.github.io/post/its-about-how-you-test/</link>
+      <pubDate>Sat, 16 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/its-about-how-you-test/</guid>
+      <description>It has been written a lot about the value of unit testing and still a lot of developers may have witnessed codebases with unit tests being too brittle or rarely discovering actual defects in software. Also some have questioned default architectural style supposed to make code testable. These are the reasons why a lot of developers openly question unit-testing while others just silently sabotage the process of writing unit-tests.</description>
+    </item>
     
     <item>
       <title>Overriding JSON serializer in Giraffe</title>
