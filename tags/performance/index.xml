@@ -6,10 +6,21 @@
     <description>Recent content in Performance on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 31 Oct 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 30 May 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/performance/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Leveraging lazy evaluation</title>
+      <link>https://wkalmar.github.io/post/leveraging-lazy-evaluation/</link>
+      <pubDate>Mon, 30 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/leveraging-lazy-evaluation/</guid>
+      <description>I&amp;rsquo;m usually skeptical about leetcode tasks since this is not something you&amp;rsquo;ll encounter in your daily line-of-business code. But the idea behind this particular task has fascinated me. So I&amp;rsquo;ll break it down here.
+I&amp;rsquo;ll provide a bit simplified version of the task so you could capture the gist of it more easily.
+Write an API that generates fancy sequences using the append, addAll, and multAll operations. Implement the Fancy class: Fancy() Initializes the object with an empty sequence.</description>
+    </item>
     
     <item>
       <title>Strive for short-lived synchronous communication</title>
