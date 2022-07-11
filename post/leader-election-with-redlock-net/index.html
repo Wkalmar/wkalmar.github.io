@@ -12,10 +12,12 @@
     
     <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Leader election with Redlock.net"/>
-<meta name="twitter:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. Consider a service which apart from other functionality runs once per day some mission-critical job which should be executed in a single instance."/>
+<meta name="twitter:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
+Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance."/>
 
     <meta property="og:title" content="Leader election with Redlock.net" />
-<meta property="og:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. Consider a service which apart from other functionality runs once per day some mission-critical job which should be executed in a single instance." />
+<meta property="og:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
+Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://wkalmar.github.io/post/leader-election-with-redlock-net/" />
 <meta property="article:published_time" content="2019-07-19T00:00:00&#43;00:00"/>
@@ -70,7 +72,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          3 min read
+          4 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -83,22 +85,40 @@
 
 <h2 id="why-locking-things">Why locking things</h2>
 
-<p>Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
-Consider a service which apart from other functionality runs once per day some mission-critical job which should be executed in a single instance. At the same time, the deployment of a single instance is counterproductive because microservice bears other functionality which would benefit from horizontal scaling. One may argue that we can split such microservice into even smaller microservice but I&rsquo;d be cautious against making microservices too granular.
-Another reason might be poor-man&rsquo;s failover scenario, where one instance of a service executes work, while other is idle and waits just in case the first instance fails for some reason.
-As a solution, I offer to elect a single leader which would handle shared resource exclusively at a single point of time.
-Such well-known leader election algorithms such as Bully algorithm or Ring algorithm require a lot of ceremony and knowledge of the logical topology of your system in order to be implemented. That&rsquo;s the reason why we&rsquo;ll have a look at leader election using a distributed lock.
-You should use this pattern when the tasks in a distributed application need careful coordination and there&rsquo;s no natural leader.
-As storage for a distributed lock, we&rsquo;ll use Redis. Redis is in-memory key-value storage so we&rsquo;ll take advantage of its speed. There is already a <a href="https://github.com/samcook/RedLock.net">library</a> that implements distributed lock over Redis. So we just have to make use of it.</p>
+<p>Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.</p>
+
+<p>Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance. At the same time, the deployment of a single instance is counterproductive because microservice bears other functionality which would benefit from horizontal scaling. One may argue that we can split such microservice into even smaller microservice but I&rsquo;d be cautious against making microservices too granular.</p>
+
+<p>Another reason might be poor-man&rsquo;s failover scenario, where one instance of a service executes work, while the other is idle and waits just in case the first instance fails for some reason.</p>
+
+<p>A possible solution is electing a single leader which would handle the shared resource exclusively at a single point in time.
+Such well-known leader election algorithms such as Bully algorithm or Ring algorithm require a lot of ceremony and knowledge of the logical topology of your system in order to be implemented. That&rsquo;s the reason why we&rsquo;ll have a look at leader election using a distributed lock.</p>
+
+<p>You should use this pattern when the tasks in a distributed application need careful coordination and there&rsquo;s no natural leader.</p>
+
+<h2 id="using-redis">Using Redis</h2>
+
+<p>As storage for a distributed lock, we&rsquo;ll use Redis. Redis has number of advantages:</p>
+
+<ul>
+<li>Redis is in-memory key-value storage which provides additional speed.</li>
+<li>It has ability to set TTL value for a key which allows us to expire lock. We will se later that this is the important part of the algotighm.</li>
+</ul>
+
+<p>There is already a <a href="https://github.com/samcook/RedLock.net">library</a> that implements distributed lock over Redis. So we just have to make use of it.</p>
 
 <h2 id="the-code">The code</h2>
 
-<p>The sample code can be accessed on <a href="https://github.com/Wkalmar/LeaderElection">github</a>. Let&rsquo;s break down what actually happens here.
-The idea behind leader election via distributed lock is whoever acquires lock over shared resource becomes a leader. So naturally, we have a lock key quite similarly to built-in C# <code>lock</code> construct.
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> _resource = <span style="color:#e6db74">&#34;the-thing-we-are-locking-on&#34;</span>;
+<p>The sample code can be accessed on <a href="https://github.com/Wkalmar/LeaderElection">github</a>. Let&rsquo;s break down what actually happens here.</p>
+
+<p>The idea behind leader election via distributed lock is whoever acquires lock over the shared resource becomes a leader. So naturally, we have a lock key quite similarly to built-in C# <code>lock</code> construct.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> _resource = <span style="color:#e6db74">&#34;the-thing-we-are-locking-on&#34;</span>;
 </code></pre></div>
-Obviously, the storage is a single point of failure so we have to make sure that it is reliable. RedLock.net which we use for our case allows us to use multiple instances of Redis instead of single in order to improve reliability.
-Here&rsquo;s how we create connection to Redis during start up.
+Obviously, the storage is a single point of failure so we have to make sure that it is reliable. RedLock.net which we use for our case allows us to use multiple instances of Redis instead of single in order to improve reliability.</p>
+
+<p>Here&rsquo;s how we create a connection to Redis during start-up.</p>
+
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">var</span> endPoints = <span style="color:#66d9ef">new</span> List&lt;RedLockEndPoint&gt;
 {
     <span style="color:#66d9ef">new</span> DnsEndPoint(<span style="color:#e6db74">&#34;redis1&#34;</span>, <span style="color:#ae81ff">6379</span>)
@@ -107,26 +127,43 @@ Here&rsquo;s how we create connection to Redis during start up.
 };
 _distributedLockFactory = RedLockFactory.Create(endPoints);
 </code></pre></div>
-Every instance try to acquire a lock once in a given period of time. If it succeeds it becomes a leader. If not it will try once again later.
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> TimeSpan _expiry = TimeSpan.FromSeconds(_expirySecondsCount);
-_acquireLockTimer = <span style="color:#66d9ef">new</span> Timer(<span style="color:#66d9ef">async</span> state =&gt; <span style="color:#66d9ef">await</span> TryAcquireLock((CancellationToken)state), _cts.Token, <span style="color:#ae81ff">0</span>, _expirySecondsCount * <span style="color:#ae81ff">1000</span>);
+
+<p>In case you need to provide password you may take advantage of <code>RedLockEndPoint</code></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">var</span> endpoint = <span style="color:#66d9ef">new</span> RedLockEndPoint(<span style="color:#66d9ef">new</span> DnsEndPoint(<span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#ae81ff">49153</span>));
+endpoint.Password = <span style="color:#e6db74">&#34;redispw&#34;</span>;
 </code></pre></div>
-However, the leader does not need to re-acquire a lock since it has auto-extend feature. At first encounter with RedLock.net this might be unintuitive so it should be noted. Let&rsquo;s have a look at TryAcquireLock method.
+
+<p>Each instance tries to acquire a lock once in a given period of time. If it succeeds it becomes a leader. If not, it will try once again later. <code>CreateLockAsync</code> has an overload that accepts the retry interval as well as the interval by which the lock is acquired. The method will block until the lock is acquired or until wait timeout provided as the parameter will expire</p>
+
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cs" data-lang="cs"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TryAcquireLock(CancellationToken token)
 {
     <span style="color:#66d9ef">if</span> (token.IsCancellationRequested)
         <span style="color:#66d9ef">return</span>;
 
-    <span style="color:#66d9ef">var</span> distributedLock = <span style="color:#66d9ef">await</span> _distributedLockFactory.CreateLockAsync(_resource, _expiry);
+    <span style="color:#66d9ef">var</span> distributedLock = <span style="color:#66d9ef">await</span> _distributedLockFactory.CreateLockAsync(
+        _resource,
+        _expiry,
+        _wait,
+        _retry,
+        token);
     <span style="color:#66d9ef">if</span> (distributedLock.IsAcquired)
     {
         DoLeaderJob();
-        _acquireLockTimer.Dispose(); <span style="color:#75715e">//no need to renew lock because of autoextend
-</span><span style="color:#75715e"></span>    }
+    }
 }
 </code></pre></div>
-As mentioned above we get rid of re-acquire timer as soon as an instance becomes a leader taking advantage of auto-extend feature.
-Once the instance fails the lock is released and is up to other instances for a taking.</p>
+
+<p>As you can see the lock expires after the provided amount of time which is the part of auto release mechanism of RedLock algorithm. As an author of the algorithm notes</p>
+
+<blockquote>
+<p>A distributed lock without an auto release mechanism, where the lock owner will hold it indefinitely, is basically useless. If the client holding the lock crashes and does not recover with full state in a short amount of time, a deadlock is created where the shared resource that the distributed lock tried to protect remains forever unaccessible. This creates a liveness issue that is unacceptable in most situations, so a sane distributed lock must be able to auto release itself.</p>
+</blockquote>
+
+<p>However, you do not need to re-acquire the lock explicitly in your code since it has auto-extend feature. At first encounter with RedLock.net this might be unintuitive so it should be noted. In simple words, you might think of it as a sort of leader health-check built into RedLock algorithm.</p>
+
+<p>As mentioned above we get rid of re-acquire timer as soon as an instance becomes a leader taking advantage of auto-extend feature.
+Once the instance fails the lock is released and is up to other instances for grabs.</p>
 
 <h2 id="summary">Summary</h2>
 

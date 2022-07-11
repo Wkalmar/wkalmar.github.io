@@ -83,7 +83,8 @@ Example Let&amp;rsquo;s assume you have a big data solution and you need to proc
       <pubDate>Fri, 19 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/leader-election-with-redlock-net/</guid>
-      <description>Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. Consider a service which apart from other functionality runs once per day some mission-critical job which should be executed in a single instance.</description>
+      <description>Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
+Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance.</description>
     </item>
     
     <item>
