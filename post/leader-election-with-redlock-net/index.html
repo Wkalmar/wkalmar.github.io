@@ -98,11 +98,11 @@ Such well-known leader election algorithms such as Bully algorithm or Ring algor
 
 <h2 id="using-redis">Using Redis</h2>
 
-<p>As storage for a distributed lock, we&rsquo;ll use Redis. Redis has number of advantages:</p>
+<p>As storage for a distributed lock, we’ll use Redis. Redis has a number of advantages:</p>
 
 <ul>
-<li>Redis is in-memory key-value storage which provides additional speed.</li>
-<li>It has ability to set TTL value for a key which allows us to expire lock. We will se later that this is the important part of the algotighm.</li>
+<li>Redis is in-memory key-value storage that provides additional speed.</li>
+<li>It has the ability to set TTL value for a key which allows us to expire lock. We will see later that this is the important part of the algotighm.</li>
 </ul>
 
 <p>There is already a <a href="https://github.com/samcook/RedLock.net">library</a> that implements distributed lock over Redis. So we just have to make use of it.</p>
