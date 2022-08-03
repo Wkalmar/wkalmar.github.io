@@ -155,9 +155,9 @@ You may think of this conclusion as far-fetched but I&rsquo;ve decided to write 
 }
 </code></pre></div>
 
-<p>The key is that using <code>Stream</code> allows us to process files in chunks instead of loading them into memory naively. While you may not notice this on small files but as soon as you have to deal with large files loading them into memory at once becomes quite costly.</p>
+<p>The key is that using Stream allows us to process files in chunks instead of loading them into memory naively. While you may not notice this on small files but as soon as you have to deal with large files loading them into memory at once becomes quite costly.</p>
 
-<p>Most of .NET methods that work with <code>byte[]</code> already exhibit <code>Stream</code> counterpart so it shouldn&rsquo;t be a problem to use it. When you provide your own API you should consider supplying a method that operates with <code>Stream</code> in a robust batch-by-batch fashion.</p>
+<p>Most .NET methods that work with <code>byte[]</code> already exhibit <code>Stream</code> counterpart so it shouldn&rsquo;t be a problem to use it. When you provide your own API you should consider supplying a method that operates with <code>Stream</code> in a robust batch-by-batch fashion.</p>
 
 <h2 id="implementing-our-own-batch-processing">Implementing our own batch processing</h2>
 
@@ -200,7 +200,7 @@ You may think of this conclusion as far-fetched but I&rsquo;ve decided to write 
 
 <h2 id="conclusion">Conclusion</h2>
 
-<p><code>Stream</code> APIs allow batch-by-batch processing which allows us to reduce memory consumption on big files. While on a first glance <code>Stream</code> API may seem as requiring more ceremony it&rsquo;s definitely a useful tool in one&rsquo;s toolbox.</p>
+<p><code>Stream</code> APIs allow batch-by-batch processing which allows us to reduce memory consumption on big files. At the first glance <code>Stream</code> API may seem as requiring more ceremony it&rsquo;s definitely a useful tool in one&rsquo;s toolbox.</p>
 
     </div>
     <div class="post-footer">

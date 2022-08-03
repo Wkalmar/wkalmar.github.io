@@ -78,7 +78,7 @@ Serverless is quite useful for this simple nanoservice. This brings some cost-sa
   <title>tag</title>
   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
 </svg>
-          <a class="tag" href="https://wkalmar.github.io/tags/go/">Go</a><a class="tag" href="https://wkalmar.github.io/tags/jwt/">JWT</a><a class="tag" href="https://wkalmar.github.io/tags/aws/">AWS</a><a class="tag" href="https://wkalmar.github.io/tags/serverless/">Serverless</a><a class="tag" href="https://wkalmar.github.io/tags/architecture/">Architecture</a></div></div>
+          <a class="tag" href="https://wkalmar.github.io/tags/go/">Go</a><a class="tag" href="https://wkalmar.github.io/tags/jwt/">JWT</a><a class="tag" href="https://wkalmar.github.io/tags/aws/">AWS</a><a class="tag" href="https://wkalmar.github.io/tags/serverless/">Serverless</a><a class="tag" href="https://wkalmar.github.io/tags/cloud/">Cloud</a><a class="tag" href="https://wkalmar.github.io/tags/architecture/">Architecture</a></div></div>
     </header>
     <div class="post-content">
       
@@ -93,14 +93,56 @@ Serverless is quite useful for this simple nanoservice. This brings some cost-sa
 
 <p><img src="/6/1.png" alt="drawing" width="800"/></p>
 
+<h2 id="project-structure">Project structure</h2>
+
+<p>In order to decouple our authentication logic from FaaS internals, our project will have 2 files: auth.go is where the authentication logic will reside and main.go where our logic is integrated with AWS lambda.</p>
+
+<p>Contents of main.go will look as follows:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">clientError</span>(<span style="color:#a6e22e">status</span> <span style="color:#66d9ef">int</span>) (<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyResponse</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyResponse</span>{
+		<span style="color:#a6e22e">StatusCode</span>: <span style="color:#a6e22e">status</span>,
+		<span style="color:#a6e22e">Body</span>:       <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusText</span>(<span style="color:#a6e22e">status</span>),
+	}, <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">HandleRequest</span>(<span style="color:#a6e22e">req</span> <span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyRequest</span>) (<span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyResponse</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">jwtToken</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Auth</span>(<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Body</span>)
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">clientError</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusForbidden</span>)
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyResponse</span>{
+		<span style="color:#a6e22e">StatusCode</span>: <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,
+		<span style="color:#a6e22e">Body</span>:       <span style="color:#a6e22e">jwtToken</span>,
+	}, <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">lambda</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">HandleRequest</span>)
+}</code></pre></div></p>
+
+<p>For this code to work we&rsquo;ll need <code>&quot;github.com/aws/aws-lambda-go/lambda&quot;</code> package.</p>
+
+<p>In order for our endpoint to be consumed from the outside because we have to provide the response in a special format for the API gateway. For this reason, we&rsquo;ve installed <code>github.com/aws/aws-lambda-go/events</code> package as well.</p>
+
+<p>Let&rsquo;s highlight the example of a successful response you may have noticed in the snippet above
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyResponse</span>{
+    <span style="color:#a6e22e">StatusCode</span>: <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,
+    <span style="color:#a6e22e">Body</span>:       <span style="color:#a6e22e">jwtToken</span>,
+}</code></pre></div></p>
+
+<p>Error response looks as below
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyResponse</span>{
+    <span style="color:#a6e22e">StatusCode</span>: <span style="color:#a6e22e">status</span>,
+    <span style="color:#a6e22e">Body</span>:       <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusText</span>(<span style="color:#a6e22e">status</span>),
+}</code></pre></div></p>
+
 <h2 id="authentication">Authentication</h2>
 
-<p>For our purposes, we’ll omit the usage of persistent storage since one pair of credentials is enough. Still, we need to hash stored password in with the hash function which will allow for the defender to verify password in acceptable time but will require for attacker a lot of resources to guess a password from the hash. Argon2 <a href="https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Password_Storage_Cheat_Sheet.md">is recommended</a> for such a task.
-So to start off we’ll need <code>&quot;github.com/aws/aws-lambda-go/lambda&quot;</code> package.
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-    <span style="color:#a6e22e">lambda</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">HandleRequest</span>)
-}</code></pre></div>
-Argon2 is implemented in <code>&quot;golang.org/x/crypto/argon2&quot;</code>
+<p>For our purposes, we’ll omit the usage of persistent storage since one pair of credentials is enough. Still, we need to hash stored password in with the hash function which will allow for the defender to verify password in acceptable time but will require for attacker a lot of resources to guess a password from the hash. Argon2 <a href="https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Password_Storage_Cheat_Sheet.md">is recommended</a> for such a task.</p>
+
+<p>Argon2 is implemented in <code>&quot;golang.org/x/crypto/argon2&quot;</code>
 So the authentication is quite straightforward
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">HandleRequest</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">credentials</span> <span style="color:#a6e22e">Credentials</span>) (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">error</span>) {
     <span style="color:#a6e22e">password</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">byte</span>{<span style="color:#ae81ff">221</span>, <span style="color:#ae81ff">35</span>, <span style="color:#ae81ff">76</span>, <span style="color:#ae81ff">136</span>, <span style="color:#ae81ff">29</span>, <span style="color:#ae81ff">114</span>, <span style="color:#ae81ff">39</span>, <span style="color:#ae81ff">75</span>, <span style="color:#ae81ff">41</span>, <span style="color:#ae81ff">248</span>, <span style="color:#ae81ff">62</span>, <span style="color:#ae81ff">216</span>, <span style="color:#ae81ff">149</span>, <span style="color:#ae81ff">39</span>, <span style="color:#ae81ff">248</span>, <span style="color:#ae81ff">154</span>, <span style="color:#ae81ff">243</span>, <span style="color:#ae81ff">203</span>, <span style="color:#ae81ff">188</span>, <span style="color:#ae81ff">106</span>, <span style="color:#ae81ff">206</span>, <span style="color:#ae81ff">74</span>, <span style="color:#ae81ff">122</span>, <span style="color:#ae81ff">47</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">61</span>, <span style="color:#ae81ff">173</span>, <span style="color:#ae81ff">43</span>, <span style="color:#ae81ff">102</span>, <span style="color:#ae81ff">173</span>, <span style="color:#ae81ff">222</span>, <span style="color:#ae81ff">125</span>}
@@ -166,16 +208,9 @@ Here’s how you set up them in AWS console</p>
 }</code></pre></div>
 Since an adversary who intercepts such token may act on behalf of super-user we don’t want this token to be effective infinitely because this will grant adversary infinite privileges. So we set token expiration time for one hour.</p>
 
-<h2 id="integration-with-api-gateway">Integration with API gateway</h2>
+<h2 id="testing-api-gateway">Testing API gateway</h2>
 
-<p>Turns out that our endpoint is yet not ready to be consumed from the outside because we have to provide the response of a special format for API gateway. To fix this lets install <code>github.com/aws/aws-lambda-go/events</code> package.</p>
-
-<p>Here’s the example of a successful response
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">events</span>.<span style="color:#a6e22e">APIGatewayProxyResponse</span>{
-    <span style="color:#a6e22e">StatusCode</span>: <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>,
-    <span style="color:#a6e22e">Body</span>:       <span style="color:#a6e22e">jwtToken</span>,
-}</code></pre></div>
-Now our API is ready to be consumed. Here’s a brief snippet from the main service that deletes a route only if the user has sufficient rights.
+<p>At this point, our API is ready to be consumed. Here’s a brief snippet from the main service that deletes a route only if the user has sufficient rights.
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> delete <span style="color:#f92672">(</span>id<span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span>
     <span style="color:#66d9ef">fun</span> <span style="color:#f92672">(</span>next<span style="color:#f92672">:</span> <span style="color:#a6e22e">HttpFunc</span><span style="color:#f92672">)</span> <span style="color:#f92672">(</span>httpContext <span style="color:#f92672">:</span> <span style="color:#a6e22e">HttpContext</span><span style="color:#f92672">)</span> <span style="color:#f92672">-&gt;</span>
     <span style="color:#66d9ef">let</span> result <span style="color:#f92672">=</span>
