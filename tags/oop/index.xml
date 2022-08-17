@@ -36,8 +36,8 @@ The code Recently I was tasked to write the code which converts Linux permission
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/method-can-be-made-static-may-hide-oo-design-flaw/</guid>
-      <description>Introduction Wandering through codebases, I&amp;rsquo;ve encountered some examples of code where ReSharper issues the above mentioned warning. Although the fix seems straightforward, the warning itself may hide a more subtle issue connected to object responsibility assignment.
-Toy Example Let&amp;rsquo;s take a look at the following code: public class EmailConstructor{private const string Signature = &amp;#34;Regards&amp;#34;;public string Construct(User recipient, string body){var builder = new StringBuilder();builder.Append($&amp;#34;Hello {GetNiceUserName(recipient)}&amp;#34;);builder.</description>
+      <description>Introduction Wandering through codebases, I&amp;rsquo;ve encountered some examples of code where Microsoft Code Analysis issues the above-mentioned warning. Although the fix seems straightforward, the warning itself may hide a more subtle issue connected to object responsibility assignment.
+Toy Example Let&amp;rsquo;s take a look at the following code: public class EmailConstructor{private const string Signature = &amp;#34;Regards&amp;#34;;public string Construct(User recipient, string body){var builder = new StringBuilder();builder.</description>
     </item>
     
   </channel>
