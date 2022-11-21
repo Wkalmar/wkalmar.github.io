@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Implementing clean architecture in Go // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Implementing clean architecture in Go"/>
+<meta name="twitter:description" content="It has been written a lot about the clean architecture. Its main value is the ability to maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+This is accomplished by writing dependency-free core domain logic and external adapters (be it database storage or API layer) that rely on the domain and not vice versa.
+In this article, we&rsquo;ll have a look at how clean architecture is implemented with a sample Go project."/>
+
+    <meta property="og:title" content="Implementing clean architecture in Go" />
+<meta property="og:description" content="It has been written a lot about the clean architecture. Its main value is the ability to maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+This is accomplished by writing dependency-free core domain logic and external adapters (be it database storage or API layer) that rely on the domain and not vice versa.
+In this article, we&rsquo;ll have a look at how clean architecture is implemented with a sample Go project." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/go-clean-architecture/" />
+<meta property="article:published_time" content="2022-10-20T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2022-10-20T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Implementing clean architecture in Go</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Oct 20, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          10 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/go/">Go</a><a class="tag" href="https://wkalmar.github.io/tags/architecture/">Architecture</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>It has been written a lot about the <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">clean architecture</a>. Its main value is the ability to maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.</p>
+
+<p>This is accomplished by writing dependency-free core domain logic and external adapters (be it database storage or API layer) that rely on the domain and not vice versa.</p>
+
+<p>In this article, we&rsquo;ll have a look at how clean architecture is implemented with a sample Go project. We&rsquo;ll cover some additional topics such as containerization and implementing OpenAPI specification with Swagger.</p>
+
+<p>While I&rsquo;ll highlight the points of interest in the article you may take a look at the entire project at <a href="https://github.com/Wkalmar/toggl-deck-management-api">my Github</a></p>
+
+<h2 id="project-requirements">Project requirements</h2>
+
+<p>We are required to provide an implementation of a REST API to simulate a deck of cards.</p>
+
+<p>We will need to provide the following methods to your API ho handle cards and decks:</p>
+
+<ul>
+<li>Create a new <strong>Deck</strong></li>
+<li>Open a <strong>Deck</strong></li>
+<li>Draw a <strong>Card</strong></li>
+</ul>
+
+<h4 id="create-a-new-deck">Create a new Deck</h4>
+
+<p>It would create the standard 52-card deck of French playing cards, It includes all thirteen ranks in each of the four suits: clubs (♣), diamonds (♦), hearts (♥) and spades (♠). You don&rsquo;t need to worry about Joker cards for this assignment.</p>
+
+<ul>
+<li>the deck to be shuffled or not —  by default the deck is sequential: A-spades, 2-spades, 3-spades&hellip; followed by diamonds, clubs, then hearts.</li>
+<li>the deck to be full or partial — by default it returns the standard 52 cards, otherwise the request would accept the wanted cards like this example <code>?cards=AS,KD,AC,2C,KH</code></li>
+</ul>
+
+<p>The response needs to return a JSON that would include:</p>
+
+<ul>
+<li>the deck id (<strong>UUID</strong>)</li>
+<li>the deck properties like shuffled (<strong>boolean</strong>) and total cards remaining in this deck (<strong>integer</strong>)</li>
+</ul>
+
+<pre><code class="language-json">{
+    &quot;deck_id&quot;: &quot;a251071b-662f-44b6-ba11-e24863039c59&quot;,
+    &quot;shuffled&quot;: false,
+    &quot;remaining&quot;: 30
+}
+</code></pre>
+
+<h4 id="open-a-deck">Open a Deck</h4>
+
+<p>It would return a given deck by its UUID. If the deck was not passed over or is invalid it should return an error. This method will &ldquo;open the deck&rdquo;, meaning that it will list all cards by the order it was created.</p>
+
+<p>The response needs to return a JSON that would include:
+- the deck id (UUID)
+- the deck properties like shuffled (boolean) and total cards remaining in this deck (integer)
+- all the remaining cards cards (card object)</p>
+
+<pre><code class="language-json">{
+    &quot;deck_id&quot;: &quot;a251071b-662f-44b6-ba11-e24863039c59&quot;,
+    &quot;shuffled&quot;: false,
+    &quot;remaining&quot;: 3,
+    &quot;cards&quot;: [
+        {
+            &quot;value&quot;: &quot;ACE&quot;,
+            &quot;suit&quot;: &quot;SPADES&quot;,
+            &quot;code&quot;: &quot;AS&quot;
+        },
+                {
+            &quot;value&quot;: &quot;KING&quot;,
+            &quot;suit&quot;: &quot;HEARTS&quot;,
+            &quot;code&quot;: &quot;KH&quot;
+        },
+        {
+            &quot;value&quot;: &quot;8&quot;,
+            &quot;suit&quot;: &quot;CLUBS&quot;,
+            &quot;code&quot;: &quot;8C&quot;
+        }
+    ]
+}
+</code></pre>
+
+<h4 id="draw-a-card">Draw a Card</h4>
+
+<p>We would draw a card(s) of a given Deck. If the deck was not passed over or invalid it should return an error. A count parameter needs to be provided to define how many cards to draw from the deck.</p>
+
+<p>The response needs to return a JSON that would include:
+- all the drawn cards cards (<strong>card object</strong>)</p>
+
+<pre><code class="language-json">{
+    &quot;cards&quot;: [
+        {
+            &quot;value&quot;: &quot;QUEEN&quot;,
+            &quot;suit&quot;: &quot;HEARTS&quot;,
+            &quot;code&quot;: &quot;QH&quot;
+        },
+        {
+            &quot;value&quot;: &quot;4&quot;,
+            &quot;suit&quot;: &quot;DIAMONDS&quot;,
+            &quot;code&quot;: &quot;4D&quot;
+        }
+    ]
+}
+</code></pre>
+
+<h2 id="designing-the-domain">Designing the domain</h2>
+
+<p>Since the domain is an integral part of our application we&rsquo;ll start designing our system from the domain.</p>
+
+<p>Let&rsquo;s encode our <code>Shape</code> and <code>Rank</code> types as <code>iota</code>. If you&rsquo;re acquainted with other languages you might think of it as an <code>enum</code> which is pretty neat since our task assumes some sort of build-in order so we might leverage underlying numerical value just for that matter.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">uint8</span>
+
+<span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">Spades</span> <span style="color:#a6e22e">Shape</span> = <span style="color:#66d9ef">iota</span>
+	<span style="color:#a6e22e">Diamonds</span>
+	<span style="color:#a6e22e">Clubs</span>
+	<span style="color:#a6e22e">Hearts</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Rank</span> <span style="color:#66d9ef">int8</span>
+
+<span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">Ace</span> <span style="color:#a6e22e">Rank</span> = <span style="color:#66d9ef">iota</span>
+	<span style="color:#a6e22e">Two</span>
+	<span style="color:#a6e22e">Three</span>
+	<span style="color:#a6e22e">Four</span>
+	<span style="color:#a6e22e">Five</span>
+	<span style="color:#a6e22e">Six</span>
+	<span style="color:#a6e22e">Seven</span>
+	<span style="color:#a6e22e">Eight</span>
+	<span style="color:#a6e22e">Nine</span>
+	<span style="color:#a6e22e">Ten</span>
+	<span style="color:#a6e22e">Jack</span>
+	<span style="color:#a6e22e">Queen</span>
+	<span style="color:#a6e22e">King</span>
+)</code></pre></div>
+With that done we can encode <code>Card</code> as a combination of its shape and rank</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Card</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Rank</span>  <span style="color:#a6e22e">Rank</span>
+	<span style="color:#a6e22e">Shape</span> <span style="color:#a6e22e">Shape</span>
+}</code></pre></div>
+One of the functions of domain-driven design is <a href="https://blog.janestreet.com/effective-ml-revisited/">making illegal states unrepresentable</a> but since all combinations of ranks and shapes are valid creating a card is pretty straightforward
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateCard</span>(<span style="color:#a6e22e">rank</span> <span style="color:#a6e22e">Rank</span>, <span style="color:#a6e22e">shape</span> <span style="color:#a6e22e">Shape</span>) <span style="color:#a6e22e">Card</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Card</span>{
+		<span style="color:#a6e22e">Rank</span>:  <span style="color:#a6e22e">rank</span>,
+		<span style="color:#a6e22e">Shape</span>: <span style="color:#a6e22e">shape</span>,
+	}
+}</code></pre></div>
+Now let&rsquo;s have a look at the deck
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Deck</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">DeckId</span>   <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">UUID</span>
+	<span style="color:#a6e22e">Shuffled</span> <span style="color:#66d9ef">bool</span>
+	<span style="color:#a6e22e">Cards</span>    []<span style="color:#a6e22e">Card</span>
+}</code></pre></div>
+The deck will exhibit three operations: create a deck, draw cards and count remaining cards.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateDeck</span>(<span style="color:#a6e22e">shuffled</span> <span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">cards</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Card</span>) <span style="color:#a6e22e">Deck</span> {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">cards</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+		<span style="color:#a6e22e">cards</span> = <span style="color:#a6e22e">initCards</span>()
+	}
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">shuffled</span> {
+		<span style="color:#a6e22e">shuffleCards</span>(<span style="color:#a6e22e">cards</span>)
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Deck</span>{
+		<span style="color:#a6e22e">DeckId</span>:   <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">New</span>(),
+		<span style="color:#a6e22e">Shuffled</span>: <span style="color:#a6e22e">shuffled</span>,
+		<span style="color:#a6e22e">Cards</span>:    <span style="color:#a6e22e">cards</span>,
+	}
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DrawCards</span>(<span style="color:#a6e22e">deck</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Deck</span>, <span style="color:#a6e22e">count</span> <span style="color:#66d9ef">uint8</span>) ([]<span style="color:#a6e22e">Card</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">count</span> &gt; <span style="color:#a6e22e">CountRemainingCards</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">deck</span>) {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;DrawCards: Insuffucient amount of cards in deck&#34;</span>)
+	}
+	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">deck</span>.<span style="color:#a6e22e">Cards</span>[:<span style="color:#a6e22e">count</span>]
+	<span style="color:#a6e22e">deck</span>.<span style="color:#a6e22e">Cards</span> = <span style="color:#a6e22e">deck</span>.<span style="color:#a6e22e">Cards</span>[<span style="color:#a6e22e">count</span>:]
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>, <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CountRemainingCards</span>(<span style="color:#a6e22e">d</span> <span style="color:#a6e22e">Deck</span>) <span style="color:#66d9ef">uint8</span> {
+	<span style="color:#66d9ef">return</span> uint8(len(<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Cards</span>))
+}</code></pre></div>
+Notice that when drawing cards we check whether we have a sufficient amount of cards to perform the operation. In order to signal in case we&rsquo;re unable to proceed we take advantage of Go <a href="https://go.dev/doc/effective_go#multiple-returns">multiple return values</a> feature.</p>
+
+<p>At this point we may observe one of the key benefits of clean architecture: the core domain logic has no external dependencies which greatly simplifies unit-testing. While most of them are trivial and we&rsquo;ll omit them for the sake of brevity, let&rsquo;s have a look at those that verify whether the deck is shuffled
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TestCreateDeck_ExactCardsArePassed_Shuffled</span>(<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">testing</span>.<span style="color:#a6e22e">T</span>) {
+	<span style="color:#a6e22e">jackOfDiamonds</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">CreateCard</span>(<span style="color:#a6e22e">Jack</span>, <span style="color:#a6e22e">Diamonds</span>)
+	<span style="color:#a6e22e">aceOfSpades</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">CreateCard</span>(<span style="color:#a6e22e">Ace</span>, <span style="color:#a6e22e">Spades</span>)
+	<span style="color:#a6e22e">queenOfHearts</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">CreateCard</span>(<span style="color:#a6e22e">Queen</span>, <span style="color:#a6e22e">Hearts</span>)
+	<span style="color:#a6e22e">cards</span> <span style="color:#f92672">:=</span> []<span style="color:#a6e22e">Card</span>{<span style="color:#a6e22e">jackOfDiamonds</span>, <span style="color:#a6e22e">aceOfSpades</span>, <span style="color:#a6e22e">queenOfHearts</span>}
+	<span style="color:#a6e22e">deck</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">CreateDeck</span>(<span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">cards</span><span style="color:#f92672">...</span>)
+	<span style="color:#a6e22e">deckCardsCount</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">map</span>[<span style="color:#a6e22e">Card</span>]<span style="color:#66d9ef">int</span>)
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">resCard</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">deck</span>.<span style="color:#a6e22e">Cards</span> {
+		<span style="color:#a6e22e">value</span>, <span style="color:#a6e22e">exists</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">deckCardsCount</span>[<span style="color:#a6e22e">resCard</span>]
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">exists</span> {
+			<span style="color:#a6e22e">value</span><span style="color:#f92672">++</span>
+			<span style="color:#a6e22e">deckCardsCount</span>[<span style="color:#a6e22e">resCard</span>] = <span style="color:#a6e22e">value</span>
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#a6e22e">deckCardsCount</span>[<span style="color:#a6e22e">resCard</span>] = <span style="color:#ae81ff">1</span>
+		}
+	}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">inputCard</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">cards</span> {
+		<span style="color:#a6e22e">value</span>, <span style="color:#a6e22e">found</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">deckCardsCount</span>[<span style="color:#a6e22e">inputCard</span>]
+		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">True</span>(<span style="color:#a6e22e">t</span>, <span style="color:#a6e22e">found</span>, <span style="color:#e6db74">&#34;Expected all cards to be present&#34;</span>)
+		<span style="color:#a6e22e">assert</span>.<span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">t</span>, <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">value</span>, <span style="color:#e6db74">&#34;Expected cards not to be duplicate&#34;</span>)
+	}
+}</code></pre></div>
+Obviously, we cannot verify the order of shuffled cards. What we can do instead is to verify that the shuffled deck satisfies properties of interest which are that we have every card present and we have no duplicate cards in our deck. Such a technique closely resembles <a href="https://dev.to/bohdanstupak1/property-based-tests-and-clean-architecture-are-perfect-fit-2f57">property-based testing</a>.</p>
+
+<p>As a side note, it&rsquo;s worth mentioning that in order to eliminate boilerplate assertion code we take advantage of <a href="github.com/stretchr/testify/assert">testify</a> library.</p>
+
+<h2 id="providing-the-api">Providing the API</h2>
+
+<p>Let&rsquo;s start off with defining routes.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Default</span>()
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">POST</span>(<span style="color:#e6db74">&#34;/create-deck&#34;</span>, <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">CreateDeckHandler</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/open-deck&#34;</span>, <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">OpenDeckHandler</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">PUT</span>(<span style="color:#e6db74">&#34;/draw-cards&#34;</span>, <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">DrawCardsHandler</span>)
+	<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Run</span>()
+}</code></pre></div>
+Some of the readers may be confused by the fact that the create-deck endpoint according to the requirements listed above accepts parameters as a part of URL request and might consider making this endpoint accept GET requests instead of POST. However, an important prerequisite of GET requests is that they exhibit <a href="https://www.restapitutorial.com/lessons/idempotency.html">idempotency</a> with is not the case for this endpoint. This is the exact reason why we stick with POST.</p>
+
+<p>Handlers follow the same patterns. We parse query parameters, based on them we create a domain entity, perform operations upon it, update the storage and return specialized DTO. Let&rsquo;s have a look at more details.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CreateDeckArgs</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Shuffled</span> <span style="color:#66d9ef">bool</span>   <span style="color:#e6db74">`form:&#34;shuffled&#34;`</span>
+	<span style="color:#a6e22e">Cards</span>    <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`form:&#34;cards&#34;`</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">OpenDeckArgs</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">DeckId</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`form:&#34;deck_id&#34;`</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">DrawCardsArgs</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">DeckId</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`form:&#34;deck_id&#34;`</span>
+	<span style="color:#a6e22e">Count</span>  <span style="color:#66d9ef">uint8</span>  <span style="color:#e6db74">`form:&#34;count&#34;`</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateDeckHandler</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">args</span> <span style="color:#a6e22e">CreateDeckArgs</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ShouldBind</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">args</span>) <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">domainCards</span> []<span style="color:#a6e22e">domain</span>.<span style="color:#a6e22e">Card</span>
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">Cards</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+			<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">card</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">strings</span>.<span style="color:#a6e22e">Split</span>(<span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">Cards</span>, <span style="color:#e6db74">&#34;,&#34;</span>) {
+				<span style="color:#a6e22e">domainCard</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">parseCardStringCode</span>(<span style="color:#a6e22e">card</span>)
+				<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+					<span style="color:#a6e22e">domainCards</span> = append(<span style="color:#a6e22e">domainCards</span>, <span style="color:#a6e22e">domainCard</span>)
+				} <span style="color:#66d9ef">else</span> {
+					<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Invalid request. Invalid card code &#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">card</span>)
+					<span style="color:#66d9ef">return</span>
+				}
+			}
+		}
+		<span style="color:#a6e22e">deck</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">domain</span>.<span style="color:#a6e22e">CreateDeck</span>(<span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">Shuffled</span>, <span style="color:#a6e22e">domainCards</span><span style="color:#f92672">...</span>)
+		<span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">deck</span>)
+		<span style="color:#a6e22e">dto</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">createClosedDeckDTO</span>(<span style="color:#a6e22e">deck</span>)
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#ae81ff">200</span>, <span style="color:#a6e22e">dto</span>)
+		<span style="color:#66d9ef">return</span>
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Ivalid request. Expecting query of type ?shuffled=&lt;bool&gt;&amp;cards=&lt;card1&gt;,&lt;card2&gt;,...&lt;cardn&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">OpenDeckHandler</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">args</span> <span style="color:#a6e22e">OpenDeckArgs</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ShouldBind</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">args</span>) <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">deckId</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">Parse</span>(<span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">DeckId</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Bad Request. Expecing request in format ?deck_id=&lt;uuid&gt;&#34;</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">deck</span>, <span style="color:#a6e22e">found</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">deckId</span>)
+		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">found</span> {
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Bad Request. Deck with given id not found&#34;</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">dto</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">createOpenDeckDTO</span>(<span style="color:#a6e22e">deck</span>)
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#ae81ff">200</span>, <span style="color:#a6e22e">dto</span>)
+		<span style="color:#66d9ef">return</span>
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Bad Request. Expecing request in format ?deck_id=&lt;uuid&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DrawCardsHandler</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">args</span> <span style="color:#a6e22e">DrawCardsArgs</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ShouldBind</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">args</span>) <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">deckId</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">Parse</span>(<span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">DeckId</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Bad Request. Expecing request in format ?deck_id=&lt;uuid&gt;&#34;</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">deck</span>, <span style="color:#a6e22e">found</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">deckId</span>)
+		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">found</span> {
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Bad Request. Expecting request in format ?deck_id=&lt;uuid&gt;&amp;count=&lt;uint8&gt;&#34;</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#a6e22e">cards</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">domain</span>.<span style="color:#a6e22e">DrawCards</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">deck</span>, <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">Count</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Bad Request. Failed to draw cards from the deck&#34;</span>)
+			<span style="color:#66d9ef">return</span>
+		}
+		<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">dto</span> []<span style="color:#a6e22e">CardDTO</span>
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">card</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">cards</span> {
+			<span style="color:#a6e22e">dto</span> = append(<span style="color:#a6e22e">dto</span>, <span style="color:#a6e22e">createCardDTO</span>(<span style="color:#a6e22e">card</span>))
+		}
+		<span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">deck</span>)
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">JSON</span>(<span style="color:#ae81ff">200</span>, <span style="color:#a6e22e">dto</span>)
+		<span style="color:#66d9ef">return</span>
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#ae81ff">400</span>, <span style="color:#e6db74">&#34;Bad Request. Expecting request in format ?deck_id=&lt;uuid&gt;&amp;count=&lt;uint8&gt;&#34;</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+}</code></pre></div></p>
+
+<h2 id="defining-openapi-specification">Defining OpenAPI specification</h2>
+
+<p>The way we should treat OpenAPI specification is not solely as a fancy docs generator (although it is sufficient for the sake of our article) but also as a standard for describing REST APIs that simplifies their consumption for the clients.</p>
+
+<p>Let&rsquo;s start off with declarative comments decorating our main method. These comments will be used later to automatically generate Swagger Specification. <a href="https://github.com/swaggo/swag#declarative-comments-format">Here</a> you can look up the format.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// @title Deck Management API
+</span><span style="color:#75715e">// @version 0.1
+</span><span style="color:#75715e">// @description This is a sample server server.
+</span><span style="color:#75715e">// @termsOfService http://swagger.io/terms/
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// @contact.name API Support
+</span><span style="color:#75715e">// @contact.url http://www.swagger.io/support
+</span><span style="color:#75715e">// @contact.email support@swagger.io
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// @license.name Apache 2.0
+</span><span style="color:#75715e">// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// @host localhost:8080
+</span><span style="color:#75715e">// @BasePath /
+</span><span style="color:#75715e">// @schemes http
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {</code></pre></div>
+The same goes for our handler. Let&rsquo;s take a look at one of them as an example.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// CreateDeckHandler godoc
+</span><span style="color:#75715e">// @Summary Creates new deck.
+</span><span style="color:#75715e">// @Description Creates deck that can be either shuffled or unshuffled. It can accept the list of exact cards which can be shuffled or unshuffled as well. In case no cards provided it returns a deck with 52 cards.
+</span><span style="color:#75715e">// @Accept */*
+</span><span style="color:#75715e">// @Produce json
+</span><span style="color:#75715e">// @Param shuffled query bool  true  &#34;indicates whether deck is shuffled&#34;
+</span><span style="color:#75715e">// @Param cards    query array false &#34;array of card codes i.e. 8C,AS,7D&#34;
+</span><span style="color:#75715e">// @Success 200 {object} ClosedDeckDTO
+</span><span style="color:#75715e">// @Router /create-deck [post]
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateDeckHandler</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {</code></pre></div>
+Now let&rsquo;s pull Swagger libraries</p>
+
+<pre><code>go get -v github.com/swaggo/swag/cmd/swag
+go get -v github.com/swaggo/gin-sagger
+go get -v github.com/swaggo/files
+</code></pre>
+
+<p>Now we&rsquo;re going to generate the specification</p>
+
+<pre><code>swag init -g main.go --output docs
+</code></pre>
+
+<p>This command will generate needed files inside the docs folder.</p>
+
+<p>The next step is updating our main.go file with the necessary imports
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;toggl-deck-management-api/docs&#34;</span>
+<span style="color:#a6e22e">swaggerFiles</span> <span style="color:#e6db74">&#34;github.com/swaggo/files&#34;</span>
+<span style="color:#a6e22e">ginSwagger</span> <span style="color:#e6db74">&#34;github.com/swaggo/gin-swagger&#34;</span></code></pre></div>
+And the endpoint
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">url</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ginSwagger</span>.<span style="color:#a6e22e">URL</span>(<span style="color:#e6db74">&#34;/swagger/doc.json&#34;</span>)
+<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/swagger/*any&#34;</span>, <span style="color:#a6e22e">ginSwagger</span>.<span style="color:#a6e22e">WrapHandler</span>(<span style="color:#a6e22e">swaggerFiles</span>.<span style="color:#a6e22e">Handler</span>, <span style="color:#a6e22e">url</span>))</code></pre></div>
+With all that done, now we can run our application and see documentation generated by Swagger.
+<img src="/13/1.PNG" width="600px"/></p>
+
+<h2 id="containerizing-api">Containerizing API</h2>
+
+<p>Last but not least is how we are going to deploy our application. The traditional way of doing this is installing the runtime on a dedicated server and running the application over the runtime installed.</p>
+
+<p>Containerization is the convenient way to package runtime along with the application which might be convenient if we want to utilize auto-scale functionality and we might not have all the needed servers with the environment installed at our disposal.</p>
+
+<p>Docker is the most popular containerization solution so we&rsquo;ll take advantage of it. To do so we&rsquo;ll create dockerfile at the root of our project.</p>
+
+<p>The first thing we&rsquo;ll do is chose the runtime image we&rsquo;ll base our application upon</p>
+
+<pre><code>FROM golang:1.18-bullseye
+</code></pre>
+
+<p>After that, we&rsquo;ll copy the source into the workdirectory and build it</p>
+
+<pre><code>RUN mkdir /app
+COPY . /app
+WORKDIR /app
+RUN go build -o server .
+</code></pre>
+
+<p>The last step is exposing the port to the outside world and running the application</p>
+
+<pre><code>EXPOSE 8080
+CMD [ &quot;/app/server&quot; ]
+</code></pre>
+
+<p>Now, granted Docker is installed on our machine, we can run the app with</p>
+
+<pre><code>docker build -t &lt;image-name&gt; .
+docker run -it --rm -p 8080:8080 &lt;image-name&gt;
+</code></pre>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this article, we&rsquo;ve covered the holistic process of writing clean architecture API in Go. Starting from the well-tested domain, providing an API layer for it, documenting it using OpenAPI standard, and packaging our runtime together with the app and thus simplifying the deployment process.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

@@ -107,6 +107,15 @@ The whole project referred in the article is provided inside the following [Gith
     </item>
     
     <item>
+      <title>Refactoring F# Imperative Code Towards Declarative</title>
+      <link>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</link>
+      <pubDate>Tue, 22 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/refactoring-fsharp-imperative-code-towards-declarative/</guid>
+      <description>Recently, perusing the internet, I found an article which implements the trapezoidal rule in F#. open Systemlet main() =//Function to integratelet f x =10.0*x*xlet trapezoidal a b N =let mutable xi = alet h = (b - a)/Nlet mutable suma = h/2.0*(f(a)+f(b))for x in 1 .. System.Convert.ToInt32(N) dolet mutable xi1 = xi + hsuma &amp;lt;- suma + h*f(xi1)xi &amp;lt;- xi1suma//some usage examplelet fromA = 0.</description>
+    </item>
+    
+    <item>
       <title>End-to-end Testing of Your Web Applications with Canopy</title>
       <link>https://wkalmar.github.io/post/end-to-end-testing-of-your-web-applications-with-c/</link>
       <pubDate>Mon, 14 May 2018 00:00:00 +0000</pubDate>
