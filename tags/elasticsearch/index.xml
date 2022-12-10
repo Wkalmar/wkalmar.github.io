@@ -6,10 +6,20 @@
     <description>Recent content in Elasticsearch on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 Jan 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 10 Dec 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Applying custom similarity calculation in Elasticsearch</title>
+      <link>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</link>
+      <pubDate>Sat, 10 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</guid>
+      <description>Presently we&amp;rsquo;ve been discussing improving elasticsearch autocomplete functionality. For most cases, this is enough. However, in our case, things turned out to be not that rosy and we&amp;rsquo;ll have a look at why.
+Setup In our system we single document type per index. Since we have quite a lot of types in our system and the number of types and their mappings can be changed by the end-user, we have unpredictable number of indices.</description>
+    </item>
     
     <item>
       <title>Improving Elasticsearch-based autocomplete</title>
