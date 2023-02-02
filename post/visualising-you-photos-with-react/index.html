@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Visualising your photos on a map with React Native // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Visualising your photos on a map with React Native"/>
+<meta name="twitter:description" content="Back in the looney days before russian full-scale invasion, I&rsquo;ve used to travel a lot domestically and internationally. Also at that time, I had a Nokia Lumia phone with a nice widget that displayed the locations of the photos I&rsquo;ve taken on a map. I enjoyed looking at it realizing how big is the world and how much I have to travel in order to discover it.
+While I have a similar widget in my Android phone I wasn&rsquo;t satisfied with its look and feel."/>
+
+    <meta property="og:title" content="Visualising your photos on a map with React Native" />
+<meta property="og:description" content="Back in the looney days before russian full-scale invasion, I&rsquo;ve used to travel a lot domestically and internationally. Also at that time, I had a Nokia Lumia phone with a nice widget that displayed the locations of the photos I&rsquo;ve taken on a map. I enjoyed looking at it realizing how big is the world and how much I have to travel in order to discover it.
+While I have a similar widget in my Android phone I wasn&rsquo;t satisfied with its look and feel." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/visualising-you-photos-with-react/" />
+<meta property="article:published_time" content="2023-02-02T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2023-02-02T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Visualising your photos on a map with React Native</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 2, 2023
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          8 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/javascript/">Javascript</a><a class="tag" href="https://wkalmar.github.io/tags/typescript/">Typescript</a><a class="tag" href="https://wkalmar.github.io/tags/react.js/">React.js</a><a class="tag" href="https://wkalmar.github.io/tags/frontend/">Frontend</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>Back in the looney days before russian full-scale invasion, I&rsquo;ve used to travel a lot domestically and internationally. Also at that time, I had a Nokia Lumia phone with a nice widget that displayed the locations of the photos I&rsquo;ve taken on a map. I enjoyed looking at it realizing how big is the world and how much I have to travel in order to discover it.</p>
+
+<p>While I have a similar widget in my Android phone I wasn&rsquo;t satisfied with its look and feel. Another issue for me was that the last time I touched fron-end was <a href="https://wkalmar.github.io/post/cooking-angular-js-with-typescript/">4 years ago</a> and since then I hadn&rsquo;t much experience with modern SPA-frameworks. The desire to bridge that gap and to have the app I wanted motivated me to create my own.</p>
+
+<p>The ultimate result looks like this.</p>
+
+<p><img src="/14/1.jpg"></p>
+
+<p>In case you want to try out the app you can download it from the <a href="https://play.google.com/store/apps/details?id=com.wkalmar.Locate">Play Market</a>. The source code is available on <a href="https://github.com/Wkalmar/locate">Github</a> in case you want to follow along with the code in the article.</p>
+
+<h2 id="constraints-and-tradeoffs">Constraints and tradeoffs</h2>
+
+<p>The reason behind choosing my tech stack was to get to know modern SPA frameworks better. So naturally, my choice was <a href="https://reactnative.dev/">React Native</a>. As a novice in mobile development, I decided to start with <a href="https://expo.dev/">Expo</a>. It is a nice way to start the project since it contains a couple of templates as well as a nice debugging toolset.</p>
+
+<p>What I&rsquo;ve learned is that the convenience of Expo is not free. Here are some disadvantages:
+- Implicit integration with <a href="https://betterprogramming.pub/how-expo-is-fooling-everyone-adf7f34d7528">Facebook SDK</a>
+- Depreciation of some crucial libs such as <a href="https://docs.expo.dev/versions/v45.0.0/sdk/admob/">expo-ads-admob</a>
+- Deprecation of <a href="https://blog.expo.dev/turtle-goes-out-to-sea-d334db2a6b60">classic build</a>.</p>
+
+<p>However, these shortcomings can be remediated with EAS build.</p>
+
+<h2 id="visualization-algorithm">Visualization algorithm</h2>
+
+<p>In order to provide the best possible look and feel we need to give a user a feeling that something is happening while the application is enumerating the photos and obtaining their geodata. So rendering sequence looks as below:</p>
+
+<ol>
+<li>Display a splash screen</li>
+<li>Replace it with a screen that resembles a splash screen but additionally provides information about loading progress.</li>
+<li>Once photos are processed, display a map with the points.</li>
+</ol>
+
+<p>Let&rsquo;s briefly look at these points.</p>
+
+<h2 id="displaying-progress-information">Displaying progress information</h2>
+
+<p>The root component code is provided below
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#a6e22e">SplashScreen</span>.<span style="color:#a6e22e">preventAutoHideAsync</span>().<span style="color:#66d9ef">catch</span>(() =&gt; {
+  <span style="color:#75715e">/* reloading the app might trigger some race conditions, ignore them */</span>
+});
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">App</span> <span style="color:#f92672">=</span> () =&gt; {
+  <span style="color:#66d9ef">return</span> (
+    &lt;<span style="color:#f92672">AnimatedAppLoader</span>/&gt;
+  );
+}</code></pre></div>
+Pretty straightforward. We prevent the automatic hiding of a splashscreen and render a single component. Let&rsquo;s dive deeper into the code of this component.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx">  <span style="color:#66d9ef">return</span> (
+      &lt;<span style="color:#f92672">View</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{{</span> <span style="color:#a6e22e">flex</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#a6e22e">1</span> }}&gt;
+        &lt;<span style="color:#f92672">AnimatedSplashScreen</span>/&gt;
+      &lt;/<span style="color:#f92672">View</span>&gt;
+    )
+  }</code></pre></div>
+The point of our interest is <code>AnimatedSplashScreen</code> component.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AnimatedSplashScreen</span> <span style="color:#f92672">=</span> () =&gt; {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">textAnimation</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useMemo</span>(() =&gt; <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Animated</span>.<span style="color:#a6e22e">Value</span>(<span style="color:#ae81ff">0</span>), []);
+    <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">isAppReady</span>, <span style="color:#a6e22e">setAppReady</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>(<span style="color:#66d9ef">false</span>);
+    <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">isTextAnimationIsReady</span>, <span style="color:#a6e22e">setTextAnimationIsReady</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>(<span style="color:#66d9ef">false</span>);
+    <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">loadingText</span>, <span style="color:#a6e22e">setLoadingText</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>(<span style="color:#e6db74">&#34;&#34;</span>);
+
+    <span style="color:#a6e22e">useEffect</span>(() =&gt; {
+      <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">isAppReady</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">isTextAnimationIsReady</span>) {
+        <span style="color:#a6e22e">Animated</span>.<span style="color:#a6e22e">timing</span>(<span style="color:#a6e22e">textAnimation</span>, {
+          <span style="color:#a6e22e">toValue</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+          <span style="color:#a6e22e">duration</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">200</span>,
+          <span style="color:#a6e22e">easing</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">Easing</span>.<span style="color:#a6e22e">inOut</span>(<span style="color:#a6e22e">Easing</span>.<span style="color:#a6e22e">exp</span>),
+          <span style="color:#a6e22e">useNativeDriver</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+        }).<span style="color:#a6e22e">start</span>();
+      }
+    }, [<span style="color:#a6e22e">isAppReady</span>, <span style="color:#a6e22e">isTextAnimationIsReady</span>]);
+
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">loadLocations</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">markersArray</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">Location</span>[] <span style="color:#f92672">=</span> [];
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">hasMoreData</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+      <span style="color:#66d9ef">try</span> {
+        <span style="color:#66d9ef">while</span> (<span style="color:#a6e22e">hasMoreData</span>) {
+          <span style="color:#75715e">//loading imahe locations is omitted by now
+</span><span style="color:#75715e"></span>          <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">now</span> <span style="color:#f92672">=</span> Date.<span style="color:#a6e22e">now</span>();
+          <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">delta</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">now</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">timeStart</span>;
+          <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">delta</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">9000</span>) {
+            <span style="color:#a6e22e">setLoadingText</span>(<span style="color:#e6db74">`We&#39;ve processed </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">cursor</span>.<span style="color:#a6e22e">endCursor</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> items. There&#39;s more work though...`</span>)
+          } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">delta</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5000</span>) {
+            <span style="color:#a6e22e">setLoadingText</span>(<span style="color:#e6db74">&#34;Working on it...&#34;</span>)
+          } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">delta</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">2000</span>) {
+            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">isTextAnimationIsReady</span>) {
+              <span style="color:#a6e22e">setTextAnimationIsReady</span>(<span style="color:#66d9ef">true</span>);
+            }
+            <span style="color:#a6e22e">setLoadingText</span>(<span style="color:#e6db74">&#34;Hold on! We&#39;re doing some magic just for you...&#34;</span>)
+          }
+        }
+      } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">e</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">e</span>)
+      } <span style="color:#66d9ef">finally</span> {
+        <span style="color:#a6e22e">setAppReady</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">hasMoreData</span>);
+      }
+    }
+
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">onImageLoaded</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useCallback</span>(<span style="color:#66d9ef">async</span> () =&gt; {
+      <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">SplashScreen</span>.<span style="color:#a6e22e">hideAsync</span>();
+      <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">loadLocations</span>();
+    }, []);
+
+    <span style="color:#66d9ef">return</span> (
+      &lt;<span style="color:#f92672">View</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{{</span> <span style="color:#a6e22e">flex</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#a6e22e">1</span> }}&gt;
+        {<span style="color:#a6e22e">isAppReady</span>  <span style="color:#f92672">&amp;&amp;</span> (&lt;<span style="color:#f92672">MainScreen</span>/&gt;)}
+        {<span style="color:#f92672">!</span><span style="color:#a6e22e">isAppReady</span> <span style="color:#f92672">&amp;&amp;</span> (&lt;<span style="color:#f92672">Animated</span><span style="color:#a6e22e">.View</span>
+          <span style="color:#a6e22e">pointerEvents</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>
+          <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{[</span>
+            {
+              <span style="color:#a6e22e">backgroundColor</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#a6e22e">Constants.manifest</span><span style="color:#960050;background-color:#1e0010">?</span><span style="color:#a6e22e">.splash</span><span style="color:#960050;background-color:#1e0010">?</span><span style="color:#a6e22e">.backgroundColor</span>
+            }<span style="color:#960050;background-color:#1e0010">,</span>
+          <span style="color:#960050;background-color:#1e0010">]</span>}&gt;
+          &lt;<span style="color:#f92672">Animated</span><span style="color:#a6e22e">.Text</span>&gt;
+            {<span style="color:#a6e22e">loadingText</span>}
+          <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/Animated.Text&gt;</span>
+          &lt;<span style="color:#f92672">Animated</span><span style="color:#a6e22e">.Image</span>
+            <span style="color:#a6e22e">source</span><span style="color:#f92672">=</span><span style="color:#e6db74">{require(&#34;../assets/splash.png&#34;)}</span>
+            <span style="color:#a6e22e">onLoadEnd</span><span style="color:#f92672">=</span><span style="color:#e6db74">{onImageLoaded}</span>
+            <span style="color:#a6e22e">fadeDuration</span><span style="color:#f92672">=</span><span style="color:#e6db74">{0}</span>
+          /&gt;
+        <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/Animated.View&gt;)}</span>
+      &lt;/<span style="color:#f92672">View</span>&gt;
+    );
+  }</code></pre></div>
+What happens here is that we replace our splash screen with <code>Animated.Image</code> that looks exactly like the splash screen. Once the image is ready we call <code>onImageLoaded</code> callback. Now when our image is ready we can hide the splashscreen and call <code>loadLocations</code>. This method performs the work needed to enumerate location of our photos and meanwhile takes charge of animation to keep the user engaged.</p>
+
+<p>For now, everything we need to know about <code>loadLocations</code> method is that it does image processing batch by batch which is indicated by <code>while (hasMoreData)</code>. This means that inside each loop iteration, we can check how much time elapsed and trigger text animation accordingly. Once it&rsquo;s time to display text animation we update the state with <code>setTextAnimationIsReady(true);</code>. This in turn triggers <code>Animated.timing</code>. Which changes the opacity of <code>Animated.Text</code>.</p>
+
+<p>Once we&rsquo;re done we update the state with <code>setAppReady</code> and substitute our animation component with <code>MainScreen</code>.</p>
+
+<h2 id="loading-image-location">Loading image location</h2>
+
+<p>In order to enumerate the contents of our gallery we&rsquo;ll use <a href="https://docs.expo.dev/versions/latest/sdk/media-library/">Expo Medialibrary</a>.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">medialibraryRequest</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">AssetsOptions</span> <span style="color:#f92672">=</span> {}
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">loadLocations</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">markersArray</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">Location</span>[] <span style="color:#f92672">=</span> [];
+  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">hasMoreData</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+  <span style="color:#66d9ef">try</span> {
+    <span style="color:#66d9ef">let</span> { <span style="color:#a6e22e">status</span> } <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">requestPermissionsAsync</span>();
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">markersSet</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">Set</span>&lt;<span style="color:#f92672">MediaLibrary</span><span style="color:#a6e22e">.Location</span>&gt; <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Set</span>();
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">albums</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">getAlbumsAsync</span>();
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cameraAlbum</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">albums</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">p</span> =&gt; <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">title</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#34;Camera&#34;</span>);
+    <span style="color:#a6e22e">medialibraryRequest</span>.<span style="color:#a6e22e">album</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cameraAlbum</span>;
+    <span style="color:#66d9ef">while</span> (<span style="color:#a6e22e">hasMoreData</span>) {
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">cursor</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">getAssetsAsync</span>(<span style="color:#a6e22e">medialibraryRequest</span>);
+      <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">populateLocationsIntoSet</span>(<span style="color:#a6e22e">cursor</span>, <span style="color:#a6e22e">markersSet</span>);
+      <span style="color:#a6e22e">hasMoreData</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cursor</span>.<span style="color:#a6e22e">hasNextPage</span>;
+      <span style="color:#a6e22e">medialibraryRequest</span>.<span style="color:#a6e22e">after</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cursor</span>.<span style="color:#a6e22e">endCursor</span>
+    }
+    <span style="color:#a6e22e">markersArray</span> <span style="color:#f92672">=</span> [...<span style="color:#a6e22e">markersSet</span>]
+    <span style="color:#a6e22e">setMarkers</span>(<span style="color:#a6e22e">markersArray</span>);
+  } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">e</span>) {
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">e</span>)
+  } <span style="color:#66d9ef">finally</span> {
+    <span style="color:#a6e22e">setAppReady</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">hasMoreData</span>);
+  }
+}
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">populateLocationsIntoSet</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (
+  <span style="color:#a6e22e">cursor</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">PagedInfo</span>&lt;<span style="color:#f92672">MediaLibrary</span><span style="color:#a6e22e">.Asset</span>&gt;,
+  <span style="color:#a6e22e">markersSet</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">Set</span>&lt;<span style="color:#f92672">MediaLibrary</span><span style="color:#a6e22e">.Location</span>&gt;) =&gt; {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">allowedTypes</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">MediaTypeValue</span>[] <span style="color:#f92672">=</span> [
+      <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">MediaType</span>.<span style="color:#a6e22e">photo</span>,
+      <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">MediaType</span>.<span style="color:#a6e22e">video</span>
+    ]
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">markersArray</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> Promise.<span style="color:#a6e22e">all</span>(<span style="color:#a6e22e">cursor</span>.<span style="color:#a6e22e">assets</span>.<span style="color:#a6e22e">map</span>(<span style="color:#66d9ef">async</span> <span style="color:#a6e22e">element</span> =&gt; {
+      <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">allowedTypes</span>.<span style="color:#a6e22e">includes</span>(<span style="color:#a6e22e">element</span>.<span style="color:#a6e22e">mediaType</span>)) {
+        <span style="color:#66d9ef">return</span>;
+      }
+      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">image</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">getAssetInfoAsync</span>(<span style="color:#a6e22e">element</span>);
+      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">location</span>;
+    }));
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">markersArray</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span>) {
+      <span style="color:#66d9ef">return</span>;
+    }
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">nonNullLocations</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">markersArray</span>.<span style="color:#a6e22e">filter</span>(<span style="color:#a6e22e">p</span> =&gt; <span style="color:#a6e22e">p</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">undefined</span>) <span style="color:#a6e22e">as</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">Location</span>[];
+    <span style="color:#a6e22e">nonNullLocations</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">markersSet</span>.<span style="color:#a6e22e">add</span>, <span style="color:#a6e22e">markersSet</span>);
+}</code></pre></div>
+
+<p>We start off with requesting permissions to access the media library using <code>requestPermissionsAsync</code>. Then we iterate &ldquo;Camera&rdquo; album contents with the method <code>getAssetsAsync</code> that acts as a cursor obtaining items batch by batch. Since the resulting items contain only basic information about the item we need to perform additional request to obtain geolocation. We do this inside <code>populateLocationsIntoSet</code> using <code>getAssetInfoAsync</code> method.</p>
+
+<h2 id="displaying-locations-on-a-map">Displaying locations on a map</h2>
+
+<p>To display locations on a map I use <a href="https://www.npmjs.com/package/react-native-maps">react-native-maps</a>.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">MainScreen</span> <span style="color:#f92672">=</span> ({<span style="color:#a6e22e">markers</span>}<span style="color:#f92672">:</span> <span style="color:#a6e22e">MainScreenProps</span>) =&gt; {
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">map</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useRef</span>&lt;<span style="color:#f92672">MapView</span>&gt;(<span style="color:#66d9ef">null</span>);
+
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fitAllMarkers</span> <span style="color:#f92672">=</span> () =&gt; {
+      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">boundingBox</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">markers</span>
+      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">markers</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">1</span>) {
+        <span style="color:#a6e22e">markers</span>.<span style="color:#a6e22e">push</span>({<span style="color:#a6e22e">latitude</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">markers</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">latitude</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0.1</span>, <span style="color:#a6e22e">longitude</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">markers</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">longitude</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0.1</span>})
+      }
+      <span style="color:#a6e22e">map</span>.<span style="color:#a6e22e">current</span><span style="color:#f92672">?</span>.<span style="color:#a6e22e">fitToCoordinates</span>(<span style="color:#a6e22e">boundingBox</span>, {
+        <span style="color:#a6e22e">edgePadding</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">DEFAULT_PADDING</span>,
+        <span style="color:#a6e22e">animated</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+    })};
+
+    <span style="color:#66d9ef">return</span> (
+       &lt;<span style="color:#f92672">View</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{styles.container}</span>&gt;
+        &lt;<span style="color:#f92672">MapView</span> <span style="color:#a6e22e">ref</span><span style="color:#f92672">=</span><span style="color:#e6db74">{map}</span>
+          <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{styles.map}</span>
+          <span style="color:#a6e22e">onMapLoaded</span><span style="color:#f92672">=</span><span style="color:#e6db74">{fitAllMarkers}</span>&gt;
+          {<span style="color:#a6e22e">markers</span>.<span style="color:#a6e22e">map</span>((<span style="color:#a6e22e">item</span> <span style="color:#f92672">:</span> <span style="color:#a6e22e">MediaLibrary</span>.<span style="color:#a6e22e">Location</span>) =&gt; (
+            &lt;<span style="color:#f92672">Marker</span>
+              <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span><span style="color:#e6db74">{Math.random()}</span>
+              <span style="color:#a6e22e">coordinate</span><span style="color:#f92672">=</span><span style="color:#e6db74">{{</span>
+                <span style="color:#a6e22e">latitude</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#a6e22e">item.latitude</span><span style="color:#960050;background-color:#1e0010">,</span>
+                <span style="color:#a6e22e">longitude</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#a6e22e">item.longitude</span><span style="color:#960050;background-color:#1e0010">,</span>
+              }}
+              <span style="color:#a6e22e">icon</span><span style="color:#f92672">=</span><span style="color:#e6db74">{require(&#39;../assets/marker.png&#39;)}</span>&gt;
+            &lt;/<span style="color:#f92672">Marker</span>&gt;
+          ))}
+        &lt;/<span style="color:#f92672">MapView</span>&gt;
+    );
+  }</code></pre></div>
+In the code above we use <code>MapView</code> component and for each item inside <code>markers</code> array we place a <code>Marker</code> on the map. Once the map is loaded we focus it on the area where the markers are set with <code>fitToCoordinates</code> method.</p>
+
+<h2 id="sharing-your-map">Sharing your map</h2>
+
+<p>I guess you can never imagine the modern world without people sharing stuff on social networks. So the crucial piece of functionality I wanted to embed in my application is &ldquo;Share&rdquo; button.</p>
+
+<p>To share the results we&rsquo;ll require the combination of <a href="https://github.com/gre/react-native-view-shot">react-native-view-shot</a> that captures the state of our screen once the map is rendered and <a href="https://docs.expo.dev/versions/latest/sdk/sharing/">expo-sharing</a> to share the screenshot we&rsquo;ve captured.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">captureAndShareScreenshot</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">uri</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">captureRef</span>(<span style="color:#a6e22e">map</span>, {
+      <span style="color:#a6e22e">format</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;png&#34;</span>,
+      <span style="color:#a6e22e">quality</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>
+  })
+  <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">Sharing</span>.<span style="color:#a6e22e">shareAsync</span>(<span style="color:#e6db74">&#34;file://&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">uri</span>);
+};</code></pre></div>
+
+<h2 id="checking-for-connection-status">Checking for connection status</h2>
+
+<p>The downside of react native maps is that it requires internet connection to load the tiles. That&rsquo;s why we would like to gracefully notify user if the internet connection is present instead of displaing broken maps.</p>
+
+<p>In order to probe for internet connection we&rsquo;ll require <a href="https://docs.expo.dev/versions/latest/sdk/netinfo/">NetInfo</a>.</p>
+
+<p>Let&rsquo;s revisit <code>AnimatedAppLoader</code> component.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AnimatedAppLoader</span> <span style="color:#f92672">=</span> () =&gt; {
+  <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">isConnected</span>, <span style="color:#a6e22e">setConnected</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>(<span style="color:#66d9ef">false</span>)
+  <span style="color:#66d9ef">const</span> [<span style="color:#a6e22e">isConnectionProbeFinished</span>, <span style="color:#a6e22e">setConnectionProbeFinished</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">useState</span>(<span style="color:#66d9ef">false</span>)
+
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fetchConnection</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">connectionStaus</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">NetInfo</span>.<span style="color:#a6e22e">fetch</span>();
+    <span style="color:#a6e22e">setConnected</span>(<span style="color:#a6e22e">connectionStaus</span>.<span style="color:#a6e22e">isConnected</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">true</span>)
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">connectionStaus</span>.<span style="color:#a6e22e">isConnected</span>) {
+      <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">SplashScreen</span>.<span style="color:#a6e22e">hideAsync</span>();
+    }
+    <span style="color:#a6e22e">setConnectionProbeFinished</span>(<span style="color:#66d9ef">true</span>)
+  }
+
+  <span style="color:#a6e22e">useEffect</span>(() =&gt; {
+     <span style="color:#a6e22e">fetchConnection</span>()
+  }, [])
+
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">refresh</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useCallback</span>(<span style="color:#66d9ef">async</span> () =&gt; {
+    <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">fetchConnection</span>()
+  },[])
+
+  <span style="color:#66d9ef">return</span> (
+      &lt;<span style="color:#f92672">View</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{{</span> <span style="color:#a6e22e">flex</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#a6e22e">1</span> }}&gt;
+        {<span style="color:#a6e22e">isConnected</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">isConnectionProbeFinished</span> <span style="color:#f92672">&amp;&amp;</span> &lt;<span style="color:#f92672">AnimatedSplashScreen</span>/&gt;}
+        {<span style="color:#f92672">!</span><span style="color:#a6e22e">isConnected</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">isConnectionProbeFinished</span> <span style="color:#f92672">&amp;&amp;</span> &lt;<span style="color:#f92672">OfflineScreen</span> <span style="color:#a6e22e">refresh</span><span style="color:#f92672">=</span><span style="color:#e6db74">{refresh}/</span>&gt;}
+      &lt;/<span style="color:#f92672">View</span>&gt;
+    )
+  }</code></pre></div></p>
+
+<p>The point I&rsquo;d like to highlight is the passing <code>refresh</code> inside the <code>OfflineScreen</code> component. Doing so allows us to perform another connection probe from inside the child component.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">OfflineScreen</span> <span style="color:#f92672">=</span> ({<span style="color:#a6e22e">refresh</span>}<span style="color:#f92672">:</span> <span style="color:#a6e22e">any</span>) =&gt; {
+    <span style="color:#66d9ef">return</span> (
+        &lt;<span style="color:#f92672">View</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{styles.container}</span>&gt;
+            &lt;<span style="color:#f92672">Text</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{styles.text}</span>&gt;
+                <span style="color:#a6e22e">Locate</span><span style="color:#f92672">!</span> <span style="color:#a6e22e">needs</span> <span style="color:#a6e22e">an</span> <span style="color:#a6e22e">internet</span> <span style="color:#a6e22e">connection</span> <span style="color:#a6e22e">to</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">properly</span>. {<span style="color:#e6db74">&#39;\n&#39;</span>}
+                <span style="color:#a6e22e">Refresh</span> <span style="color:#66d9ef">this</span> <span style="color:#a6e22e">page</span> <span style="color:#a6e22e">once</span> <span style="color:#a6e22e">you</span> <span style="color:#a6e22e">enable</span> <span style="color:#a6e22e">it</span>.
+            &lt;/<span style="color:#f92672">Text</span>&gt;
+            &lt;<span style="color:#f92672">Button</span>
+                <span style="color:#a6e22e">icon</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;refresh&#34;</span>
+                <span style="color:#a6e22e">mode</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;contained&#34;</span>
+                <span style="color:#a6e22e">buttonColor</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#E81E25&#34;</span>
+                <span style="color:#a6e22e">textColor</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#FFF&#34;</span>
+                <span style="color:#a6e22e">theme</span><span style="color:#f92672">=</span><span style="color:#e6db74">{CustomTheme}</span>
+                <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">{styles.button}</span>
+                <span style="color:#a6e22e">onPress</span><span style="color:#f92672">=</span><span style="color:#e6db74">{()</span> <span style="color:#960050;background-color:#1e0010">=</span>&gt; <span style="color:#a6e22e">refresh</span>()}<span style="color:#f92672">&gt;</span>
+                    <span style="color:#a6e22e">Refresh</span>
+            &lt;/<span style="color:#f92672">Button</span>&gt;
+        &lt;/<span style="color:#f92672">View</span>&gt;
+    )
+}</code></pre></div></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Summarizing my journey I would say that React Native and Expo, in particular, are pretty convenient tools that allow you to develop mobile applications without the need to master Android/IOS specific technologies. With the use of the widely popular React framework, I&rsquo;ve managed to develop the application I&rsquo;ve wanted for myself for a pretty long time.</p>
+
+<p>As per my personal experience publishing the application is a pretty tedious process and I&rsquo;m not sure that I would like to try it again but that is the part I&rsquo;ll omit in this article.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

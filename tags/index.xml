@@ -6,15 +6,51 @@
     <description>Recent content in Tags on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 10 Dec 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 02 Feb 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Frontend</title>
+      <link>https://wkalmar.github.io/tags/frontend/</link>
+      <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/frontend/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Javascript</title>
+      <link>https://wkalmar.github.io/tags/javascript/</link>
+      <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>React.js</title>
+      <link>https://wkalmar.github.io/tags/react.js/</link>
+      <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/react.js/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Typescript</title>
+      <link>https://wkalmar.github.io/tags/typescript/</link>
+      <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/typescript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Elasticsearch</title>
       <link>https://wkalmar.github.io/tags/elasticsearch/</link>
-      <pubDate>Sat, 10 Dec 2022 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 25 Dec 2022 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/tags/elasticsearch/</guid>
       <description></description>
@@ -188,33 +224,6 @@
       <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/tags/angular.js/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Frontend</title>
-      <link>https://wkalmar.github.io/tags/frontend/</link>
-      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/frontend/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Javascript</title>
-      <link>https://wkalmar.github.io/tags/javascript/</link>
-      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/javascript/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Typescript</title>
-      <link>https://wkalmar.github.io/tags/typescript/</link>
-      <pubDate>Wed, 26 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/typescript/</guid>
       <description></description>
     </item>
     

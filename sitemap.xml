@@ -3,32 +3,66 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</loc>
-    <lastmod>2022-12-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/</loc>
-    <lastmod>2022-12-10T00:00:00+00:00</lastmod>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/tags/elasticsearch/</loc>
-    <lastmod>2022-12-10T00:00:00+00:00</lastmod>
+    <loc>https://wkalmar.github.io/tags/frontend/</loc>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/javascript/</loc>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wkalmar.github.io/post/</loc>
-    <lastmod>2022-12-10T00:00:00+00:00</lastmod>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/react.js/</loc>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wkalmar.github.io/tags/</loc>
-    <lastmod>2022-12-10T00:00:00+00:00</lastmod>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/typescript/</loc>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/visualising-you-photos-with-react/</loc>
+    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/elasticsearch/</loc>
+    <lastmod>2022-12-25T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/improving-autocomplete/</loc>
+    <lastmod>2022-12-25T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</loc>
+    <lastmod>2022-12-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -86,11 +120,6 @@
     <loc>https://wkalmar.github.io/tags/testing/</loc>
     <lastmod>2022-04-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/post/improving-autocomplete/</loc>
-    <lastmod>2022-01-25T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -228,24 +257,6 @@
   <url>
     <loc>https://wkalmar.github.io/post/cooking-angular-js-with-typescript/</loc>
     <lastmod>2018-12-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/frontend/</loc>
-    <lastmod>2018-12-26T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/javascript/</loc>
-    <lastmod>2018-12-26T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/typescript/</loc>
-    <lastmod>2018-12-26T00:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

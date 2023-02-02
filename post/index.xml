@@ -6,10 +6,29 @@
     <description>Recent content in Posts on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 10 Dec 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 02 Feb 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Visualising your photos on a map with React Native</title>
+      <link>https://wkalmar.github.io/post/visualising-you-photos-with-react/</link>
+      <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/visualising-you-photos-with-react/</guid>
+      <description>Back in the looney days before russian full-scale invasion, I&amp;rsquo;ve used to travel a lot domestically and internationally. Also at that time, I had a Nokia Lumia phone with a nice widget that displayed the locations of the photos I&amp;rsquo;ve taken on a map. I enjoyed looking at it realizing how big is the world and how much I have to travel in order to discover it.
+While I have a similar widget in my Android phone I wasn&amp;rsquo;t satisfied with its look and feel.</description>
+    </item>
+    
+    <item>
+      <title>Improving Elasticsearch-based autocomplete</title>
+      <link>https://wkalmar.github.io/post/improving-autocomplete/</link>
+      <pubDate>Sun, 25 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/improving-autocomplete/</guid>
+      <description>Recently I&amp;rsquo;ve investigated autocomplete functionality of our system as there were a lot of complaints that it returns irrelevant results. The approach we&amp;rsquo;ve taken was pretty naive: our backend wrapped query into wildcard symbols and executed it as query_string on fields __title, title and commonInfo.RealName. Index we&amp;rsquo;ve executed search upon contained entity with _title equal 3 foxes but autocomplete query 3 foxes suggested BRN-3 / QCK 3 / 19 foxes, AC d / 3 foxes, 3 BRW / 1 foxes.</description>
+    </item>
     
     <item>
       <title>Applying custom similarity calculation in Elasticsearch</title>
@@ -50,15 +69,6 @@ Write an API that generates fancy sequences using the append, addAll, and multAl
       
       <guid>https://wkalmar.github.io/post/its-about-how-you-test/</guid>
       <description>It has been written a lot about the value of unit testing and still a lot of developers may have witnessed codebases with unit tests being too brittle or rarely discovering actual defects in software. Also some have questioned default architectural style supposed to make code testable. These are the reasons why a lot of developers openly question unit-testing while others just silently sabotage the process of writing unit-tests.</description>
-    </item>
-    
-    <item>
-      <title>Improving Elasticsearch-based autocomplete</title>
-      <link>https://wkalmar.github.io/post/improving-autocomplete/</link>
-      <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/post/improving-autocomplete/</guid>
-      <description>Recently I&amp;rsquo;ve investigated autocomplete functionality of our system as there were a lot of complaints that it returns irrelevant results. The approach we&amp;rsquo;ve taken was pretty naive: our backend wrapped query into wildcard symbols and executed it as query_string on fields __title, title and commonInfo.RealName. Index we&amp;rsquo;ve executed search upon contained entity with _title equal 3 foxes but autocomplete query 3 foxes suggested BRN-3 / QCK 3 / 19 foxes, AC d / 3 foxes, 3 BRW / 1 foxes.</description>
     </item>
     
     <item>
