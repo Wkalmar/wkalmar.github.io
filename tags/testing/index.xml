@@ -6,10 +6,20 @@
     <description>Recent content in Testing on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 Apr 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 01 Aug 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/testing/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Property-based tests and clean architecture are perfect fit</title>
+      <link>https://wkalmar.github.io/post/clean-architecture-and-property-based-fit/</link>
+      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/clean-architecture-and-property-based-fit/</guid>
+      <description>It has been written a lot about the clean architecture. Its main value is the ability maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+However, when it comes to designing tests for out pure domain logic quite often we don&amp;rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls.</description>
+    </item>
     
     <item>
       <title>It&#39;s not about how you inject your services, it&#39;s about how you test them</title>

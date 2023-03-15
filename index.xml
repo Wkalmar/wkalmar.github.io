@@ -6,13 +6,23 @@
     <description>Recent content on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Mar 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Visualising your photos on a map with React Native</title>
+      <title>Tackling technical debt with NDepend</title>
+      <link>https://wkalmar.github.io/post/tackling-technical-debt-with-ndepend/</link>
+      <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/tackling-technical-debt-with-ndepend/</guid>
+      <description>One of the pet projects I was involved in has quite a bigger scale than the other ones. Multiple people were involved in it and it spanned over a couple of years. In such circumstances, technical debt tends to accumulate. So I&amp;rsquo;ve decided to give NDepend a go to see if it can improve the state of affairs.
+Strategical view Before trying out this tool I&amp;rsquo;ve heard from my colleagues that NDepend is a tool to visualize project dependencies so I started off with visualizing the project graph.</description>
+    </item>
+    
+    <item>
+      <title>Visualizing your photos on a map with React Native</title>
       <link>https://wkalmar.github.io/post/visualising-you-photos-with-react/</link>
       <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
       
@@ -49,6 +59,16 @@ Setup In our system we single document type per index. Since we have quite a lot
       <description>It has been written a lot about the clean architecture. Its main value is the ability to maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
 This is accomplished by writing dependency-free core domain logic and external adapters (be it database storage or API layer) that rely on the domain and not vice versa.
 In this article, we&amp;rsquo;ll have a look at how clean architecture is implemented with a sample Go project.</description>
+    </item>
+    
+    <item>
+      <title>Property-based tests and clean architecture are perfect fit</title>
+      <link>https://wkalmar.github.io/post/clean-architecture-and-property-based-fit/</link>
+      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/clean-architecture-and-property-based-fit/</guid>
+      <description>It has been written a lot about the clean architecture. Its main value is the ability maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+However, when it comes to designing tests for out pure domain logic quite often we don&amp;rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls.</description>
     </item>
     
     <item>

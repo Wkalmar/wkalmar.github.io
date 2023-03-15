@@ -6,10 +6,20 @@
     <description>Recent content in Csharp on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 Apr 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Mar 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Tackling technical debt with NDepend</title>
+      <link>https://wkalmar.github.io/post/tackling-technical-debt-with-ndepend/</link>
+      <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/tackling-technical-debt-with-ndepend/</guid>
+      <description>One of the pet projects I was involved in has quite a bigger scale than the other ones. Multiple people were involved in it and it spanned over a couple of years. In such circumstances, technical debt tends to accumulate. So I&amp;rsquo;ve decided to give NDepend a go to see if it can improve the state of affairs.
+Strategical view Before trying out this tool I&amp;rsquo;ve heard from my colleagues that NDepend is a tool to visualize project dependencies so I started off with visualizing the project graph.</description>
+    </item>
     
     <item>
       <title>It&#39;s not about how you inject your services, it&#39;s about how you test them</title>

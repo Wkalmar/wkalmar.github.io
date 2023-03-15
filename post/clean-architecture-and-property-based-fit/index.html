@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Property-based tests and clean architecture are perfect fit // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Property-based tests and clean architecture are perfect fit"/>
+<meta name="twitter:description" content="It has been written a lot about the clean architecture. Its main value is the ability maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+However, when it comes to designing tests for out pure domain logic quite often we don&rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls."/>
+
+    <meta property="og:title" content="Property-based tests and clean architecture are perfect fit" />
+<meta property="og:description" content="It has been written a lot about the clean architecture. Its main value is the ability maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+However, when it comes to designing tests for out pure domain logic quite often we don&rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/clean-architecture-and-property-based-fit/" />
+<meta property="article:published_time" content="2022-08-01T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2022-08-01T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Property-based tests and clean architecture are perfect fit</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Aug 1, 2022
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          4 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/fsharp/">Fsharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a><a class="tag" href="https://wkalmar.github.io/tags/fp/">FP</a><a class="tag" href="https://wkalmar.github.io/tags/architecture/">Architecture</a><a class="tag" href="https://wkalmar.github.io/tags/testing/">Testing</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>It has been written a lot about the <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">clean architecture</a>. Its main value is the ability maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.</p>
+
+<p>However, when it comes to designing tests for out pure domain logic quite often we don&rsquo;t tend to be so picky. Unit testing contains many traps such as <a href="https://wkalmar.github.io/post/its-about-how-you-test/">overspecified software</a>. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls.</p>
+
+<p>One of them is that when writing unit tests we rely on some sort of arbitrary magic numbers. While we may guarantee that our function works correctly at given points we can&rsquo;t guarantee that it works at every point. An alternative would be to check whether the function satisfies some criteria continuously.</p>
+
+<p>And this is what property-based testing is aimed at. Instead of verifying output at hardcoded input points, it checks the properties of the function you define with a multitude of generated values.</p>
+
+<p>Let&rsquo;s look at the code example to see how that works. Below is the example from my project <a href="https://github.com/Wkalmar/">Kyiv Station Walk</a>. You can see the function that takes a collection of checkpoints from the domain and transforms it so it conforms to the rules of the presentation layer.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> removeRedundantCheckpoints <span style="color:#f92672">(</span>checkPoints <span style="color:#f92672">:</span> <span style="color:#a6e22e">Location</span>[]<span style="color:#f92672">)</span> <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">let</span> checkPointsMaxCount <span style="color:#f92672">=</span> 5
+    <span style="color:#66d9ef">let</span> isStartOrEndOfTheRoute <span style="color:#f92672">(</span>checkPoints <span style="color:#f92672">:</span> <span style="color:#a6e22e">Location</span>[]<span style="color:#f92672">)</span> i <span style="color:#f92672">=</span>
+       i <span style="color:#f92672">=</span> 0 <span style="color:#f92672">||</span> i <span style="color:#f92672">=</span> checkPoints<span style="color:#f92672">.</span><span style="color:#a6e22e">Length</span> <span style="color:#f92672">-</span> 1
+    <span style="color:#66d9ef">let</span> euclidianDistance c1 c2 <span style="color:#f92672">=</span>
+        Math.<span style="color:#a6e22e">Pow</span><span style="color:#f92672">(</span><span style="color:#66d9ef">float</span><span style="color:#f92672">(</span>c1<span style="color:#f92672">.</span>lattitude <span style="color:#f92672">-</span> c2<span style="color:#f92672">.</span>lattitude<span style="color:#f92672">),</span> <span style="color:#66d9ef">float</span><span style="color:#f92672">(</span>2<span style="color:#f92672">))</span> <span style="color:#f92672">+</span> Math.<span style="color:#a6e22e">Pow</span><span style="color:#f92672">(</span><span style="color:#66d9ef">float</span><span style="color:#f92672">(</span>c1<span style="color:#f92672">.</span>longitude <span style="color:#f92672">-</span> c2<span style="color:#f92672">.</span>longitude<span style="color:#f92672">),</span> <span style="color:#66d9ef">float</span><span style="color:#f92672">(</span>2<span style="color:#f92672">))</span>
+    <span style="color:#66d9ef">if</span> checkPoints<span style="color:#f92672">.</span><span style="color:#a6e22e">Length</span> <span style="color:#f92672">&lt;=</span> 5 <span style="color:#66d9ef">then</span>
+        checkPoints
+    <span style="color:#66d9ef">else</span>
+        checkPoints
+        <span style="color:#f92672">|&gt;</span> Array.mapi<span style="color:#f92672">(</span><span style="color:#66d9ef">fun</span> i c <span style="color:#f92672">-&gt;</span>
+            <span style="color:#66d9ef">if</span> isStartOrEndOfTheRoute checkPoints i <span style="color:#66d9ef">then</span>
+                <span style="color:#f92672">{</span>
+                    index <span style="color:#f92672">=</span> i
+                    checkPoint <span style="color:#f92672">=</span> c
+                    distanceToNextCheckPoint <span style="color:#f92672">=</span> <span style="color:#66d9ef">float</span><span style="color:#f92672">(</span>1000000<span style="color:#f92672">)</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">else</span>
+                <span style="color:#f92672">{</span>
+                    index <span style="color:#f92672">=</span> i
+                    checkPoint <span style="color:#f92672">=</span> c
+                    distanceToNextCheckPoint <span style="color:#f92672">=</span> euclidianDistance checkPoints<span style="color:#f92672">.[</span>i<span style="color:#f92672">+</span>1<span style="color:#f92672">]</span> c
+                <span style="color:#f92672">}</span>
+        <span style="color:#f92672">)</span>
+        <span style="color:#f92672">|&gt;</span> Array.sortByDescending<span style="color:#f92672">(</span><span style="color:#66d9ef">fun</span> i <span style="color:#f92672">-&gt;</span> i<span style="color:#f92672">.</span>distanceToNextCheckPoint<span style="color:#f92672">)</span>
+        <span style="color:#f92672">|&gt;</span> Array.take<span style="color:#f92672">(</span>checkPointsMaxCount<span style="color:#f92672">)</span>
+        <span style="color:#f92672">|&gt;</span> Array.sortBy<span style="color:#f92672">(</span><span style="color:#66d9ef">fun</span> i <span style="color:#f92672">-&gt;</span> i<span style="color:#f92672">.</span>index<span style="color:#f92672">)</span>
+        <span style="color:#f92672">|&gt;</span> Array.map<span style="color:#f92672">(</span><span style="color:#66d9ef">fun</span> i <span style="color:#f92672">-&gt;</span> i<span style="color:#f92672">.</span>checkPoint<span style="color:#f92672">)</span></code></pre></div>
+We can supply some arbitrary arrays of checkpoints and check the output or instead we can think about some properties that our function should satisfy. Here are these properties expressed in code.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">open</span> FsCheck.<span style="color:#a6e22e">Xunit</span>
+<span style="color:#66d9ef">open</span> <span style="color:#a6e22e">RouteModels</span>
+
+<span style="color:#66d9ef">module</span> <span style="color:#a6e22e">RemoveRedundantCheckpointsTests</span> <span style="color:#f92672">=</span>
+
+    <span style="color:#66d9ef">let</span> <span style="color:#f92672">``</span>result <span style="color:#66d9ef">array</span> contains no more than 5 items<span style="color:#f92672">``</span> input mapFn <span style="color:#f92672">=</span>
+        <span style="color:#66d9ef">let</span> res <span style="color:#f92672">=</span> mapFn input
+        Array.length res <span style="color:#f92672">&lt;=</span> 5
+
+    <span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Property</span><span style="color:#f92672">&gt;]</span>
+    <span style="color:#66d9ef">let</span> maxLength x <span style="color:#f92672">=</span>
+        <span style="color:#f92672">``</span>result <span style="color:#66d9ef">array</span> contains no more than 5 items<span style="color:#f92672">``</span> x removeRedundantCheckpoints
+
+    <span style="color:#66d9ef">let</span> <span style="color:#f92672">``</span>result contains first point from input<span style="color:#f92672">``</span> <span style="color:#f92672">(</span>input<span style="color:#f92672">:</span> <span style="color:#a6e22e">Location</span>[]<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>mapFn <span style="color:#f92672">:</span> <span style="color:#a6e22e">Location</span>[] <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">Location</span>[]<span style="color:#f92672">)</span> <span style="color:#f92672">=</span>
+        <span style="color:#66d9ef">if</span> Array.length input <span style="color:#f92672">=</span> 0 <span style="color:#66d9ef">then</span>
+            true
+        <span style="color:#66d9ef">else</span>
+            <span style="color:#66d9ef">let</span> res <span style="color:#f92672">=</span> mapFn input
+            res<span style="color:#f92672">.[</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> input<span style="color:#f92672">.[</span>0<span style="color:#f92672">]</span>
+
+    <span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Property</span><span style="color:#f92672">&gt;]</span>
+    <span style="color:#66d9ef">let</span> firstItem x <span style="color:#f92672">=</span>
+        <span style="color:#f92672">``</span>result contains first point from input<span style="color:#f92672">``</span> x removeRedundantCheckpoints
+
+    <span style="color:#66d9ef">let</span> <span style="color:#f92672">``</span>result contains last point from input<span style="color:#f92672">``</span> <span style="color:#f92672">(</span>input<span style="color:#f92672">:</span> <span style="color:#a6e22e">Location</span>[]<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>mapFn <span style="color:#f92672">:</span> <span style="color:#a6e22e">Location</span>[] <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">Location</span>[]<span style="color:#f92672">)</span> <span style="color:#f92672">=</span>
+        <span style="color:#66d9ef">if</span> Array.length input <span style="color:#f92672">=</span> 0 <span style="color:#66d9ef">then</span>
+            true
+        <span style="color:#66d9ef">else</span>
+            <span style="color:#66d9ef">let</span> res <span style="color:#f92672">=</span> mapFn input
+            res<span style="color:#f92672">.[</span>res<span style="color:#f92672">.</span><span style="color:#a6e22e">Length</span><span style="color:#f92672">-</span>1<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> input<span style="color:#f92672">.[</span>input<span style="color:#f92672">.</span><span style="color:#a6e22e">Length</span><span style="color:#f92672">-</span>1<span style="color:#f92672">]</span>
+
+    <span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Property</span><span style="color:#f92672">&gt;]</span>
+    <span style="color:#66d9ef">let</span> lastItem x <span style="color:#f92672">=</span>
+        <span style="color:#f92672">``</span>result contains last point from input<span style="color:#f92672">``</span> x removeRedundantCheckpoints
+
+    <span style="color:#66d9ef">let</span> <span style="color:#f92672">``</span>result contains only points from input<span style="color:#f92672">``</span> input mapFn <span style="color:#f92672">=</span>
+        <span style="color:#66d9ef">let</span> res <span style="color:#f92672">=</span> mapFn input
+        Array.length <span style="color:#f92672">(</span>Array.except input res<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> 0
+
+    <span style="color:#f92672">[&lt;</span><span style="color:#a6e22e">Property</span><span style="color:#f92672">&gt;]</span>
+    <span style="color:#66d9ef">let</span> onlyInput x <span style="color:#f92672">=</span>
+        <span style="color:#f92672">``</span>result contains only points from input<span style="color:#f92672">``</span> x removeRedundantCheckpoints</code></pre></div>
+As you can see from the imports statement we&rsquo;re relying on <a href="https://fscheck.github.io/FsCheck/">FsCheck</a> to generate some random values for us.</p>
+
+<p>Later in the code, we declare a higher-order function that accepts the mapper function and input array and returns a boolean condition that checks whether the property is satisfied. Double backticks is a convenient F# feature that allows us to express property in a natural language.</p>
+
+<p>The test is decorated with <code>Property</code> attribute and accepts input generated by FsCheck as well as <code>removeRedundantCheckpoints</code> function which is subject to change. With such a setup we can check whether the function under tests satisfies provided properties with the multitude of random values generated by a library.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>When it comes to testing a lot of teams really put the same effort into designing a test suite as into the application code. And even those who do rarely consider something outside of the traditional testing pyramid. Still, property-based testing represents a nice option for pure logic that usually resides in the domain layer or in the mapping layers of your application.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
