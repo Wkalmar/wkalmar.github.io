@@ -41,16 +41,6 @@ While I have a similar widget in my Android phone I wasn&amp;rsquo;t satisfied w
     </item>
     
     <item>
-      <title>Applying custom similarity calculation in Elasticsearch</title>
-      <link>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</link>
-      <pubDate>Sat, 10 Dec 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</guid>
-      <description>Presently we&amp;rsquo;ve been discussing improving elasticsearch autocomplete functionality. For most cases, this is enough. However, in our case, things turned out to be not that rosy and we&amp;rsquo;ll have a look at why.
-Setup In our system we single document type per index. Since we have quite a lot of types in our system and the number of types and their mappings can be changed by the end-user, we have unpredictable number of indices.</description>
-    </item>
-    
-    <item>
       <title>Implementing clean architecture in Go</title>
       <link>https://wkalmar.github.io/post/go-clean-architecture/</link>
       <pubDate>Thu, 20 Oct 2022 00:00:00 +0000</pubDate>
@@ -89,6 +79,16 @@ Write an API that generates fancy sequences using the append, addAll, and multAl
       
       <guid>https://wkalmar.github.io/post/its-about-how-you-test/</guid>
       <description>It has been written a lot about the value of unit testing and still a lot of developers may have witnessed codebases with unit tests being too brittle or rarely discovering actual defects in software. Also some have questioned default architectural style supposed to make code testable. These are the reasons why a lot of developers openly question unit-testing while others just silently sabotage the process of writing unit-tests.</description>
+    </item>
+    
+    <item>
+      <title>Applying custom similarity calculation in Elasticsearch</title>
+      <link>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</link>
+      <pubDate>Thu, 10 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</guid>
+      <description>Presently we&amp;rsquo;ve been discussing improving elasticsearch autocomplete functionality. For most cases, this is enough. However, in our case, things turned out to be not that rosy and we&amp;rsquo;ll have a look at why.
+Setup In our system we single document type per index. Since we have quite a lot of types in our system and the number of types and their mappings can be changed by the end-user, we have unpredictable number of indices.</description>
     </item>
     
     <item>
@@ -179,13 +179,12 @@ Serverless is quite useful for this simple nanoservice. This brings some cost-sa
     </item>
     
     <item>
-      <title>Leader election with Redlock.net</title>
+      <title>Distributed locking with Redlock.net</title>
       <link>https://wkalmar.github.io/post/leader-election-with-redlock-net/</link>
       <pubDate>Fri, 19 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/leader-election-with-redlock-net/</guid>
-      <description>Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
-Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance.</description>
+      <description>Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. In such a case one of the instances would acquire a lock over this resource claiming exclusive access to it. Let&amp;rsquo;s have a look at some possible use cases when this is helpful.</description>
     </item>
     
     <item>

@@ -23,7 +23,7 @@
     <item>
       <title>Applying custom similarity calculation in Elasticsearch</title>
       <link>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</link>
-      <pubDate>Sat, 10 Dec 2022 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 10 Feb 2022 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</guid>
       <description>Presently we&amp;rsquo;ve been discussing improving elasticsearch autocomplete functionality. For most cases, this is enough. However, in our case, things turned out to be not that rosy and we&amp;rsquo;ll have a look at why.

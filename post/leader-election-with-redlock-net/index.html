@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Leader election with Redlock.net // Bohdan Stupak&#39;s blog</title>
+    <title>Distributed locking with Redlock.net // Bohdan Stupak&#39;s blog</title>
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.55.6" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,13 +11,11 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Leader election with Redlock.net"/>
-<meta name="twitter:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
-Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance."/>
+<meta name="twitter:title" content="Distributed locking with Redlock.net"/>
+<meta name="twitter:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. In such a case one of the instances would acquire a lock over this resource claiming exclusive access to it. Let&rsquo;s have a look at some possible use cases when this is helpful."/>
 
-    <meta property="og:title" content="Leader election with Redlock.net" />
-<meta property="og:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
-Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance." />
+    <meta property="og:title" content="Distributed locking with Redlock.net" />
+<meta property="og:description" content="Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. In such a case one of the instances would acquire a lock over this resource claiming exclusive access to it. Let&rsquo;s have a look at some possible use cases when this is helpful." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://wkalmar.github.io/post/leader-election-with-redlock-net/" />
 <meta property="article:published_time" content="2019-07-19T00:00:00&#43;00:00"/>
@@ -58,7 +56,7 @@ Consider a service that apart from other functionality runs once per day some mi
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Leader election with Redlock.net</h1>
+      <h1 class ="post-title">Distributed locking with Redlock.net</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
@@ -72,7 +70,7 @@ Consider a service that apart from other functionality runs once per day some mi
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          4 min read
+          5 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -85,16 +83,20 @@ Consider a service that apart from other functionality runs once per day some mi
 
 <h2 id="why-locking-things">Why locking things</h2>
 
-<p>Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.</p>
+<p>Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. In such a case one of the instances would acquire a lock over this resource claiming exclusive access to it. Let&rsquo;s have a look at some possible use cases when this is helpful.</p>
 
-<p>Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance. At the same time, the deployment of a single instance is counterproductive because microservice bears other functionality which would benefit from horizontal scaling. One may argue that we can split such microservice into even smaller microservice but I&rsquo;d be cautious against making microservices too granular.</p>
+<h3 id="sending-notifications">Sending notifications</h3>
+
+<p>Let&rsquo;s imagine a service that takes a batch of notifications from the database and sends them to customers. Service is designed as a background worker which operates once in a given period of time. In case we want to increase the performance of the service via horizontal scaling we need to somehow signal that the batch is consumed by a given instance of the service. We could create a flag inside the database and set it if the messages are occupied by worker instance. However, such a solution would pollute our data model. Instead, we can place a lock for a given batch inside a distributed storage.</p>
+
+<h3 id="poor-man-s-failover">Poor man&rsquo;s failover</h3>
 
 <p>Another reason might be poor-man&rsquo;s failover scenario, where one instance of a service executes work, while the other is idle and waits just in case the first instance fails for some reason.</p>
 
-<p>A possible solution is electing a single leader which would handle the shared resource exclusively at a single point in time.
-Such well-known leader election algorithms such as Bully algorithm or Ring algorithm require a lot of ceremony and knowledge of the logical topology of your system in order to be implemented. That&rsquo;s the reason why we&rsquo;ll have a look at leader election using a distributed lock.</p>
+<h3 id="ensuring-exactly-once-message-processing">Ensuring exactly once message processing</h3>
 
-<p>You should use this pattern when the tasks in a distributed application need careful coordination and there&rsquo;s no natural leader.</p>
+<p>Imagine multiple service instances consuming messages from the stream. Depending on stream implementation, this may lead to every instance consuming the same message. One of the possible solutions is to shard stream creating a sub-stream for every dedicated instance. The disadvantage of this solution is that we have to reconfigure the stream each time we upscale/downscale service.
+An alternative solution would be each service actually consume the message but try to acquire a distributed lock on this message before processing it. This way each service will be processed only once.</p>
 
 <h2 id="using-redis">Using Redis</h2>
 

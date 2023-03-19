@@ -80,13 +80,12 @@ The code Recently I was tasked to write the code which converts Linux permission
     </item>
     
     <item>
-      <title>Leader election with Redlock.net</title>
+      <title>Distributed locking with Redlock.net</title>
       <link>https://wkalmar.github.io/post/leader-election-with-redlock-net/</link>
       <pubDate>Fri, 19 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/leader-election-with-redlock-net/</guid>
-      <description>Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource.
-Consider a service that apart from other functionality runs once per day some mission-critical job that should be executed in a single instance.</description>
+      <description>Why locking things Microservice architecture becomes widely adopted these days. One of the benefits it offers is the possibility of horizontal scaling which allows us to increase the performance of our application dramatically. However, there are situations when multiple instances of service face contention for some shared resource. In such a case one of the instances would acquire a lock over this resource claiming exclusive access to it. Let&amp;rsquo;s have a look at some possible use cases when this is helpful.</description>
     </item>
     
     <item>

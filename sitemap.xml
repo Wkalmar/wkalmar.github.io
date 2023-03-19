@@ -78,11 +78,6 @@
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</loc>
-    <lastmod>2022-12-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/tags/architecture/</loc>
     <lastmod>2022-10-20T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -142,6 +137,11 @@
     <loc>https://wkalmar.github.io/tags/oop/</loc>
     <lastmod>2022-04-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/applying-custom-similarity-for-elasticsearch/</loc>
+    <lastmod>2022-02-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
