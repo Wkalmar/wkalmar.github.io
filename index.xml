@@ -85,7 +85,7 @@ Write an API that generates fancy sequences using the append, addAll, and multAl
     <item>
       <title>Improving Elasticsearch-based autocomplete</title>
       <link>https://wkalmar.github.io/post/improving-autocomplete/</link>
-      <pubDate>Fri, 25 Feb 2022 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 25 Jan 2022 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/improving-autocomplete/</guid>
       <description>Recently I&amp;rsquo;ve investigated autocomplete functionality of our system as there were a lot of complaints that it returns irrelevant results. The approach we&amp;rsquo;ve taken was pretty naive: our backend wrapped query into wildcard symbols and executed it as query_string on fields __title, title and commonInfo.RealName. Index we&amp;rsquo;ve executed search upon contained entity with _title equal 3 foxes but autocomplete query 3 foxes suggested BRN-3 / QCK 3 / 19 foxes, AC d / 3 foxes, 3 BRW / 1 foxes.</description>
