@@ -159,29 +159,29 @@ You may think of this conclusion as far-fetched but I&rsquo;ve decided to write 
 
 <p>Most .NET methods that work with <code>byte[]</code> already exhibit <code>Stream</code> counterpart so it shouldn&rsquo;t be a problem to use it. When you provide your own API you should consider supplying a method that operates with <code>Stream</code> in a robust batch-by-batch fashion.</p>
 
-<h2 id="implementing-our-own-batch-processing">Implementing our own batch processing</h2>
+<h2 id="comparing-streams">Comparing streams</h2>
 
-<p>Let&rsquo;s use the following code checking two streams for equality as another example.
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> bufferSize = <span style="color:#ae81ff">2048</span>;
+<p>Imagine we want to write utility method that compares two streams. We could utilize the approach mentioned above: read chunks from the stream and compare these chunks. However, there are some dangers hidden in this approach. For some implementations of <code>Stream</code> such as <code>NetworkStream</code> the number of actual bytes read <a href="https://stackoverflow.com/questions/32207175/filestream-read-bytes-read">may differ</a> from the expected number of bytes.</p>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> IsEqual(<span style="color:#66d9ef">this</span> Stream stream, Stream otherStream)
+<p>To combat this we&rsquo;ll compare streams byte-by-byte.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> IsEqual(<span style="color:#66d9ef">this</span> Stream stream, Stream otherStream)
 {
-    <span style="color:#66d9ef">if</span> (stream <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+    <span style="color:#66d9ef">if</span> (stream <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span> || stream.Length == <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
 
-    <span style="color:#66d9ef">if</span> (otherStream <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+    <span style="color:#66d9ef">if</span> (otherStream <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span> || otherStream.Length == <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
 
     <span style="color:#66d9ef">if</span> (stream.Length != otherStream.Length) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
 
-    <span style="color:#66d9ef">if</span> (stream == otherStream) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+    <span style="color:#66d9ef">int</span> buffer;
+    <span style="color:#66d9ef">int</span> otherBuffer;
 
-    <span style="color:#66d9ef">byte</span><span style="color:#a6e22e">[]</span> buffer = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#a6e22e">[bufferSize]</span>;
-    <span style="color:#66d9ef">byte</span><span style="color:#a6e22e">[]</span> otherBuffer = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#a6e22e">[bufferSize]</span>;
-
-    <span style="color:#66d9ef">while</span> (stream.Read(buffer, <span style="color:#ae81ff">0</span>, buffer.Length) &gt; <span style="color:#ae81ff">0</span>)
+    <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
     {
-        otherStream.Read(otherBuffer, <span style="color:#ae81ff">0</span>, otherBuffer.Length);
+        buffer = stream.ReadByte();
+        <span style="color:#66d9ef">if</span> (buffer == -<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">break</span>;
+        otherBuffer = otherStream.ReadByte();
 
-        <span style="color:#66d9ef">if</span> (!otherBuffer.SequenceEqual(buffer))
+        <span style="color:#66d9ef">if</span> (buffer != otherBuffer)
         {
             stream.Seek(<span style="color:#ae81ff">0</span>, SeekOrigin.Begin);
             otherStream.Seek(<span style="color:#ae81ff">0</span>, SeekOrigin.Begin);
@@ -195,8 +195,6 @@ You may think of this conclusion as far-fetched but I&rsquo;ve decided to write 
     <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
 }
 </code></pre></div></p>
-
-<p>Here instead of loading two potentially big files into memory, we compare them using chunks of 2KB. Once chunks are different we exit.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 
