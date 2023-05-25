@@ -74,7 +74,7 @@ In this article, we&rsquo;ll have a look at how clean architecture is implemente
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          10 min read
+          12 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -397,6 +397,77 @@ Some of the readers may be confused by the fact that the create-deck endpoint ac
 		<span style="color:#66d9ef">return</span>
 	}
 }</code></pre></div></p>
+
+<h2 id="logging">Logging</h2>
+
+<p>One of the important aspects of running software is the ability to figure out the current state of the software. Writing logs helps in that matter so we&rsquo;ll add some to our code.</p>
+
+<h3 id="what-to-log">What to log</h3>
+
+<p>It is important to find a balance between writing too few logs and being too verbose and polluting log storage with excessive noisy messages. In our project, we&rsquo;ll follow <a href="https://kislayverma.com/programming/publish-events-not-logs/">this advice</a> and will treat logs as events on a service boundary. In our case, such events occur inside a domain layer when making operations with a deck. Additionally, we&rsquo;ll log incoming requests on the API level to see which requests are coming in. If we&rsquo;ve used real storage it would be nice to log queries generated with the debug severity but since using real storage is outside the scope of our article we&rsquo;ll omit that.</p>
+
+<h3 id="logging-domain-events">Logging domain events</h3>
+
+<p>For logging purpose, we&rsquo;ll use <a href="https://pkg.go.dev/go.uber.org/zap">zap</a> since it has logging levels, supports structured logging, and shows good results on benchmarks. With that said let&rsquo;s do some logging.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">CreateDeck</span>(<span style="color:#a6e22e">shuffled</span> <span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">cards</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Card</span>) <span style="color:#a6e22e">Deck</span> {
+	<span style="color:#a6e22e">logger</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">NewProduction</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">logger</span>.<span style="color:#a6e22e">Sync</span>()
+	<span style="color:#a6e22e">sugar</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">logger</span>.<span style="color:#a6e22e">Sugar</span>()
+	<span style="color:#a6e22e">sugar</span>.<span style="color:#a6e22e">Infow</span>(<span style="color:#e6db74">&#34;Create deck.&#34;</span>, <span style="color:#e6db74">&#34;shuffled&#34;</span>, <span style="color:#a6e22e">shuffled</span>, <span style="color:#e6db74">&#34;cards&#34;</span>, <span style="color:#a6e22e">cards</span>)
+	<span style="color:#75715e">//omitted for brevity
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">sugar</span>.<span style="color:#a6e22e">Infow</span>(<span style="color:#e6db74">&#34;Create deck completed&#34;</span>, <span style="color:#e6db74">&#34;deck&#34;</span>, <span style="color:#a6e22e">result</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DrawCards</span>(<span style="color:#a6e22e">deck</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Deck</span>, <span style="color:#a6e22e">count</span> <span style="color:#66d9ef">uint8</span>) ([]<span style="color:#a6e22e">Card</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">logger</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">NewProduction</span>()
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">logger</span>.<span style="color:#a6e22e">Sync</span>()
+	<span style="color:#a6e22e">sugar</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">logger</span>.<span style="color:#a6e22e">Sugar</span>()
+	<span style="color:#a6e22e">sugar</span>.<span style="color:#a6e22e">Infow</span>(<span style="color:#e6db74">&#34;Draw cards.&#34;</span>, <span style="color:#e6db74">&#34;deck&#34;</span>, <span style="color:#a6e22e">deck</span>, <span style="color:#e6db74">&#34;count&#34;</span>, <span style="color:#a6e22e">count</span>)
+	<span style="color:#75715e">//omitted for brevity
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">sugar</span>.<span style="color:#a6e22e">Infow</span>(<span style="color:#e6db74">&#34;Draw cards completed.&#34;</span>, <span style="color:#e6db74">&#34;result&#34;</span>, <span style="color:#a6e22e">result</span>, <span style="color:#e6db74">&#34;deck&#34;</span>, <span style="color:#a6e22e">deck</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>, <span style="color:#66d9ef">nil</span>
+}</code></pre></div>
+The code above is pretty straightforward. We&rsquo;re creating a logger using a predefined configuration. Then we defer flushing the logger. Calling <code>Sugar</code> method allows us to accept loosely typed logging with a variadic number of arguments. Then we call <code>Infow</code> method to write a log message with Info severity.</p>
+
+<h3 id="logging-api">Logging API</h3>
+
+<p>Gin framework provides logging by default but since we want to support structured logging we&rsquo;ll define custom logging middleware that mimics Gin built-in logging.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">StructuredLogger</span>() <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">HandlerFunc</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+		<span style="color:#a6e22e">logger</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">zap</span>.<span style="color:#a6e22e">NewProduction</span>()
+		<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">logger</span>.<span style="color:#a6e22e">Sync</span>()
+		<span style="color:#a6e22e">sugar</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">logger</span>.<span style="color:#a6e22e">Sugar</span>()
+		<span style="color:#a6e22e">start</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+		<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Next</span>()
+		<span style="color:#a6e22e">stop</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+		<span style="color:#a6e22e">latency</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">stop</span>.<span style="color:#a6e22e">Sub</span>(<span style="color:#a6e22e">start</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Status</span>() <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">500</span> {
+			<span style="color:#a6e22e">sugar</span>.<span style="color:#a6e22e">Errorw</span>(<span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Errors</span>.<span style="color:#a6e22e">ByType</span>(<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">ErrorTypePrivate</span>).<span style="color:#a6e22e">String</span>(),
+				<span style="color:#e6db74">&#34;IP&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ClientIP</span>(),
+				<span style="color:#e6db74">&#34;method&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">Method</span>,
+				<span style="color:#e6db74">&#34;status&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Status</span>(),
+				<span style="color:#e6db74">&#34;size&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Size</span>(),
+				<span style="color:#e6db74">&#34;path&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>,
+				<span style="color:#e6db74">&#34;latency&#34;</span>, <span style="color:#a6e22e">latency</span>)
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#a6e22e">sugar</span>.<span style="color:#a6e22e">Infow</span>(<span style="color:#e6db74">&#34;request&#34;</span>,
+				<span style="color:#e6db74">&#34;IP&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">ClientIP</span>(),
+				<span style="color:#e6db74">&#34;method&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">Method</span>,
+				<span style="color:#e6db74">&#34;status&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Status</span>(),
+				<span style="color:#e6db74">&#34;size&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Writer</span>.<span style="color:#a6e22e">Size</span>(),
+				<span style="color:#e6db74">&#34;path&#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">URL</span>.<span style="color:#a6e22e">Path</span>,
+				<span style="color:#e6db74">&#34;latency&#34;</span>, <span style="color:#a6e22e">latency</span>)
+		}
+	}
+
+}</code></pre></div>
+Here depending on the result we employ different logging levels.</p>
+
+<p>We register our middleware below
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">New</span>()
+<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">StructuredLogger</span>())
+<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Recovery</span>())</code></pre></div></p>
 
 <h2 id="defining-openapi-specification">Defining OpenAPI specification</h2>
 
