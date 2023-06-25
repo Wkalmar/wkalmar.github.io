@@ -6,10 +6,19 @@
     <description>Recent content in Csharp on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 Apr 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 25 Jun 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dynamic polymorphism: key concept to master OOP</title>
+      <link>https://wkalmar.github.io/post/dynamic-polymorphism/</link>
+      <pubDate>Sun, 25 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/dynamic-polymorphism/</guid>
+      <description>The world of object-oriented programming is a bit confusing. It requires mastering a lot of things: SOLID principles, design patterns to name a few. This gives birth to a lot of discussions: are design patterns still relevant, is SOLID intended solely for object-oriented code? It is said that one should prefer composition to inheritance but what is the exact rule of thumb when one should choose one or another?</description>
+    </item>
     
     <item>
       <title>It&#39;s not about how you inject your services, it&#39;s about how you test them</title>

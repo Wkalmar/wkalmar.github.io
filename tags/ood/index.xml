@@ -6,19 +6,18 @@
     <description>Recent content in OOD on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 25 Jun 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/ood/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Refactoring string into the specific type</title>
-      <link>https://wkalmar.github.io/post/refactoring-string-into-specific-type/</link>
-      <pubDate>Sun, 10 May 2020 00:00:00 +0000</pubDate>
+      <title>Dynamic polymorphism: key concept to master OOP</title>
+      <link>https://wkalmar.github.io/post/dynamic-polymorphism/</link>
+      <pubDate>Sun, 25 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://wkalmar.github.io/post/refactoring-string-into-specific-type/</guid>
-      <description>Introduction While the article title may sound controversial as there is clearly nothing wrong with using string in your code below I&amp;rsquo;ll show the case where string type doesn&amp;rsquo;t clearly communicate all the necessary properties of a domain in question. Then I&amp;rsquo;ll show how this can be handled. You can watch full code on Github.
-The code Recently I was tasked to write the code which converts Linux permissions to their octal representation.</description>
+      <guid>https://wkalmar.github.io/post/dynamic-polymorphism/</guid>
+      <description>The world of object-oriented programming is a bit confusing. It requires mastering a lot of things: SOLID principles, design patterns to name a few. This gives birth to a lot of discussions: are design patterns still relevant, is SOLID intended solely for object-oriented code? It is said that one should prefer composition to inheritance but what is the exact rule of thumb when one should choose one or another?</description>
     </item>
     
   </channel>

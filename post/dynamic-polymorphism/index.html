@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Dynamic polymorphism: key concept to master OOP // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Dynamic polymorphism: key concept to master OOP"/>
+<meta name="twitter:description" content="The world of object-oriented programming is a bit confusing. It requires mastering a lot of things: SOLID principles, design patterns to name a few. This gives birth to a lot of discussions: are design patterns still relevant, is SOLID intended solely for object-oriented code? It is said that one should prefer composition to inheritance but what is the exact rule of thumb when one should choose one or another?"/>
+
+    <meta property="og:title" content="Dynamic polymorphism: key concept to master OOP" />
+<meta property="og:description" content="The world of object-oriented programming is a bit confusing. It requires mastering a lot of things: SOLID principles, design patterns to name a few. This gives birth to a lot of discussions: are design patterns still relevant, is SOLID intended solely for object-oriented code? It is said that one should prefer composition to inheritance but what is the exact rule of thumb when one should choose one or another?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/dynamic-polymorphism/" />
+<meta property="article:published_time" content="2023-06-25T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2023-06-25T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Dynamic polymorphism: key concept to master OOP</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jun 25, 2023
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          8 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/oop/">OOP</a><a class="tag" href="https://wkalmar.github.io/tags/ood/">OOD</a><a class="tag" href="https://wkalmar.github.io/tags/csharp/">Csharp</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>The world of object-oriented programming is a bit confusing. It requires mastering a lot of things: SOLID principles, design patterns to name a few. This gives birth to a lot of discussions: are design patterns still relevant, is SOLID intended solely for object-oriented code? It is said that one should prefer composition to inheritance but what is the exact rule of thumb when one should choose one or another?</p>
+
+<p>Since numerous opinions on this matter were voiced I don&rsquo;t think that mine will be the final but nevertheless, in this article, I&rsquo;ll present the system that helped me in my everyday programming using C#. But before we jump to that let&rsquo;s have a look at another question. Consider the code.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>
+{
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Foo()
+	{
+		Console.WriteLine(<span style="color:#e6db74">&#34;A&#34;</span>);
+	}
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> : A
+{
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Foo()
+	{
+		Console.WriteLine(<span style="color:#e6db74">&#34;B&#34;</span>);
+	}
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> : A
+{
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Foo()
+	{
+		Console.WriteLine(<span style="color:#e6db74">&#34;C&#34;</span>);
+	}
+}
+
+<span style="color:#66d9ef">var</span> b = <span style="color:#66d9ef">new</span> B();
+<span style="color:#66d9ef">var</span> c = <span style="color:#66d9ef">new</span> C();
+b.Foo();
+c.Foo();
+</code></pre></div>
+Can you tell what the code will output in each case? If you&rsquo;ve answered correctly that respective output will be &ldquo;B&rdquo; and &ldquo;C&rdquo; then why does <code>override</code> keyword matter?</p>
+
+<h2 id="enter-dynamic-polymorphism">Enter dynamic polymorphism</h2>
+
+<p>Polymorphism is believed to be one of the pillars of object-oriented programming. But what exactly it means? Wikipedia tells us that polymorphism is the provision of a single interface to entities of different types or the use of a single symbol to represent multiple different types.</p>
+
+<p>I don&rsquo;t expect you to grasp this definition from the first time so let&rsquo;s have a look at some examples.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">string</span> Add(<span style="color:#66d9ef">string</span> input1, <span style="color:#66d9ef">string</span> input2) =&gt; <span style="color:#66d9ef">string</span>.Concat(input1, input2);
+<span style="color:#66d9ef">int</span> Add(<span style="color:#66d9ef">int</span> input1, <span style="color:#66d9ef">int</span> input2) =&gt; input1 + input2;
+</code></pre></div>
+
+<p>Above is an example of ad-hoc polymorphism which refers to polymorphic functions that can be applied to arguments of different types, but that behave differently depending on the type of the argument to which they are applied. So why is polymorphism so important for object-oriented code? This snippet does not provide a clear answer to this question. Let&rsquo;s look through more examples.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">List</span>&lt;T&gt; {
+    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span>&lt;T&gt; {
+        T elem;
+        Node&lt;T&gt; next;
+    }
+    Node&lt;T&gt; head;
+    <span style="color:#66d9ef">int</span> length() { ... }
+}
+</code></pre></div>
+This is an example of parametric polymorphism and to be honest it looks more functional than object-oriented. Let&rsquo;s have a look at the final example.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">interface</span> IDiscountCalculator
+{
+	<span style="color:#66d9ef">decimal</span> CalculateDiscount(Item item);
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThanksgivingDayDiscountCalculator</span> : IDiscountCalculator
+{
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> CalculateDiscount(Item discount)
+	{
+		<span style="color:#75715e">//omitted
+</span><span style="color:#75715e"></span>	}
+}
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RegularCustomerDiscountCalculator</span> : IDiscountCalculator
+{
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> CalculateDiscount(Item discount)
+	{
+		<span style="color:#75715e">//omitted
+</span><span style="color:#75715e"></span>	}
+}
+</code></pre></div>
+This is an example of dynamic polymorphism which is the term for applying polymorphism at the runtime (mostly via subtyping). And if you&rsquo;ve tried to memorize all these design patterns before the interview or some SOLID principles you may notice the shape of something familiar. Let&rsquo;s see how dynamic polymorphism manifests itself in these concepts.</p>
+
+<h2 id="dynamic-polymorphism-and-design-patterns">Dynamic polymorphism and design patterns</h2>
+
+<p>Most design patterns (strategy, command, decorator, etc) rely on injecting the abstract class or the interface and choosing the implementation of it at runtime. Let&rsquo;s have a look at some class diagrams to make sure it&rsquo;s the case.</p>
+
+<p><img src="https://sourcemaking.com/files/v2/content/patterns/Strategy1-2x.png"/></p>
+
+<p>Above is the diagram of strategy pattern where <code>Client</code> works with abstraction and its concrete implementation is chosen during the runtime.</p>
+
+<p>And here&rsquo;s decorator.</p>
+
+<p><img src="https://sourcemaking.com/files/v2/content/patterns/Decorator__1-2x.png"/></p>
+
+<p>In this case, wrapper accepts wrappee which is an instance of abstraction and its implementation may vary during the runtime.</p>
+
+<h2 id="dynamic-polymorphism-and-solid">Dynamic polymorphism and SOLID</h2>
+
+<p>When asking about SOLID during the interview the regular answer I hear is &ldquo;S stands for single responsibility and O stands for uhm&hellip;&rdquo;. On the contrary, I argue that the latter four letters of this acronym are more important since they represent the set of preconditions for your dynamic polymorphism to run smoothly.</p>
+
+<p>For instance, open-closed principle represents a way of thinking in which you tackle every new problem as the subtype for your abstraction. Recall <code>IDiscountCalculator</code> example. Imagine the case when you have to add another discount (say for father&rsquo;s day). To satisfy open-closed principle you have to add another subclass <code>FathersDayDiscountCalculator</code> that performs the calculation.</p>
+
+<p>Let&rsquo;s move on to the Liskov substitution principle. Imagine the situation that breaks it: we have to check whether the user is actually a father and it&rsquo;s a matching date. So we add the public method which checks whether the user is eligible.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FathersDayDiscountCalculator</span> : IDiscountCalculator
+{
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> CalculateDiscount(Item discount)
+	{
+		<span style="color:#75715e">//omitted
+</span><span style="color:#75715e"></span>	}
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsEligible(User user, DateTime date)
+	{
+		<span style="color:#75715e">//omitted
+</span><span style="color:#75715e"></span>	}
+}
+</code></pre></div>
+Now the calling code will face some complications
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> IReadOnlyCollection&lt;IDiscountCalculator&gt; _discountCalculators;
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> CalculateDiscountForItem(Item item, User user)
+{
+	<span style="color:#66d9ef">decimal</span> result = <span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span>  discountCalculator <span style="color:#66d9ef">in</span> _discountCalculators)
+	{
+		<span style="color:#66d9ef">if</span> (discountCalculator <span style="color:#66d9ef">is</span> FathersDayDiscountCalculator)
+		{
+			<span style="color:#66d9ef">var</span> fathersDayDiscountCalculator = discountCalculator <span style="color:#66d9ef">as</span> FathersDayDiscountCalculator;
+			<span style="color:#66d9ef">if</span> (fathersDayDiscountCalculator.IsEligible(user, DateTime.UtcNow))
+			{
+				result += fathersDayDiscountCalculator.CalculateDiscount(item);
+			}
+		}
+		<span style="color:#66d9ef">else</span>
+		{
+			result += discountCalculator.CalculateDiscount(item);
+		}
+	}
+	<span style="color:#66d9ef">return</span> result;
+}
+</code></pre></div></p>
+
+<p>Pretty verbose, isn&rsquo;t it? So in order to satisfy Liskov substitution principle we have to force all our implementations to exhibit the same public contract provided by the abstraction. Otherwise, it will complicate the application of dynamic polymorphism.</p>
+
+<p>Another thing that complicates the application of dynamic polymorphism is having abstraction too broad. Imagine that we&rsquo;ve made <code>IsEligible</code> the part of our interface and now all concrete classes implement it. The calling code is greatly simplified.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> IReadOnlyCollection&lt;IDiscountCalculator&gt; _discountCalculators;
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> CalculateDiscountForItem(Item item, User user)
+{
+	<span style="color:#66d9ef">decimal</span> result = <span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span>  discountCalculator <span style="color:#66d9ef">in</span> _discountCalculators)
+	{
+		result += discountCalculator.CalculateDiscount(item);
+	}
+	<span style="color:#66d9ef">return</span> result;
+}
+</code></pre></div>
+
+<p>But now imagine (I know the example is a bit contrived but just for the sake of the argument!) that one of the implementations threw <code>NotImplementedException</code> because it doesn&rsquo;t make sense for this particular type of discount. At this point, you may forsee the problem <code>CalculateDiscountForItem</code> failing with the runtime exception.</p>
+
+<p>That is what interface-segregation principle is about: don&rsquo;t make abstractions too broad so that concrete types won&rsquo;t have trouble with implementing them thus complicating your dynamic polymorphism with unnecessary <code>NotImplementedException</code>s.</p>
+
+<p>And by this time you may observe dependency inversion principle in action. In the example above we deal with the collection of abstractions and have no idea of their runtime types.</p>
+
+<h2 id="prefer-composition-over-inheritance">Prefer composition over inheritance</h2>
+
+<p>I won&rsquo;t dive a lot into why composition is preferable. There are numerous examples of how inheritance complicates things. But now when you have a question about what are legit cases for inheritance here&rsquo;s an answer for you: when it facilitates dynamic polymorphism.</p>
+
+<h2 id="virtual-and-override">Virtual and override</h2>
+
+<p>At this point, those of you who didn&rsquo;t know the answer correctly to the question at the beginning of the article might have a suspicion that it was a tricky question. And indeed while the behavior is similar when we use <code>var</code> keyword, differences start to arise when we apply dynamic polymorphism. For that matter let&rsquo;s convert both instances to parent type.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">A b = <span style="color:#66d9ef">new</span> B();
+A c = <span style="color:#66d9ef">new</span> C();
+</code></pre></div>
+
+<p>Now the output will be &ldquo;B&rdquo; and &ldquo;A&rdquo; respectively. Hot memorize this? The goal of <code>override</code> keyword is to facilitate dynamic polymorphism. So think of it this way: when we inject abstraction we expect to work with the concrete type realization and as <code>override</code> facilitates this goal so implementation of <code>B</code> will be invoked.</p>
+
+<h2 id="why-this-matters">Why this matters?</h2>
+
+<p>So now you know how to memorize all these pesky interview questions. But the most curious of you may be asking: what are the benefits of such a style of programming? Why do we strive to apply dynamic polymorphism in our object-oriented codebases?</p>
+
+<p>Imagine we have two methods somewhere in our codebase.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetCurrencySign(<span style="color:#66d9ef">string</span> currencyCode)
+{
+	<span style="color:#66d9ef">return</span> currencyCode <span style="color:#66d9ef">switch</span>
+	{
+		<span style="color:#e6db74">&#34;US&#34;</span> =&gt; <span style="color:#e6db74">&#34;$&#34;</span>,
+		<span style="color:#e6db74">&#34;JP&#34;</span> =&gt; <span style="color:#e6db74">&#34;¥&#34;</span>,
+		_ =&gt; <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentOutOfRangeException(nameof(currencyCode)),
+	};
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> GetRoundUpAmount(<span style="color:#66d9ef">decimal</span> amount, <span style="color:#66d9ef">string</span> currencyCode)
+{
+	<span style="color:#66d9ef">return</span> currencyCode <span style="color:#66d9ef">switch</span>
+	{
+		<span style="color:#e6db74">&#34;US&#34;</span> =&gt; Math.Floor(amount + <span style="color:#ae81ff">1</span>),
+		<span style="color:#e6db74">&#34;JP&#34;</span> =&gt; Math.Floor(amount / <span style="color:#ae81ff">100</span> + <span style="color:#ae81ff">1</span>) * <span style="color:#ae81ff">100</span>,
+		_ =&gt; <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentOutOfRangeException(nameof(currencyCode))
+	};
+}
+</code></pre></div>
+
+<p>Now imagine we have to add another country support. Doesn&rsquo;t look like a big deal but imagine these two methods hiding in one of those &ldquo;real-world&rdquo; codebases with thousands of classes and hundreds of thousands of lines of code. Most likely you&rsquo;ll forget all the places where you should add country support. This is exactly what <a href="https://en.wikipedia.org/wiki/Shotgun_surgery">Shotgun surgery</a> code smell is.</p>
+
+<p>How do we fix it? Let&rsquo;s extract all the information related to country code in a single place.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IPaymentStrategy
+{
+	<span style="color:#66d9ef">string</span> CurrencySign { <span style="color:#66d9ef">get</span>; }
+	<span style="color:#66d9ef">decimal</span> GetRoundUpAmount(<span style="color:#66d9ef">decimal</span> amount);
+}
+</code></pre></div>
+
+<p>Now when we have to add a new country code we are forced to implement the interface above so we definitely won&rsquo;t forget anything. We use factory to return instances of <code>IPaymentStrategy</code>.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetCurrencySign(<span style="color:#66d9ef">string</span> currencyCode)
+{
+	<span style="color:#66d9ef">var</span> strategy = _strategyFactory.CreateStrategy(currencyCode);
+	<span style="color:#66d9ef">return</span> strategy.CurrencySign;
+}
+</code></pre></div>
+
+<p>In the example above we&rsquo;ve fixed a code smell by applying dynamic polymorphism. Occasionally we&rsquo;ve managed to satisfy some SOLID principles (namely Open-Closed by crafting new functionality with extensions instead of modification) and applying design patterns. Bunch of cool enterprise stuff for your CV by applying just a single OOD principle!</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Software engineers, just like most of us, tend to follow a lot of principles without questioning their rationale. When this is done principles tend to get distorted and diverted from their original goal. So by questioning what was the original goal we might apply these principles as they were intended to be applied.</p>
+
+<p>In this article, I&rsquo;ve argued that one of the core principles beyond OOD was the application of dynamic polymorphism and a lot of principles (SOLID, design patterns) are just mnemonics built around it.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

@@ -6,10 +6,19 @@
     <description>Recent content on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 25 Jun 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dynamic polymorphism: key concept to master OOP</title>
+      <link>https://wkalmar.github.io/post/dynamic-polymorphism/</link>
+      <pubDate>Sun, 25 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/dynamic-polymorphism/</guid>
+      <description>The world of object-oriented programming is a bit confusing. It requires mastering a lot of things: SOLID principles, design patterns to name a few. This gives birth to a lot of discussions: are design patterns still relevant, is SOLID intended solely for object-oriented code? It is said that one should prefer composition to inheritance but what is the exact rule of thumb when one should choose one or another?</description>
+    </item>
     
     <item>
       <title>Visualizing your photos on a map with React Native</title>
@@ -48,8 +57,8 @@ In this article, we&amp;rsquo;ll have a look at how clean architecture is implem
       <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/clean-architecture-and-property-based-fit/</guid>
-      <description>It has been written a lot about the clean architecture. Its main value is the ability maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
-However, when it comes to designing tests for out pure domain logic quite often we don&amp;rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls.</description>
+      <description>It has been written a lot about the clean architecture. Its main value is the ability to maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+However, when it comes to designing tests for pure domain logic quite often we don&amp;rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls.</description>
     </item>
     
     <item>

@@ -17,8 +17,8 @@
       <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/post/clean-architecture-and-property-based-fit/</guid>
-      <description>It has been written a lot about the clean architecture. Its main value is the ability maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
-However, when it comes to designing tests for out pure domain logic quite often we don&amp;rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls.</description>
+      <description>It has been written a lot about the clean architecture. Its main value is the ability to maintain free from side effects domain layer that allows us to test core business logic without leveraging heavy mocks.
+However, when it comes to designing tests for pure domain logic quite often we don&amp;rsquo;t tend to be so picky. Unit testing contains many traps such as overspecified software. But even when it comes to testing pure functions which may seem as a pretty straightforward process we may encounter some pitfalls.</description>
     </item>
     
     <item>
