@@ -70,7 +70,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          5 min read
+          10 min read
         </div><div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
@@ -108,6 +108,63 @@ An alternative solution would be each service actually consume the message but t
 </ul>
 
 <p>There is already a <a href="https://github.com/samcook/RedLock.net">library</a> that implements distributed lock over Redis. So we just have to make use of it.</p>
+
+<h3 id="redlock-implementation">Redlock implementation</h3>
+
+<p>Let&rsquo;s imagine we&rsquo;ll use a single Redis as a storage lock. Such solution has an obvious downside: it is the single point of failure. However, you can&rsquo;t mitigate this issue by simply adding a replica because it will lead to a race condition. Imagine the following scenario:</p>
+
+<ol>
+<li>Client A acquires the lock in the master.</li>
+<li>The master crashes before the write to the key is transmitted to the replica.</li>
+<li>The replica gets promoted to master.</li>
+<li>Client B acquires the lock to the same resource A already holds a lock for.</li>
+</ol>
+
+<p>So how do you implement the algorithm correctly?</p>
+
+<p>In the distributed version of the algorithm we assume we have N Redis masters. Those nodes are totally independent, so we don’t use replication or any other implicit coordination system. We already described how to acquire and release the lock safely in a single instance. We take for granted that the algorithm will use this method to acquire and release the lock in a single instance. In our examples we set N=5, which is a reasonable value, so we need to run 5 Redis masters on different computers or virtual machines in order to ensure that they’ll fail in a mostly independent way.</p>
+
+<p>In order to acquire the lock, the client performs the following operations:</p>
+
+<ol>
+<li>It gets the current time in milliseconds.</li>
+<li>It tries to acquire the lock in all the N instances sequentially, using the same key name and random value in all the instances. During step 2, when setting the lock in each instance, the client uses a timeout which is small compared to the total lock auto-release time in order to acquire it. For example if the auto-release time is 10 seconds, the timeout could be in the ~ 5-50 milliseconds range. This prevents the client from remaining blocked for a long time trying to talk with a Redis node which is down: if an instance is not available, we should try to talk with the next instance ASAP.</li>
+<li>The client computes how much time elapsed in order to acquire the lock, by subtracting from the current time the timestamp obtained in step 1. If and only if the client was able to acquire the lock in the majority of the instances (at least 3), and the total time elapsed to acquire the lock is less than lock validity time, the lock is considered to be acquired.</li>
+<li>If the lock was acquired, its validity time is considered to be the initial validity time minus the time elapsed, as computed in step 3.</li>
+<li>If the client failed to acquire the lock for some reason (either it was not able to lock <code>N/2+1</code> instances or the validity time is negative), it will try to unlock all the instances (even the instances it believed it was not able to lock).</li>
+</ol>
+
+<h3 id="is-redlock-safe">Is Redlock safe?</h3>
+
+<p>In order to be considered safe Redlock algorithm must satify the following properties:</p>
+
+<ol>
+<li>Safety property: Mutual exclusion. At any given moment, only one client can hold a lock.</li>
+<li>Liveness property A: Deadlock free. Eventually it is always possible to acquire a lock, even if the client that locked a resource crashes or gets partitioned.</li>
+<li>Liveness property B: Fault tolerance. As long as the majority of Redis nodes are up, clients are able to acquire and release locks.</li>
+</ol>
+
+<p>Let&rsquo;s examine various scenarios to see if Redlock conforms to these properties.</p>
+
+<p>To start let’s assume that a client is able to acquire the lock in the majority of instances. All the instances will contain a key with the same time to live. However, the key was set at different times, so the keys will also expire at different times. But if the first key was set at worst at time <code>T1</code> (the time we sample before contacting the first server) and the last key was set at worst at time <code>T2</code> (the time we obtained the reply from the last server), we are sure that the first key to expire in the set will exist for at least <code>MIN_VALIDITY=TTL-(T2-T1)-CLOCK_DRIFT</code>. All the other keys will expire later, so we are sure that the keys will be simultaneously set for at least this time.</p>
+
+<p>During the time that the majority of keys are set, another client will not be able to acquire the lock, since <code>N/2+1</code> <code>SET NX</code> operations can’t succeed if <code>N/2+1</code> keys already exist. So if a lock was acquired, it is not possible to re-acquire it at the same time (violating the mutual exclusion property).</p>
+
+<p>However we want to also make sure that multiple clients trying to acquire the lock at the same time can’t simultaneously succeed.</p>
+
+<p>If a client locked the majority of instances using a time near, or greater, than the lock maximum validity time (the TTL we use for <code>SET</code> basically), it will consider the lock invalid and will unlock the instances, so we only need to consider the case where a client was able to lock the majority of instances in a time which is less than the validity time. In this case for the argument already expressed above, for <code>MIN_VALIDITY</code> no client should be able to re-acquire the lock. So multiple clients will be able to lock <code>N/2+1</code> instances at the same time (with &ldquo;time&rdquo; being the end of Step 2) only when the time to lock the majority was greater than the TTL time, making the lock invalid.</p>
+
+<p>The system liveness is based on three main features:</p>
+
+<ol>
+<li>The auto release of the lock (since keys expire): eventually keys are available again to be locked.</li>
+<li>The fact that clients, usually, will cooperate removing the locks when the lock was not acquired, or when the lock was acquired and the work terminated, making it likely that we don’t have to wait for keys to expire to re-acquire the lock.</li>
+<li>The fact that when a client needs to retry a lock, it waits a time which is comparably greater than the time needed to acquire the majority of locks, in order to probabilistically make split brain conditions during resource contention unlikely.</li>
+</ol>
+
+<p>However, we pay an availability penalty equal to TTL time on network partitions, so if there are continuous partitions, we can pay this penalty indefinitely. This happens every time a client acquires a lock and gets partitioned away before being able to remove the lock.</p>
+
+<p>Basically if there are infinite continuous network partitions, the system may become not available for an infinite amount of time.</p>
 
 <h2 id="the-code">The code</h2>
 
