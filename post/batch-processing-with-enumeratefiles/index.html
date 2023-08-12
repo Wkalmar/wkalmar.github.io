@@ -186,30 +186,17 @@ Example Let&rsquo;s assume you have a big data solution and you need to process 
     {
         <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> batchSize = <span style="color:#ae81ff">10000</span>;
         <span style="color:#66d9ef">var</span> files = Directory.EnumerateFiles(Path);
-        <span style="color:#66d9ef">var</span> count = <span style="color:#ae81ff">0</span>;
-        <span style="color:#66d9ef">var</span> filesToProcess = <span style="color:#66d9ef">new</span> List&lt;FileProcessingDto&gt;(batchSize);
-
-        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> file <span style="color:#66d9ef">in</span> files)
+        <span style="color:#66d9ef">var</span> chunks = files.Chunk(batchSize);
+        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> chunk <span style="color:#66d9ef">in</span> chunks)
         {
-            count++;
-            filesToProcess.Add(MapToDto(file));
-            <span style="color:#66d9ef">if</span> (count == batchSize)
-            {
-                <span style="color:#66d9ef">await</span> _processingService.Process(filesToProcess);
-                count = <span style="color:#ae81ff">0</span>;
-                filesToProcess.Clear();
-            }
-
-        }
-        <span style="color:#66d9ef">if</span> (filesToProcess.Any())
-        {
+            <span style="color:#66d9ef">var</span> filesToProcess = chunk.Select(file =&gt; MapToDto(file)).ToList();
             <span style="color:#66d9ef">await</span> _processingService.Process(filesToProcess);
         }
     }
 }
 </code></pre></div></p>
 
-<p>Here we enumerate collection with <code>foreach</code> and once we reach the size of the batch we process it and flush the collection. The only interesting moment here is to call service one last time after we exit the loop in order to flush remaining items.</p>
+<p>Here we use LINQ <a href="https://www.csharptutorial.net/csharp-linq/linq-chunk/">Chunk</a> method that appeared in .NET 7 to do batching for us. It returns <code>IEnumerable&lt;string&gt;</code> so instead of processing files at once, we work with a reasonable amount at a given point in time.</p>
 
 <h3 id="evaluation">Evaluation</h3>
 
