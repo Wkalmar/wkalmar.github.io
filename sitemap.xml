@@ -3,8 +3,55 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://wkalmar.github.io/tags/aws/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/architecture/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://wkalmar.github.io/</loc>
-    <lastmod>2023-06-25T00:00:00+00:00</lastmod>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/cloud/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/poeme-concrete-with-aws-step-functions/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/javascript/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/serverless/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/</loc>
+    <lastmod>2024-02-24T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -26,25 +73,7 @@
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/post/</loc>
-    <lastmod>2023-06-25T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/</loc>
-    <lastmod>2023-06-25T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/tags/frontend/</loc>
-    <lastmod>2023-02-02T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/javascript/</loc>
     <lastmod>2023-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -74,12 +103,6 @@
   <url>
     <loc>https://wkalmar.github.io/tags/elasticsearch/</loc>
     <lastmod>2022-12-10T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/architecture/</loc>
-    <lastmod>2022-10-20T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -197,30 +220,12 @@
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/tags/aws/</loc>
-    <lastmod>2020-02-15T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/post/building-auth-endpoint-with-go-and-aws-lambda/</loc>
     <lastmod>2020-02-15T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://wkalmar.github.io/tags/cloud/</loc>
-    <lastmod>2020-02-15T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://wkalmar.github.io/tags/jwt/</loc>
-    <lastmod>2020-02-15T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/serverless/</loc>
     <lastmod>2020-02-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>

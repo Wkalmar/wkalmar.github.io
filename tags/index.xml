@@ -6,10 +6,55 @@
     <description>Recent content in Tags on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 25 Jun 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 24 Feb 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>AWS</title>
+      <link>https://wkalmar.github.io/tags/aws/</link>
+      <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/aws/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Architecture</title>
+      <link>https://wkalmar.github.io/tags/architecture/</link>
+      <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/architecture/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cloud</title>
+      <link>https://wkalmar.github.io/tags/cloud/</link>
+      <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/cloud/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Javascript</title>
+      <link>https://wkalmar.github.io/tags/javascript/</link>
+      <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Serverless</title>
+      <link>https://wkalmar.github.io/tags/serverless/</link>
+      <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/serverless/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Csharp</title>
@@ -39,15 +84,6 @@
     </item>
     
     <item>
-      <title>Javascript</title>
-      <link>https://wkalmar.github.io/tags/javascript/</link>
-      <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/javascript/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>React.js</title>
       <link>https://wkalmar.github.io/tags/react.js/</link>
       <pubDate>Thu, 02 Feb 2023 00:00:00 +0000</pubDate>
@@ -71,15 +107,6 @@
       <pubDate>Sat, 10 Dec 2022 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/tags/elasticsearch/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Architecture</title>
-      <link>https://wkalmar.github.io/tags/architecture/</link>
-      <pubDate>Thu, 20 Oct 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/architecture/</guid>
       <description></description>
     </item>
     
@@ -156,38 +183,11 @@
     </item>
     
     <item>
-      <title>AWS</title>
-      <link>https://wkalmar.github.io/tags/aws/</link>
-      <pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/aws/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Cloud</title>
-      <link>https://wkalmar.github.io/tags/cloud/</link>
-      <pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/cloud/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>JWT</title>
       <link>https://wkalmar.github.io/tags/jwt/</link>
       <pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/tags/jwt/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Serverless</title>
-      <link>https://wkalmar.github.io/tags/serverless/</link>
-      <pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/serverless/</guid>
       <description></description>
     </item>
     

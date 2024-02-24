@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Composing poésie concrète with AWS Step Function // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Composing poésie concrète with AWS Step Function"/>
+<meta name="twitter:description" content="Concept Observing signs of russo-Ukrainian war fatigue I decided to come up with a poem called &ldquo;Is the war over?&rdquo;. I&rsquo;ve labeled it as poésie concrète drawing an analogy with musique concrète - genre where music is composed of non-musical pieces of sound.
+In the same way, my poem is composed of search engine results for &ldquo;russian war crimes&rdquo; in the latest week which are then processed by a sentiment analysis model to extract sentences that highlight russian atrocities most properly."/>
+
+    <meta property="og:title" content="Composing poésie concrète with AWS Step Function" />
+<meta property="og:description" content="Concept Observing signs of russo-Ukrainian war fatigue I decided to come up with a poem called &ldquo;Is the war over?&rdquo;. I&rsquo;ve labeled it as poésie concrète drawing an analogy with musique concrète - genre where music is composed of non-musical pieces of sound.
+In the same way, my poem is composed of search engine results for &ldquo;russian war crimes&rdquo; in the latest week which are then processed by a sentiment analysis model to extract sentences that highlight russian atrocities most properly." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/poeme-concrete-with-aws-step-functions/" />
+<meta property="article:published_time" content="2024-02-24T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2024-02-24T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Composing poésie concrète with AWS Step Function</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 24, 2024
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          11 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/javascript/">Javascript</a><a class="tag" href="https://wkalmar.github.io/tags/aws/">AWS</a><a class="tag" href="https://wkalmar.github.io/tags/serverless/">Serverless</a><a class="tag" href="https://wkalmar.github.io/tags/cloud/">Cloud</a><a class="tag" href="https://wkalmar.github.io/tags/architecture/">Architecture</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="concept">Concept</h2>
+
+<p>Observing signs of russo-Ukrainian war fatigue I decided to come up with a poem called &ldquo;Is the war over?&rdquo;. I&rsquo;ve labeled it as poésie concrète drawing an analogy with <a href="https://en.wikipedia.org/wiki/Musique_concr%C3%A8te">musique concrète</a> - genre where music is composed of non-musical pieces of sound.</p>
+
+<p>In the same way, my poem is composed of search engine results for &ldquo;russian war crimes&rdquo; in the latest week which are then processed by a sentiment analysis model to extract sentences that highlight russian atrocities most properly. After ML-processing sentences assembled in the poem. Each Sunday the poem is regenerated with new and new war crimes.</p>
+
+<p>The war will be over on a day when the search engine will return no results and the poem will be blank.</p>
+
+<p>One may argue that search engine might return results long after hostilities will end. This is exactly the point. Many people in Ukraine will have to live with the aftermath of war for their entire lives. Consider war veterans, traumatized children, and families who lost their close ones.</p>
+
+<p>You may access the page that leads to the poem <a href="http://tilde.town/~wkalmar/is-the-war-over.html">here</a>.</p>
+
+<h2 id="high-level-architecture">High-level architecture</h2>
+
+<p>I&rsquo;ve decided to proceed with the serverless offering since it allows me to pay per execution and execution figures are low for this one. While my experience mostly connected with .NET stack for this project I&rsquo;ve decided to go with Javascript since its web-based capabilities exceed any other language I&rsquo;m familiar with.</p>
+
+<p>The high-level architecture diagram looks as below.</p>
+
+<p><img src="/12/1.PNG" width="600"/></p>
+
+<p>The entire process is launched by EventBridge Scheduler which launches the chain of Lambdas each following its own responsibility:
+- Crawling the search engine
+- Extract article content from a web page
+- Analyze the sentiment of each sentence inside the article
+- Assemble the poem from the sentences with the strongest sentiment and put it in S3 bucket that is served to the client via CloudFront.</p>
+
+<p>Since the source code is stored in <a href="https://github.com/Wkalmar/poeme-concrete">Github</a> I decided to deploy them via Github actions. In the article below we&rsquo;ll focus on some points of interest found in the code.</p>
+
+<h2 id="crawling-the-search-engine">Crawling the search engine</h2>
+
+<p>The algorithm behind Google Crawler service is:
+1. Make a request to <code>https://www.google.com/search?q=russian+war+crimes&amp;tbs=qdr:w</code>
+2. Traverse html page for links to web pages.</p>
+
+<p>Once approaching this task I was under the impression that I&rsquo;d leverage <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document">document API</a> to traverse the HMTL. However, it relies on a browser which was not the case for Lambda. <a href="https://github.com/jsdom/jsdom">JSDom</a> came to my rescue.</p>
+
+<p>With its help extracting necessary values is as simple as</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dom</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">jsdom</span>.<span style="color:#a6e22e">JSDOM</span>(<span style="color:#a6e22e">data</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">anchors</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">dom</span>.window.document.<span style="color:#a6e22e">querySelectorAll</span>(<span style="color:#e6db74">&#39;a[data-ved]&#39;</span>);
+</code></pre></div>
+
+<h2 id="first-deploy">First deploy</h2>
+
+<p>I decided to design the project for deployment from the start so the next step was to introduce continuous build on GitHub.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">name: Google Crawler Build
+
+on:
+  push:
+    branches: [ <span style="color:#e6db74">&#34;*&#34;</span> ]
+  pull_request:
+    branches: [ <span style="color:#e6db74">&#34;master&#34;</span> ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [<span style="color:#ae81ff">20.</span>x]
+        <span style="color:#75715e"># See supported Node.js release schedule at https://nodejs.org/en/about/releases/</span>
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: <span style="color:#e6db74">&#39;npm&#39;</span>
+        cache-dependency-path: <span style="color:#e6db74">&#34;./src/google-crawler/package-lock.json&#34;</span>
+    - run: cd ./src/google-crawler <span style="color:#75715e">&amp;&amp;</span> npm ci
+    - run: cd ./src/google-crawler <span style="color:#75715e">&amp;&amp;</span> npm test
+    - run: cd ./src/google-crawler <span style="color:#75715e">&amp;&amp;</span> npm run lint</code></pre></div></p>
+
+<p>I think the code is pretty self-explanatory, however, let&rsquo;s look through some points.</p>
+
+<p>Here we rely on <code>ubuntu-latest</code> environment and <code>node-version: [20.x]</code>.</p>
+
+<p>First of all, we check out the source code with <code>actions/checkout@v3</code>. For npm to work correctly we have to specify the path to <code>package-lock.json</code> file with <code>cache-dependency-path: &quot;./src/google-crawler/package-lock.json&quot;</code>. Apart from restoring packages with <code>npm ci</code> we also run unit-tests and linter which are necessary quality gates for our codebase.</p>
+
+<p>The deployment looks as follows
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">name: Google Crawler Deploy
+
+on:
+  push:
+    branches: [ <span style="color:#e6db74">&#34;master&#34;</span> ]
+jobs:
+  lambda:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [<span style="color:#ae81ff">20.</span>x]
+        <span style="color:#75715e"># See supported Node.js release schedule at https://nodejs.org/en/about/releases/</span>
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: <span style="color:#e6db74">&#39;npm&#39;</span>
+          cache-dependency-path: <span style="color:#e6db74">&#34;./src/google-crawler/package-lock.json&#34;</span>
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-<span style="color:#ae81ff">1</span>
+      - run: cd ./src/google-crawler <span style="color:#75715e">&amp;&amp;</span> npm ci
+      - run: cd ./src/google-crawler <span style="color:#75715e">&amp;&amp;</span> zip -r lambda1.zip ./
+      - run: cd ./src/google-crawler <span style="color:#75715e">&amp;&amp;</span> aws lambda update-function-code --function-name=google-crawler --zip-file=fileb://lambda1.zip</code></pre></div></p>
+
+<p>It looks pretty similar to the build job, however, we also zip the code and deploy it via <code>aws lambda update-function-code</code> command.</p>
+
+<h2 id="extracting-article-content">Extracting article content</h2>
+
+<p>To extract article content from the web page I&rsquo;ve used <a href="https://github.com/mozilla/readability">Readability</a> package. Here&rsquo;s how I download article content from the web page and split it into sentences.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">res</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">url</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">html</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">text</span>();
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">jsdom</span>.<span style="color:#a6e22e">JSDOM</span>(<span style="color:#a6e22e">html</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">reader</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">readability</span>.<span style="color:#a6e22e">Readability</span>(<span style="color:#a6e22e">doc</span>.window.document);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">article</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">reader</span>.<span style="color:#a6e22e">parse</span>();
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sentences</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">splitIntoSentences</span>(<span style="color:#a6e22e">article</span>.<span style="color:#a6e22e">textContent</span>);
+</code></pre></div></p>
+
+<h2 id="calling-one-lambda-from-another">Calling one lambda from another</h2>
+
+<p>There are many advices on how to synchronously call one lambda from another over the internet. <a href="https://docs.aws.amazon.com/lambda/latest/operatorguide/functions-calling-functions.html">AWS documentation</a>, however, is more prohibitive on that matter and for a good reason:</p>
+
+<pre><code>While this synchronous flow may work within a single application on a server, it introduces several avoidable problems in a distributed serverless architecture:
+
+Cost: with Lambda, you pay for the duration of an invocation. In this example, while the Create invoice functions runs, two other functions are also running in a wait state, shown in red on the diagram.
+
+Error handling: in nested invocations, error handling can become much more complex. Either errors are thrown to parent functions to handle at the top-level function, or functions require custom handling. For example, an error in Create invoice might require the Process payment function to reverse the charge, or it may instead retry the Create invoice process.
+
+Tight coupling: processing a payment typically takes longer than creating an invoice. In this model, the availability of the entire workflow is limited by the slowest function.
+
+Scaling: the concurrency of all three functions must be equal. In a busy system, this uses more concurrency than would otherwise be needed.
+</code></pre>
+
+<p>One of the alternatives is to use <a href="https://aws.amazon.com/step-functions/">AWS Step Functions</a> to orchestrate the execution of the lambdas. And turns out that my problem is a nice example of <a href="https://docs.aws.amazon.com/step-functions/latest/dg/use-dist-map-orchestrate-large-scale-parallel-workloads.html">distributed map</a>. Consider:
+- We extract all necessary links
+- We map each link in parallel by extracting its content and analyzing its sentiment.
+- We reduce it into a single S3 bucket.</p>
+
+<p>Here&rsquo;s the definition of the entire system.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;Comment&#34;</span>: <span style="color:#e6db74">&#34;A Step Functions workflow that processes an array of strings concurrently&#34;</span>,
+  <span style="color:#f92672">&#34;StartAt&#34;</span>: <span style="color:#e6db74">&#34;Extract links from google&#34;</span>,
+  <span style="color:#f92672">&#34;States&#34;</span>: {
+    <span style="color:#f92672">&#34;Extract links from google&#34;</span>: {
+      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Task&#34;</span>,
+      <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;&lt;google crawler arn&gt;&#34;</span>,
+      <span style="color:#f92672">&#34;ResultPath&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+      <span style="color:#f92672">&#34;Next&#34;</span>: <span style="color:#e6db74">&#34;ProcessArray&#34;</span>,
+      <span style="color:#f92672">&#34;Retry&#34;</span>: [
+        {
+          <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+            <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+          ],
+          <span style="color:#f92672">&#34;IntervalSeconds&#34;</span>: <span style="color:#ae81ff">1</span>,
+          <span style="color:#f92672">&#34;MaxAttempts&#34;</span>: <span style="color:#ae81ff">2</span>,
+          <span style="color:#f92672">&#34;BackoffRate&#34;</span>: <span style="color:#ae81ff">2</span>
+        }
+      ]
+    },
+    <span style="color:#f92672">&#34;ProcessArray&#34;</span>: {
+      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Map&#34;</span>,
+      <span style="color:#f92672">&#34;ItemsPath&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+      <span style="color:#f92672">&#34;MaxConcurrency&#34;</span>: <span style="color:#ae81ff">10</span>,
+      <span style="color:#f92672">&#34;Iterator&#34;</span>: {
+        <span style="color:#f92672">&#34;StartAt&#34;</span>: <span style="color:#e6db74">&#34;Extract article content&#34;</span>,
+        <span style="color:#f92672">&#34;States&#34;</span>: {
+          <span style="color:#f92672">&#34;Extract article content&#34;</span>: {
+            <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Task&#34;</span>,
+            <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;&lt;article extractor arn&gt;&#34;</span>,
+            <span style="color:#f92672">&#34;InputPath&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+            <span style="color:#f92672">&#34;Next&#34;</span>: <span style="color:#e6db74">&#34;Analyze sentiment&#34;</span>,
+            <span style="color:#f92672">&#34;Retry&#34;</span>: [
+              {
+                <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+                  <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+                ],
+                <span style="color:#f92672">&#34;IntervalSeconds&#34;</span>: <span style="color:#ae81ff">1</span>,
+                <span style="color:#f92672">&#34;MaxAttempts&#34;</span>: <span style="color:#ae81ff">2</span>,
+                <span style="color:#f92672">&#34;BackoffRate&#34;</span>: <span style="color:#ae81ff">2</span>
+              }
+            ],
+            <span style="color:#f92672">&#34;Catch&#34;</span>: [
+              {
+                <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+                  <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+                ],
+                <span style="color:#f92672">&#34;Next&#34;</span>: <span style="color:#e6db74">&#34;Analyze sentiment&#34;</span>
+              }
+            ]
+          },
+          <span style="color:#f92672">&#34;Analyze sentiment&#34;</span>: {
+            <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Task&#34;</span>,
+            <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;&lt;sentiment analyzer arn&gt;&#34;</span>,
+            <span style="color:#f92672">&#34;InputPath&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+            <span style="color:#f92672">&#34;End&#34;</span>: <span style="color:#66d9ef">true</span>,
+            <span style="color:#f92672">&#34;Retry&#34;</span>: [
+              {
+                <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+                  <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+                ],
+                <span style="color:#f92672">&#34;IntervalSeconds&#34;</span>: <span style="color:#ae81ff">1</span>,
+                <span style="color:#f92672">&#34;MaxAttempts&#34;</span>: <span style="color:#ae81ff">2</span>,
+                <span style="color:#f92672">&#34;BackoffRate&#34;</span>: <span style="color:#ae81ff">2</span>
+              }
+            ]
+          }
+        }
+      },
+      <span style="color:#f92672">&#34;Next&#34;</span>: <span style="color:#e6db74">&#34;Reducer&#34;</span>,
+      <span style="color:#f92672">&#34;Retry&#34;</span>: [
+        {
+          <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+            <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+          ],
+          <span style="color:#f92672">&#34;IntervalSeconds&#34;</span>: <span style="color:#ae81ff">1</span>,
+          <span style="color:#f92672">&#34;MaxAttempts&#34;</span>: <span style="color:#ae81ff">2</span>,
+          <span style="color:#f92672">&#34;BackoffRate&#34;</span>: <span style="color:#ae81ff">2</span>
+        }
+      ],
+      <span style="color:#f92672">&#34;Catch&#34;</span>: [
+        {
+          <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+            <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+          ],
+          <span style="color:#f92672">&#34;Next&#34;</span>: <span style="color:#e6db74">&#34;Reducer&#34;</span>
+        }
+      ]
+    },
+    <span style="color:#f92672">&#34;Reducer&#34;</span>: {
+      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Task&#34;</span>,
+      <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;&lt;reducer arn&gt;&#34;</span>,
+      <span style="color:#f92672">&#34;InputPath&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+      <span style="color:#f92672">&#34;ResultPath&#34;</span>: <span style="color:#e6db74">&#34;$&#34;</span>,
+      <span style="color:#f92672">&#34;End&#34;</span>: <span style="color:#66d9ef">true</span>,
+      <span style="color:#f92672">&#34;Retry&#34;</span>: [
+        {
+          <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+            <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+          ],
+          <span style="color:#f92672">&#34;IntervalSeconds&#34;</span>: <span style="color:#ae81ff">1</span>,
+          <span style="color:#f92672">&#34;MaxAttempts&#34;</span>: <span style="color:#ae81ff">2</span>,
+          <span style="color:#f92672">&#34;BackoffRate&#34;</span>: <span style="color:#ae81ff">2</span>
+        }
+      ]
+    }
+  }
+}</code></pre></div>
+Here we enter into the map phase executing step with <code>&quot;Type&quot;: &quot;Map&quot;,</code> and both are <code>Article extractor</code> and <code>Sentiment analyzer</code> serve as <code>Iterator</code>. Once the map phase is done we enter reduce phase via <code>&quot;Next&quot;: &quot;Reducer&quot;</code>.</p>
+
+<p>Another thing worth mentioning is increasing the reliability of our system by adding error handling. The most obvious way is adding retries via
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;Retry&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> [
+  {
+    <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+      <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+    ],
+    <span style="color:#f92672">&#34;IntervalSeconds&#34;</span>: <span style="color:#ae81ff">1</span>,
+    <span style="color:#f92672">&#34;MaxAttempts&#34;</span>: <span style="color:#ae81ff">2</span>,
+    <span style="color:#f92672">&#34;BackoffRate&#34;</span>: <span style="color:#ae81ff">2</span>
+  }
+]</code></pre></div>
+We also use another tactic - letting a single map instance fail instead of failing the entire map phase.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;Catch&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> [
+  {
+    <span style="color:#f92672">&#34;ErrorEquals&#34;</span>: [
+      <span style="color:#e6db74">&#34;States.ALL&#34;</span>
+    ],
+    <span style="color:#f92672">&#34;Next&#34;</span>: <span style="color:#e6db74">&#34;Analyze sentiment&#34;</span>
+  }
+]</code></pre></div></p>
+
+<h2 id="using-layers-to-optimize-monorepo-structure">Using layers to optimize monorepo structure</h2>
+
+<p>At this point, the structure of our repository looks suboptimal with package.json and separate build step for each function. What&rsquo;s more: a separate package.json means a separate node_modules folder which leads to much disk space going to waste since a lot of modules are duplicates.</p>
+
+<p><img src="/12/2.PNG" width="600"/></p>
+
+<p>This won&rsquo;t scale once we will add more functions. There is however a way to build and package all the dependencies at once using <a href="https://docs.aws.amazon.com/lambda/latest/dg/chapter-layers.html">Lambda layers</a>. This approach lets us package all the dependencies into a separate layer and treat it for our functions as a common runtime.</p>
+
+<p>We&rsquo;ll reorganize our repository to look like this:</p>
+
+<p><img src="/12/3.PNG" width="600"/></p>
+
+<p>Let&rsquo;s have a look at a separate action that deploys the layer:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">name: Deploy Modules Layer
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: <span style="color:#66d9ef">true</span>
+      AWS_SECRET_ACCESS_KEY:
+        required: <span style="color:#66d9ef">true</span>
+
+jobs:
+  layer:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [<span style="color:#ae81ff">20.</span>x]
+        <span style="color:#75715e"># See supported Node.js release schedule at https://nodejs.org/en/about/releases/</span>
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: <span style="color:#e6db74">&#39;npm&#39;</span>
+          cache-dependency-path: <span style="color:#e6db74">&#34;./src/package-lock.json&#34;</span>
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-<span style="color:#ae81ff">1</span>
+      - run: cd ./src <span style="color:#75715e">&amp;&amp;</span> npm ci
+      - run: cd ./src <span style="color:#75715e">&amp;&amp;</span> zip -r layer.zip node_modules
+      - run: cd ./src <span style="color:#75715e">&amp;&amp;</span> aws lambda publish-layer-version --layer-name poeme-concrete-modules --zip-file fileb://layer.zip</code></pre></div>
+Nothing special is happening here apart from the fact that now we are using <code>aws lambda publish-layer-version</code>. Now let&rsquo;s jump to consuming the deployed layer when we deploy our functions.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">name: Article Extractor Deploy
+
+on:
+  push:
+    branches: [ <span style="color:#e6db74">&#34;master&#34;</span> ]
+jobs:
+  layer:
+    uses: ./.github/workflows/modules-layer-deploy.yml
+    secrets: inherit
+
+  lambda:
+    runs-on: ubuntu-latest
+    needs: layer
+    strategy:
+      matrix:
+        node-version: [<span style="color:#ae81ff">20.</span>x]
+        <span style="color:#75715e"># See supported Node.js release schedule at https://nodejs.org/en/about/releases/</span>
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: <span style="color:#e6db74">&#39;npm&#39;</span>
+          cache-dependency-path: <span style="color:#e6db74">&#34;./src/package-lock.json&#34;</span>
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-<span style="color:#ae81ff">1</span>
+      - run: cd ./src <span style="color:#75715e">&amp;&amp;</span> npm ci
+      - run: cd ./src/article-extractor <span style="color:#75715e">&amp;&amp;</span> zip -r lambda1.zip ./
+      - run: cd ./src/article-extractor <span style="color:#75715e">&amp;&amp;</span> aws lambda update-function-code --function-name=article-extractor --zip-file=fileb://lambda1.zip
+      - run: echo <span style="color:#e6db74">&#34;layer-arn=$(aws lambda list-layer-versions --layer-name poeme-concrete-modules --region eu-central-1 --query &#39;LayerVersions[0].LayerVersionArn&#39;)&#34;</span> &gt;&gt; $GITHUB_ENV
+      - run: aws lambda update-function-configuration --function-name=article-extractor --layers=<span style="color:#e6db74">&#34;${{ env.layer-arn }}&#34;</span></code></pre></div>
+Here couple of things are worth noting.</p>
+
+<p>First of all, is how we rely on deploy layers job.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">jobs:
+  layer:
+    uses: ./.github/workflows/modules-layer-deploy.yml
+    secrets: inherit</code></pre></div>
+The thing that might be unobvious to newcomers is how we use <code>secrets: inherit</code> to pass secrets down to the layer deploy action. One might naturally assume that it will infer secrets from the Github storage, however, this is not true and child action infers secrets from parent workflow.</p>
+
+<p>Another important thing is forcing newly deployed function to use the latest version of the published layer. We achieve this in two steps:
+1. Querying for the latest layer version and storing it inside the environment variable
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#e6db74">&#34;layer-arn=</span><span style="color:#66d9ef">$(</span>aws lambda list-layer-versions --layer-name poeme-concrete-modules --region eu-central-1 --query <span style="color:#e6db74">&#39;LayerVersions[0].LayerVersionArn&#39;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> &gt;&gt; $GITHUB_ENV</code></pre></div>
+2. Using stored value to configure update function configuration
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">aws lambda update-function-configuration --function-name<span style="color:#f92672">=</span>article-extractor --layers<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>{ env.layer-arn <span style="color:#e6db74">}</span><span style="color:#e6db74">}&#34;</span></code></pre></div></p>
+
+<h2 id="accessing-secrets">Accessing secrets</h2>
+
+<p>When it comes to choosing a sentiment analysis engine the natural choice is Amazon Comprehend. Why I didn&rsquo;t stick with it? I didn&rsquo;t like the results.</p>
+
+<p><img src="/12/4.PNG" width="600"/></p>
+
+<p>Instead, I&rsquo;ve chosen <a href="https://text2data.com/">text2data</a> service. At the end of the day it&rsquo;s like calling any other third-party service via HTTP so in this section I&rsquo;ll briefly cover retrieving secrets needed to call this API.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">SecretsManagerClient</span>, <span style="color:#a6e22e">GetSecretValueCommand</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@aws-sdk/client-secrets-manager&#34;</span>;
+
+<span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getSentimentAnalysisApiKey</span>() {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">secret_name</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;SENTIMENT_ANALYSIS_API_KEY&#34;</span>;
+
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">SecretsManagerClient</span>({
+        <span style="color:#a6e22e">region</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;eu-central-1&#34;</span>,
+    });
+
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">response</span>;
+
+    <span style="color:#66d9ef">try</span> {
+        <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">send</span>(
+            <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">GetSecretValueCommand</span>({
+                <span style="color:#a6e22e">SecretId</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">secret_name</span>,
+                <span style="color:#a6e22e">VersionStage</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;AWSCURRENT&#34;</span>
+            })
+        );
+    } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">error</span>) {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">error</span>);
+        <span style="color:#66d9ef">throw</span> <span style="color:#a6e22e">error</span>;
+    }
+
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">SecretString</span>;
+}
+</code></pre></div></p>
+
+<h2 id="writing-down-the-result-to-s3">Writing down the result to S3</h2>
+
+<p>Cloudfront serves HTML content from S3 bucket. So in order for the poem to be published we need to generate HTML and store it inside the bucket.</p>
+
+<p>To generate the HTML we insert sentences inside <a href="https://github.com/janl/mustache.js">mustache</a> template
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">formatted</span> <span style="color:#f92672">=</span>
+        <span style="color:#a6e22e">poem</span>
+          .<span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">p</span> =&gt; <span style="color:#e6db74">`&lt;p&gt;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">p</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&lt;/p&gt;`</span>)
+          .<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#34;\n&#34;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">html</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">renderTemplate</span>(<span style="color:#a6e22e">formatted</span>);
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">renderTemplate</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">poem</span>) =&gt; {
+  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">template</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">fs</span>.<span style="color:#a6e22e">readFileSync</span>(<span style="color:#e6db74">&#39;./template.html&#39;</span>, <span style="color:#e6db74">&#39;utf8&#39;</span>);
+
+  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Mustache</span>.<span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">template</span>, {
+    <span style="color:#a6e22e">poem</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">poem</span>
+  });
+}
+</code></pre></div></p>
+
+<p>The point of interest in the template is that we have to use triple curly brackets in order for the inserted HTML not to be escaped
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">html</span>&gt;
+    //omitted for brevity
+    &lt;<span style="color:#f92672">body</span>&gt;
+		&lt;<span style="color:#f92672">article</span>&gt;
+{{{poem}}}
+		&lt;/<span style="color:#f92672">article</span>&gt;
+	&lt;/<span style="color:#f92672">body</span>&gt;
+&lt;/<span style="color:#f92672">html</span>&gt;</code></pre></div></p>
+
+<p>Now we can store the HTML in S3 with the code below:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">putParams</span> <span style="color:#f92672">=</span> {
+  <span style="color:#a6e22e">Bucket</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;poeme-concrete&#39;</span>,
+  <span style="color:#a6e22e">Key</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;index.html&#39;</span>,
+  <span style="color:#a6e22e">Body</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">html</span>,
+  <span style="color:#a6e22e">ContentType</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;text/html&#39;</span>,
+};
+
+<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">s3</span>.<span style="color:#a6e22e">putObject</span>(<span style="color:#a6e22e">putParams</span>).<span style="color:#a6e22e">promise</span>();
+</code></pre></div></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Usually, at this point I write a summary of technologies touched on in the article. This time, however, I encourage you to read through <a href="http://db4fjaeo6m2tl.cloudfront.net/index.html">the poem</a> and occasionally revisit it. You may brush it off as something too disturbing but for many people in Ukraine it&rsquo;s a grim reality. I am no exception since I have spent the last two years battling to cure my now-4-year-old son&rsquo;s PTSD and speech disorder. Still, I&rsquo;m in a more lucky position because I have a roof over my head and live in a relatively peaceful region of the country.</p>
+
+<p>And if the course of the last 30 years has taught us anything it&rsquo;s that you can never stop the aggressor by leaving him unpunished. russia didn&rsquo;t stop after Transnistria, Ichkeria, Abkhazia, Crimea, and parts of Donetsk and Luhansk regions, and won&rsquo;t stop now if it feels that it can wage this war unpunished.</p>
+
+<p>This is why I encourage you to take a stance and support the Ukrainian military via these funds I&rsquo;ve been supporting personally as well.
+- <a href="https://bank.gov.ua/en/news/all/natsionalniy-bank-vidkriv-spetsrahunok-dlya-zboru-koshtiv-na-potrebi-armiyi">Official NBU account</a>
+- <a href="https://savelife.in.ua/donate/#donate-army-card-monthly">Come Back Alive Foundation</a>
+- <a href="https://www.hospitallers.life/needs-hospitallers">Hospitallers Battalion</a></p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
