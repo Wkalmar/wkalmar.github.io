@@ -6,10 +6,37 @@
     <description>Recent content in Tags on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 24 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 12 Aug 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>.NET</title>
+      <link>https://wkalmar.github.io/tags/.net/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/.net/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>FP</title>
+      <link>https://wkalmar.github.io/tags/fp/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/fp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Fsharp</title>
+      <link>https://wkalmar.github.io/tags/fsharp/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/tags/fsharp/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>AWS</title>
@@ -116,33 +143,6 @@
       <pubDate>Thu, 20 Oct 2022 00:00:00 +0000</pubDate>
       
       <guid>https://wkalmar.github.io/tags/go/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>.NET</title>
-      <link>https://wkalmar.github.io/tags/.net/</link>
-      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/.net/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>FP</title>
-      <link>https://wkalmar.github.io/tags/fp/</link>
-      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/fp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Fsharp</title>
-      <link>https://wkalmar.github.io/tags/fsharp/</link>
-      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://wkalmar.github.io/tags/fsharp/</guid>
       <description></description>
     </item>
     
