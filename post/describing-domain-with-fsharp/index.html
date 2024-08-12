@@ -95,7 +95,7 @@
 <li>The Dominant; the most unstable chord that wants to resolve to another chord</li>
 </ul>
 
-<h2 id="enconding-the-domain">Enconding the domain</h2>
+<h2 id="encoding-the-domain">Encoding the domain</h2>
 
 <p>Now let&rsquo;s encode this knowledge into code. I&rsquo;ve chosen F# for this task since its type system is quite handy for expressing all sorts of domains.</p>
 
@@ -253,7 +253,7 @@ There are many more chord qualities, but this is just enough for our needs.</p>
 
 <h2 id="domain-evolution">Domain evolution</h2>
 
-<p>So far we have covered only some basic concepts. But even some more mainstream progressions such as <a href="https://en.wikipedia.org/wiki/The_Axis_of_Awesome#%22Four_Chords%22">Axis of Awesome 4 chrod wamp</a> operate on the concept of substitutes. Substitutes are the duplicates of harmonic functions we already know but are not as distinct as their counterpart. So let&rsquo;s introduce them in our domain as well.</p>
+<p>So far we have covered only some basic concepts. But even some more mainstream progressions such as <a href="https://en.wikipedia.org/wiki/The_Axis_of_Awesome#%22Four_Chords%22">Axis of Awesome 4 chord wamp</a> operate on the concept of substitutes. Substitutes are the duplicates of harmonic functions we already know but are not as distinct as their counterpart. So let&rsquo;s introduce them in our domain as well.</p>
 
 <p>To me, this was the most enjoyable part of expressing my domain in F# since I had to remember to add it in two places: harmony items and transitions between them.
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">HarmonyItem</span> <span style="color:#f92672">=</span>
