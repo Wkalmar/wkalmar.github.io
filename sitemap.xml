@@ -4,14 +4,55 @@
   
   <url>
     <loc>https://wkalmar.github.io/tags/.net/</loc>
-    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wkalmar.github.io/</loc>
-    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/fsharp/</loc>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/llm/</loc>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/ml/</loc>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/</loc>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/rag/</loc>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/tags/</loc>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wkalmar.github.io/post/using-rag-for-generative-tasks/</loc>
+    <lastmod>2025-05-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -21,24 +62,6 @@
   
   <url>
     <loc>https://wkalmar.github.io/tags/fp/</loc>
-    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/fsharp/</loc>
-    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/post/</loc>
-    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://wkalmar.github.io/tags/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Using RAG architecture for generative tasks // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using RAG architecture for generative tasks"/>
+<meta name="twitter:description" content="Large language models are used widely across the industry these days. Yet still, many people are skeptical about their capabilities as they are quite prone to hallucination. For that reason, in this article, I decided to use LLM in a case where there are no incorrect answers: generating artistic text. However, even in the case of art which is highly subjective, there are still some quality gates (or shall I say personal preferences?"/>
+
+    <meta property="og:title" content="Using RAG architecture for generative tasks" />
+<meta property="og:description" content="Large language models are used widely across the industry these days. Yet still, many people are skeptical about their capabilities as they are quite prone to hallucination. For that reason, in this article, I decided to use LLM in a case where there are no incorrect answers: generating artistic text. However, even in the case of art which is highly subjective, there are still some quality gates (or shall I say personal preferences?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/using-rag-for-generative-tasks/" />
+<meta property="article:published_time" content="2025-05-19T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2025-05-19T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Using RAG architecture for generative tasks</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          May 19, 2025
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          5 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/fsharp/">Fsharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a><a class="tag" href="https://wkalmar.github.io/tags/ml/">ML</a><a class="tag" href="https://wkalmar.github.io/tags/llm/">LLM</a><a class="tag" href="https://wkalmar.github.io/tags/rag/">RAG</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>Large language models are used widely across the industry these days. Yet still, many people are skeptical about their capabilities as they are quite prone to hallucination. For that reason, in this article, I decided to use LLM in a case where there are no incorrect answers: generating artistic text. However, even in the case of art which is highly subjective, there are still some quality gates (or shall I say personal preferences?).</p>
+
+<p>So how do I trick a model into generating text that suits my artistic taste? While prompt engineering can get you this far, I decided to provide LLM with data that would represent my view of fine art. For this, purpose I decided to try out Retrieval Augmented Generation (RAG) architecture.</p>
+
+<p>You can take a look at the entire code in <a href="https://github.com/Wkalmar/AiTextGenerator">this repository</a></p>
+
+<h2 id="enter-rag">Enter RAG</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Retrieval-augmented_generation">RAG</a> is a technique that combines a large language model with a vector database. The idea is that the model will be able to retrieve relevant information from a database and use it to generate a response. One of the most prominent use cases is letting LLM operate across the knowledge base thus creating an expert system.</p>
+
+<p>So how does it work?</p>
+
+<p>It consists of the following stages:</p>
+
+<ol>
+<li><p>Indexing. The data we want to use as our knowledge base is converted into LLM embeddings: numerical representations in the form of vectors.</p></li>
+
+<li><p>Retrieval. Given a user query, a document retriever is first called to select the most relevant documents that will be used to augment the query.</p></li>
+
+<li><p>Augmentation. The model feeds this relevant retrieved information into the LLM via prompt engineering of the user&rsquo;s original query.</p></li>
+
+<li><p>Generation. Finally, the LLM generates output based on both the query and the retrieved documents.</p></li>
+</ol>
+
+<h2 id="indexing-data">Indexing data</h2>
+
+<p>To be able to use LLM locally, I used Ollama. I won&rsquo;t dive deep into its setup as you can get quite detailed info on <a href="https://ollama.com/search">their site</a>.</p>
+
+<p>As I don&rsquo;t expect big dataset for my task, I&rsquo;ll embed data of interest in memory.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">open</span> Microsoft.KernelMemory.AI.<span style="color:#a6e22e">Ollama</span>
+<span style="color:#66d9ef">open</span> Microsoft.<span style="color:#a6e22e">KernelMemory</span>
+<span style="color:#66d9ef">open</span> Microsoft.<span style="color:#a6e22e">SemanticKernel</span>
+
+<span style="color:#66d9ef">let</span> ollamaUri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://localhost:11434/&#34;</span>
+<span style="color:#66d9ef">let</span> chatModelName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;llama3.1&#34;</span>
+<span style="color:#66d9ef">let</span> embedderModelName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;all-minilm&#34;</span>
+
+<span style="color:#66d9ef">let</span> kernelMemoryConfig <span style="color:#f92672">=</span>
+    <span style="color:#66d9ef">let</span> config <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">OllamaConfig</span>()
+    config<span style="color:#f92672">.</span><span style="color:#a6e22e">Endpoint</span> <span style="color:#f92672">&lt;-</span> ollamaUri
+    config<span style="color:#f92672">.</span><span style="color:#a6e22e">TextModel</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">OllamaModelConfig</span><span style="color:#f92672">(</span>chatModelName<span style="color:#f92672">)</span>
+    config<span style="color:#f92672">.</span><span style="color:#a6e22e">EmbeddingModel</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">OllamaModelConfig</span><span style="color:#f92672">(</span>embedderModelName<span style="color:#f92672">,</span> 2048<span style="color:#f92672">)</span>
+    config
+
+<span style="color:#66d9ef">let</span> memory <span style="color:#f92672">=</span>
+    <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> <span style="color:#a6e22e">KernelMemoryBuilder</span>()<span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">WithOllamaTextGeneration</span><span style="color:#f92672">(</span>kernelMemoryConfig<span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">WithOllamaTextEmbeddingGeneration</span><span style="color:#f92672">(</span>kernelMemoryConfig<span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">Build</span>()</code></pre></div>
+
+<p>Now, once I set up memory kernel, I can embed  data</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> importPreparedData <span style="color:#f92672">=</span>
+    async <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">let</span> files <span style="color:#f92672">=</span> Directory.<span style="color:#a6e22e">GetFiles</span><span style="color:#f92672">(</span>poemsPath<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;*&#34;</span><span style="color:#f92672">,</span> SearchOption.<span style="color:#a6e22e">AllDirectories</span><span style="color:#f92672">)</span>
+        <span style="color:#66d9ef">for</span> j <span style="color:#66d9ef">in</span> 1<span style="color:#f92672">..</span>files<span style="color:#f92672">.</span><span style="color:#a6e22e">Length</span> <span style="color:#66d9ef">do</span>
+            <span style="color:#66d9ef">let</span> text <span style="color:#f92672">=</span> File.<span style="color:#a6e22e">ReadAllText</span><span style="color:#f92672">(</span>files<span style="color:#f92672">.[</span>j<span style="color:#f92672">-</span>1<span style="color:#f92672">])</span>
+            <span style="color:#66d9ef">let</span><span style="color:#f92672">!</span> importResult <span style="color:#f92672">=</span> memory<span style="color:#f92672">.</span><span style="color:#a6e22e">ImportTextAsync</span><span style="color:#f92672">(</span>text<span style="color:#f92672">)</span> <span style="color:#f92672">|&gt;</span> Async.<span style="color:#a6e22e">AwaitTask</span>
+            Console.<span style="color:#a6e22e">WriteLine</span><span style="color:#f92672">(</span>importResult<span style="color:#f92672">)</span>
+    <span style="color:#f92672">}</span></code></pre></div>
+
+<p>Generating actual text looks like this</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> generateText <span style="color:#f92672">=</span>
+    async <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">do</span><span style="color:#f92672">!</span> importData
+        <span style="color:#66d9ef">let</span><span style="color:#f92672">!</span> finalPoem <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>memory<span style="color:#f92672">.</span><span style="color:#a6e22e">AskStreamingAsync</span><span style="color:#f92672">(</span>propmpt<span style="color:#f92672">)</span>
+        <span style="color:#f92672">|&gt;</span> TaskSeq.fold
+            <span style="color:#f92672">(</span><span style="color:#66d9ef">fun</span> acc answer <span style="color:#f92672">-&gt;</span>
+                Console.<span style="color:#a6e22e">WriteLine</span><span style="color:#f92672">(</span>answer<span style="color:#f92672">.</span>RelevantSources.<span style="color:#a6e22e">Count</span><span style="color:#f92672">)</span>
+                Console.<span style="color:#a6e22e">WriteLine</span><span style="color:#f92672">(</span>answer<span style="color:#f92672">.</span><span style="color:#a6e22e">Result</span><span style="color:#f92672">)</span>
+                acc <span style="color:#f92672">+</span> answer<span style="color:#f92672">.</span><span style="color:#a6e22e">Result</span>
+            <span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">|&gt;</span> Async.<span style="color:#a6e22e">AwaitTask</span><span style="color:#f92672">)</span>
+        return Utils.truncateText finalPoem 100
+    <span style="color:#f92672">}</span></code></pre></div>
+
+<h2 id="enriching-dataset">Enriching dataset</h2>
+
+<p>As often happens, results in the domain of machine learning depend on the quality and quantity of data provided. This case is not an exception. With the small dataset result looks chunky and often repetitive, as it generates data based solely on what&rsquo;s embedded in memory.</p>
+
+<p>Honestly, as this domain is quite new to me this was a big revelation to me, as I expected LLM to use not only the data provided but also its own generative capabilities.</p>
+
+<p>So how do I add more variativity? With generating synthetic data and embedding it alongside the original dataset.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> rawLlama <span style="color:#f92672">=</span> Kernel.<span style="color:#a6e22e">CreateBuilder</span>()<span style="color:#f92672">.</span><span style="color:#a6e22e">AddOllamaTextGeneration</span><span style="color:#f92672">(</span>chatModelName<span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Uri</span><span style="color:#f92672">(</span>ollamaUri<span style="color:#f92672">)).</span><span style="color:#a6e22e">Build</span>()</code></pre></div>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ocaml" data-lang="ocaml"><span style="color:#66d9ef">let</span> importSyntheticData <span style="color:#f92672">=</span>
+    async <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> 1<span style="color:#f92672">..</span>syntheticDataCount <span style="color:#66d9ef">do</span>
+            <span style="color:#66d9ef">let</span><span style="color:#f92672">!</span> builtInPoem <span style="color:#f92672">=</span> rawLlama<span style="color:#f92672">.</span><span style="color:#a6e22e">InvokePromptAsync</span><span style="color:#f92672">(</span>syntheticPropmpt<span style="color:#f92672">)</span> <span style="color:#f92672">|&gt;</span> Async.<span style="color:#a6e22e">AwaitTask</span>
+            <span style="color:#66d9ef">let</span><span style="color:#f92672">!</span> importResult <span style="color:#f92672">=</span> memory<span style="color:#f92672">.</span><span style="color:#a6e22e">ImportTextAsync</span><span style="color:#f92672">(</span>builtInPoem<span style="color:#f92672">.</span><span style="color:#a6e22e">ToString</span>()<span style="color:#f92672">)</span> <span style="color:#f92672">|&gt;</span> Async.<span style="color:#a6e22e">AwaitTask</span>
+            Console.<span style="color:#a6e22e">WriteLine</span><span style="color:#f92672">(</span>importResult<span style="color:#f92672">)</span>
+    <span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">let</span> importData <span style="color:#f92672">=</span>
+    async <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">do</span><span style="color:#f92672">!</span> importSyntheticData
+        <span style="color:#66d9ef">do</span><span style="color:#f92672">!</span> importPreparedData
+    <span style="color:#f92672">}</span></code></pre></div>
+
+<h2 id="prompt-engineering">Prompt engineering</h2>
+
+<p>Even when one has a good enough dataset at your disposal, experience with LLM still depends greatly on how well the question is formulated.</p>
+
+<p>I found a good metric to control it is relevant document count that comes together with LLMs response. Maximizing this value allowed me to find the prompt that utilized most of the data I provided.</p>
+
+<p>While initially, I used one prompt for both embedding synthetic data and generating the final output, eventually, I found that it&rsquo;s better to use different prompts for each task. While generating synthetic data I use the most restrictive prompt I have, in order to guide LLM to generate something that will be on par with seeded data.</p>
+
+<p>On the other hand, the prompt for generating the final output is quite relaxed, since I applied all the restrictions I wanted during the generation phase, so now I want to squeeze the most from the data I have.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>While subject to fierce debate from the philosophical standpoint, from the technical employing LLMs for generative tasks is the perfect use case. In this article, we used a couple of techniques to guide the model into generating the output we strive for, without spending huge effort on training our own model.</p>
+
+<p>As a conclusion, I&rsquo;ll leave the fragment generated with my approach. I think it is vague and enigmatic enough to be passed as a modern poem.</p>
+
+<pre><code>On black earth, Crimean wormwood blooms,
+As tears flow from the icon of the Mother of God.
+The vizier of Solomon appears on city shop windows,
+Like a guardian spirit abandoned.
+</code></pre>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
