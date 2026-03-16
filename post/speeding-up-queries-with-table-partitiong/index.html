@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Partitioning PotgreSQL Database // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.6" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Partitioning PotgreSQL Database"/>
+<meta name="twitter:description" content="Introduction In one of the projects I used to work on, we&rsquo;ve employed CQRS approach with PostgreSQL as a write storage and NoSQL database as a read storage. As a safety measure, we had a special endpoint that allowed us to regenerate entire content of the read storage based on the write storage that is supposed to be the single source of truth.
+The story started one day when we discovered that our safety handle started to fail with the write storage database timeout due to several millions of rows in it."/>
+
+    <meta property="og:title" content="Partitioning PotgreSQL Database" />
+<meta property="og:description" content="Introduction In one of the projects I used to work on, we&rsquo;ve employed CQRS approach with PostgreSQL as a write storage and NoSQL database as a read storage. As a safety measure, we had a special endpoint that allowed us to regenerate entire content of the read storage based on the write storage that is supposed to be the single source of truth.
+The story started one day when we discovered that our safety handle started to fail with the write storage database timeout due to several millions of rows in it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/speeding-up-queries-with-table-partitiong/" />
+<meta property="article:published_time" content="2026-01-09T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2026-01-09T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Partitioning PotgreSQL Database</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jan 9, 2026
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          5 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/sql/">SQL</a><a class="tag" href="https://wkalmar.github.io/tags/postgresql/">PostgreSQL</a><a class="tag" href="https://wkalmar.github.io/tags/architecture/">Architecture</a><a class="tag" href="https://wkalmar.github.io/tags/performance/">Performance</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="introduction">Introduction</h2>
+
+<p>In one of the projects I used to work on, we&rsquo;ve employed CQRS approach with PostgreSQL as a write storage and NoSQL database as a read storage. As a safety measure, we had a special endpoint that allowed us to regenerate entire content of the read storage based on the write storage that is supposed to be the single source of truth.</p>
+
+<p>The story started one day when we discovered that our safety handle started to fail with the write storage database timeout due to several millions of rows in it. Generally speaking, the solution proposed below is applicable to a wide range of data storages but we&rsquo;ll touch upon some Postgres-specific tooling, so let&rsquo;s focus on that.</p>
+
+<h2 id="partitioning-overview">Partitioning overview</h2>
+
+<p>Partition is the process of splitting a dataset into more manageable, smaller pieces. This, in turn yeilds reduced INSERT and SELECT costs. Partitioning can be accomplished in many ways. For instance, vertical partitioning separates data into columns. Horizontal partition, on the contrary, divides data into rows according to particular criteria (partition key). When choosing partition key we can use the following strategies:
+- range partitioning (splitting by date or numeric ranges)
+- list partitioning (splitting by categorical values like region)
+- hash partitioning (even distribution using a hash function)</p>
+
+<h3 id="partitioning-vs-sharding">Partitioning vs sharding</h3>
+
+<p>While partitioning occurs within a single database instance, sharding is a way to split the data into multiple physical instances. Thus, sharding increases operational costs due to such issues as the necessity to put the proxy, which will route requests to shards, need in distributed transactions or expensive cross-shards joins.</p>
+
+<p>For that reason, we should employ sharding only when partitions exceed the limits of a single machine storage.</p>
+
+<h3 id="choosing-the-right-partitioning-strategy">Choosing the right partitioning strategy</h3>
+
+<p>So our plan is to split the write storage into some manageable chunks so that none of those chunks will fail due to a timeout. How do we design those chunks?</p>
+
+<p>The code of the safety handle reads items from the read storage in batches. I already <a href="https://wkalmar.github.io/post/batch-processing-with-enumeratefiles/">blogged</a> about how batching can be a neat solution for handling a large dataset.
+So ideally, we would like to have our partition equal to or several times bigger than the batch size, so we could read the entire partition with an integer number of iterations.</p>
+
+<p>For that reason, we have to discard the idea of list partition or range partition based on serial data (such as timestamps), as they generally offer uneven distribution of data.</p>
+
+<p>The other two options are hash partitioning and range partitioning based on an integer primary key. Since both of them offer even distribution, we&rsquo;ll stick with a simpler range-based approach.</p>
+
+<h2 id="using-pg-partman">Using pg_partman</h2>
+
+<p>The go-to solution for partitioning in PostgreSQL is <a href="https://github.com/pgpartman/pg_partman">pg_partman</a> extension.</p>
+
+<p>First, let&rsquo;s enable the extension.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">SCHEMA</span> partman;
+<span style="color:#66d9ef">CREATE</span> EXTENSION pg_partman <span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">SCHEMA</span> partman;</code></pre></div>
+
+<p>To partition existing data, we&rsquo;ll create a new partitioned table with the desired structure and migrate data from the old table to the new one.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">public</span>.<span style="color:#e6db74">&#34;Entities&#34;</span> <span style="color:#66d9ef">RENAME</span> <span style="color:#66d9ef">CONSTRAINT</span> <span style="color:#e6db74">&#34;PK_Entities&#34;</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#34;PK_Entities_old&#34;</span>;
+
+<span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">public</span>.<span style="color:#e6db74">&#34;Entities&#34;</span> <span style="color:#66d9ef">RENAME</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#34;Entities_old&#34;</span>;
+
+<span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#66d9ef">public</span>.<span style="color:#e6db74">&#34;Entities&#34;</span>
+(
+    <span style="color:#e6db74">&#34;Id&#34;</span> bigint <span style="color:#66d9ef">GENERATED</span> ALWAYS <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">IDENTITY</span>,
+    <span style="color:#e6db74">&#34;UserName&#34;</span> character varying(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">COLLATE</span> pg_catalog.<span style="color:#e6db74">&#34;default&#34;</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+    <span style="color:#e6db74">&#34;TimeStamp&#34;</span> <span style="color:#66d9ef">timestamp</span> <span style="color:#66d9ef">with</span> time <span style="color:#66d9ef">zone</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+    <span style="color:#e6db74">&#34;Entity&#34;</span> jsonb,
+    <span style="color:#e6db74">&#34;OrganizationInfo&#34;</span> text <span style="color:#66d9ef">COLLATE</span> pg_catalog.<span style="color:#e6db74">&#34;default&#34;</span>,
+    <span style="color:#66d9ef">CONSTRAINT</span> <span style="color:#e6db74">&#34;PK_Entities&#34;</span> <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#e6db74">&#34;Id&#34;</span>)
+)  PARTITION <span style="color:#66d9ef">BY</span> RANGE (<span style="color:#e6db74">&#34;Id&#34;</span>);</code></pre></div>
+
+<p>Now we have to figure out how many partitions to create. To achieve this, we have to do some math. We&rsquo;ll take the number of existing rows, and given the row count in a single partition, we&rsquo;ll calculate how many partitions we need.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#66d9ef">DO</span> <span style="color:#960050;background-color:#1e0010">$$</span>
+<span style="color:#66d9ef">DECLARE</span>
+    v_row_count bigint;
+    v_partition_size bigint :<span style="color:#f92672">=</span> <span style="color:#ae81ff">200000</span>;
+    v_premake integer;
+<span style="color:#66d9ef">BEGIN</span>
+    <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">INTO</span> v_row_count
+    <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">public</span>.<span style="color:#e6db74">&#34;Entities_old&#34;</span>;
+
+    v_premake :<span style="color:#f92672">=</span> ceil(v_row_count::numeric <span style="color:#f92672">/</span> v_partition_size) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+
+    PERFORM partman.create_parent(
+        p_parent_table :<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;public.Entities&#39;</span>,
+        p_control      :<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Id&#39;</span>,
+        p_interval     :<span style="color:#f92672">=</span> v_partition_size::text,
+        p_premake      :<span style="color:#f92672">=</span> v_premake
+    );
+<span style="color:#66d9ef">END</span> <span style="color:#960050;background-color:#1e0010">$$</span>;</code></pre></div>
+
+<p>A caveat here is the parameter <code>p_premake</code> that plays an important role, as it represents the maximum number of partitions that are available in advance when performing partitioning. By default, this parameter is 5, which means if we have 10 000 000 rows in the original table and we want to configure partitions 200 000 rows each, we&rsquo;ll end up with 5 partitions holding together 1 000 000 rows and another 9 000 000 rows residing in the default partition!</p>
+
+<p><code>p_premake</code> is rarely mentioned in most of the examples dedicated to pg_partman, as they use quite a modest amount of data for the illustration, so I spent a lot of time debugging and researching until I discovered it.</p>
+
+<p>Before we wrap up with transferring data into the new table, it should be noted that pg_partman does not create new partitions automatically. This means that if we have 5 partitions with 200 000 rows each, when we insert row number 1 000 001, the 6th partition won&rsquo;t be created. Instead new record will fall into the default partition. For that reason, we have to perform partition maintenance, which is a built-in function of pg_partman.</p>
+
+<p>To achieve this, we&rsquo;ll install <a href="https://github.com/citusdata/pg_cron">pg_cron</a> extension, which initiates an internal scheduler.</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#66d9ef">CREATE</span> EXTENSION pg_cron;
+
+<span style="color:#66d9ef">SELECT</span> cron.schedule(<span style="color:#e6db74">&#39;@hourly&#39;</span>, <span style="color:#960050;background-color:#1e0010">$$</span><span style="color:#66d9ef">CALL</span> partman.partition_data_proc(<span style="color:#e6db74">&#39;public.Entities&#39;</span>);<span style="color:#960050;background-color:#1e0010">$$</span>);</code></pre></div>
+Calling <code>partition_data_proc</code> allows us to create a new partition and remove data from the default partition, if any.</p>
+
+<p>With that done, the last step is migration to a new table, which is pretty straightforward.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#66d9ef">public</span>.<span style="color:#e6db74">&#34;Entities&#34;</span>(
+    <span style="color:#e6db74">&#34;UserName&#34;</span>, <span style="color:#e6db74">&#34;TimeStamp&#34;</span>, <span style="color:#e6db74">&#34;Entity&#34;</span>, <span style="color:#e6db74">&#34;OrganizationInfo&#34;</span>)
+<span style="color:#66d9ef">SELECT</span> <span style="color:#e6db74">&#34;UserName&#34;</span>, <span style="color:#e6db74">&#34;TimeStamp&#34;</span>, <span style="color:#e6db74">&#34;Entity&#34;</span>, <span style="color:#e6db74">&#34;OrganizationInfo&#34;</span>
+<span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">public</span>.<span style="color:#e6db74">&#34;Entities_old&#34;</span>
+<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#34;Id&#34;</span>;
+
+<span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#66d9ef">public</span>.<span style="color:#e6db74">&#34;Entities_old&#34;</span></code></pre></div></p>
+
+<h2 id="assessing-the-result">Assessing the result</h2>
+
+<p>Before partitioning, we had 9 million rows in the table mentioned above. Selecting a single batch from it could take up to 30 seconds. Now, with a little bit of SQL glue, we were able to reduce this time to the fractions of a second, yielding orders of magnitude improvement.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

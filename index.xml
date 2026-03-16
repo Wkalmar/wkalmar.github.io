@@ -6,10 +6,20 @@
     <description>Recent content on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 May 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 09 Jan 2026 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Partitioning PotgreSQL Database</title>
+      <link>https://wkalmar.github.io/post/speeding-up-queries-with-table-partitiong/</link>
+      <pubDate>Fri, 09 Jan 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/speeding-up-queries-with-table-partitiong/</guid>
+      <description>Introduction In one of the projects I used to work on, we&amp;rsquo;ve employed CQRS approach with PostgreSQL as a write storage and NoSQL database as a read storage. As a safety measure, we had a special endpoint that allowed us to regenerate entire content of the read storage based on the write storage that is supposed to be the single source of truth.
+The story started one day when we discovered that our safety handle started to fail with the write storage database timeout due to several millions of rows in it.</description>
+    </item>
     
     <item>
       <title>Using RAG architecture for generative tasks</title>
