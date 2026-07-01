@@ -6,10 +6,21 @@
     <description>Recent content on Bohdan Stupak&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Jan 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jul 2026 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://wkalmar.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>You don&#39;t need to create all properties inside a DTO to successfully deserialize</title>
+      <link>https://wkalmar.github.io/post/json-dto/</link>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/json-dto/</guid>
+      <description>The example below might seem like very simple advice, but I found people across many codebases do not know this. This, in turn, leads to excessive usage of JsonNode class, forcing developers to lose benefits of compiler support in a strongly typed language.
+Consider the JSON below
+string json = &amp;#34;&amp;#34;&amp;#34;	{&amp;#34;Name&amp;#34;: &amp;#34;Alice&amp;#34;,&amp;#34;Age&amp;#34;: 30,&amp;#34;NonExistentStringField&amp;#34;: &amp;#34;foo&amp;#34;,&amp;#34;NonExistingIntField&amp;#34;: 48}&amp;#34;&amp;#34;&amp;#34;;  Let&amp;rsquo;s say, for our needs, we require only Name and Age fields.</description>
+    </item>
     
     <item>
       <title>Partitioning PotgreSQL Database</title>
