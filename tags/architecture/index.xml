@@ -22,6 +22,16 @@ The story started one day when we discovered that our safety handle started to f
     </item>
     
     <item>
+      <title>Propagating correlation id through microservices with OpenTelemetry</title>
+      <link>https://wkalmar.github.io/post/opentelemetry-correlation-id/</link>
+      <pubDate>Tue, 21 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://wkalmar.github.io/post/opentelemetry-correlation-id/</guid>
+      <description>Many articles focus on the benefits of microservice architecture such as the possiblity of independent horizontal scaling of components or reduced cognitive load, due to compact codebase aligned with a business capability. Yet those benefits are paired with downsides. One of them is necessity to trace request across multiple microservices when debugging a production issue.
+To combat this problem, the concept of correlation id was invented. Correlation id is a single indentifier that is propagated during request allowing to establish a single context across multiple microservices.</description>
+    </item>
+    
+    <item>
       <title>Composing poésie concrète with AWS Step Function</title>
       <link>https://wkalmar.github.io/post/poeme-concrete-with-aws-step-functions/</link>
       <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>

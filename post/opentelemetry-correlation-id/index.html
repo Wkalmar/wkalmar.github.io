@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Propagating correlation id through microservices with OpenTelemetry // Bohdan Stupak&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.55.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://wkalmar.github.io/css/main.min.61bb32028587f24ca28522d8d197970c7ef33284e5fffb45a75fcbbb2dbc4dcb.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Propagating correlation id through microservices with OpenTelemetry"/>
+<meta name="twitter:description" content="Many articles focus on the benefits of microservice architecture such as the possiblity of independent horizontal scaling of components or reduced cognitive load, due to compact codebase aligned with a business capability. Yet those benefits are paired with downsides. One of them is necessity to trace request across multiple microservices when debugging a production issue.
+To combat this problem, the concept of correlation id was invented. Correlation id is a single indentifier that is propagated during request allowing to establish a single context across multiple microservices."/>
+
+    <meta property="og:title" content="Propagating correlation id through microservices with OpenTelemetry" />
+<meta property="og:description" content="Many articles focus on the benefits of microservice architecture such as the possiblity of independent horizontal scaling of components or reduced cognitive load, due to compact codebase aligned with a business capability. Yet those benefits are paired with downsides. One of them is necessity to trace request across multiple microservices when debugging a production issue.
+To combat this problem, the concept of correlation id was invented. Correlation id is a single indentifier that is propagated during request allowing to establish a single context across multiple microservices." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wkalmar.github.io/post/opentelemetry-correlation-id/" />
+<meta property="article:published_time" content="2025-01-21T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2025-01-21T00:00:00&#43;00:00"/>
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://wkalmar.github.io/"><img class="app-header-avatar" src="/avatar1.jpg" alt="John Doe" /></a>
+      <h1>Bohdan Stupak&#39;s blog</h1>
+      <p>Continious learner from Kyiv, Ukraine</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/Wkalmar" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/bohdanstupak1" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://stackoverflow.com/users/11306392/bohdan-stupak?tab=profile" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-stackoverflow">
+  <title>stackoverflow</title>
+  <path d="M18.986 21.865v-6.404h2.134V24H1.844v-8.539h2.13v6.404h15.012zM6.111 19.731H16.85v-2.137H6.111v2.137zm.259-4.852l10.48 2.189.451-2.07-10.478-2.187-.453 2.068zm1.359-5.056l9.705 4.53.903-1.95-9.706-4.53-.902 1.936v.014zm2.715-4.785l8.217 6.855 1.359-1.62-8.216-6.853-1.35 1.617-.01.001zM15.751 0l-1.746 1.294 6.405 8.604 1.746-1.294L15.749 0h.002z"/>
+</svg></a>
+        
+          <a target="_blank" href="https://www.linkedin.com/in/bohdan-stupak-19232aaa/" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-linkedin">
+  <title>linkedin</title>
+  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Propagating correlation id through microservices with OpenTelemetry</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Jan 21, 2025
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          5 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://wkalmar.github.io/tags/csharp/">Csharp</a><a class="tag" href="https://wkalmar.github.io/tags/.net/">.NET</a><a class="tag" href="https://wkalmar.github.io/tags/architecture/">Architecture</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>Many articles focus on the benefits of microservice architecture such as the possiblity of independent horizontal scaling of components or reduced cognitive load, due to compact codebase aligned with a business capability. Yet those benefits are paired with downsides. One of them is necessity to trace request across multiple microservices when debugging a production issue.</p>
+
+<p>To combat this problem, the concept of <a href="https://microsoft.github.io/code-with-engineering-playbook/observability/correlation-id/">correlation id</a> was invented. Correlation id is a single indentifier that is propagated during request allowing to establish a single context across multiple microservices. This allows us to understand how a request flows through multiple services.</p>
+
+<h2 id="enter-opentelemetry">Enter OpenTelemetry</h2>
+
+<p>While it is possible to come up with your in-house solution, for the majority of cases, it would be more cost-efficient to use tools that are proven to be as industry standart at this point in time. <a href="https://opentelemetry.io/">OpenTelemetry</a> is an open-source observability framework that provides a unified API, SDK, and tooling to instrument, generate, collect, and export telemetry data (traces, metrics, and logs).</p>
+
+<h3 id="core-concepts">Core Concepts</h3>
+
+<ul>
+<li>Activity: A unit of work that represents an operation (e.g., handling an HTTP request, processing a message). Each activity has a unique ID and can have parent-child relationships.</li>
+<li>Trace: A collection of activities that represent the lifecycle of a request as it flows through a system.</li>
+<li>Span: Another term for an activity, representing a single operation within a trace.</li>
+<li>Baggage: Key-value pairs that propagate alongside the trace context, allowing you to attach custom metadata (like user IDs, correlation IDs) to every span in a trace.</li>
+<li>ActivitySource: The factory that creates activities. Think of it as the entry point for instrumentation.</li>
+</ul>
+
+<h2 id="setting-up-opentelemetry-tracing">Setting Up OpenTelemetry Tracing</h2>
+
+<p>In an ASP.NET Core application, OpenTelemetry tracing is typically configured in the service collection:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddOpenTelemetryTracing(builder =&gt;
+{
+    builder.AddSource(<span style="color:#e6db74">&#34;API&#34;</span>);
+});
+</code></pre></div>
+
+<p>This tells OpenTelemetry to listen for activities created by the <code>&quot;API&quot;</code> activity source. You can register multiple sources for different parts of your application.</p>
+
+<h3 id="activity-listener">Activity Listener</h3>
+
+<p>To ensure all activities are sampled (recorded), an <code>ActivityListener</code> is configured:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">ActivitySource.AddActivityListener(
+    <span style="color:#66d9ef">new</span> ActivityListener
+    {
+        ShouldListenTo = _ =&gt; <span style="color:#66d9ef">true</span>,
+        Sample = (<span style="color:#66d9ef">ref</span> _) =&gt; ActivitySamplingResult.AllData
+    });
+</code></pre></div>
+
+<p>This listener accepts all activities and samples them with full data, ensuring no trace information is lost during development or in production.</p>
+
+<h2 id="logging-with-trace-context">Logging with Trace Context</h2>
+
+<p>One of the most powerful features of distributed tracing is the ability to correlate log entries with trace spans. This is achieved through <a href="https://github.com/serilog/serilog/wiki/Enrichment">Serilog enrichers</a>.</p>
+
+<p>Let&rsquo;s have a look at how appsettings.json is configured</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;Serilog&#34;</span>: {
+    <span style="color:#f92672">&#34;Enrich&#34;</span>: [
+      <span style="color:#e6db74">&#34;FromLogContext&#34;</span>,
+      <span style="color:#e6db74">&#34;WithThreadId&#34;</span>,
+      <span style="color:#e6db74">&#34;WithSpan&#34;</span>
+    ],
+    <span style="color:#f92672">&#34;WriteTo&#34;</span>: [
+      {
+        <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;Console&#34;</span>,
+        <span style="color:#f92672">&#34;Args&#34;</span>: {
+          <span style="color:#f92672">&#34;outputTemplate&#34;</span>: <span style="color:#e6db74">&#34;[{Timestampmm:ss} {Level:u3} {SourceContext}] [{Properties}] {Message:lj}{NewLine}{Exception}&#34;</span>
+        }
+      }
+    ]
+  }
+}</code></pre></div>
+
+<p>The <code>WithSpan</code> enricher automatically injects the current trace and span IDs into the log context. This means every log entry written while an activity is active will include:</p>
+
+<ul>
+<li><code>TraceId</code>: The unique identifier for the entire trace</li>
+<li><code>SpanId</code>: The unique identifier for the current operation</li>
+</ul>
+
+<p>When you search logs by a <code>TraceId</code>, you can reconstruct the entire journey of a request across all services.</p>
+
+<h2 id="context-propagation-in-rest-apis">Context Propagation in REST APIs</h2>
+
+<p>When a request arrives at a REST API, the tracing context needs to be extracted from the HTTP headers. OpenTelemetry provides the <code>DistributedContextPropagator</code> for this purpose.</p>
+
+<h3 id="how-it-works">How It Works</h3>
+
+<ol>
+<li>Incoming Request: The propagator extracts trace context from standard W3C Trace Context headers (<code>traceparent</code>, <code>tracestate</code>) or other proprietary headers.</li>
+<li>Activity Creation: A new activity (span) is started as a child of the extracted parent context.</li>
+<li>Outgoing Request: When the service calls another service, the current activity&rsquo;s context is injected into the outgoing HTTP headers.</li>
+</ol>
+
+<h3 id="activity-creation-pattern">Activity Creation Pattern</h3>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = ActivitySources.ApiActivitySource
+    .StartActivity(<span style="color:#e6db74">&#34;Operation Name&#34;</span>, ActivityKind.Server, parentContext.ActivityContext))
+{
+    <span style="color:#75715e">// Work is done here, all logs will be correlated
+</span><span style="color:#75715e"></span>}
+</code></pre></div>
+
+<p>The <code>ActivityKind</code> enum indicates the role of the activity:
+- <strong>Server</strong>: Handling an incoming request
+- <strong>Client</strong>: Making an outgoing request
+- <strong>Producer</strong>: Publishing a message
+- <strong>Consumer</strong>: Consuming a message</p>
+
+<p><code>parentContext.ActivityContext</code> parameter is worth noting as it allows seamlessly propagating context from the parent activity when ASP.NET Core is used. This, in turn, is what allows us to trace the path of the request across multiple services, preserving all the information we need.</p>
+
+<h2 id="context-propagation-in-rabbitmq">Context Propagation in RabbitMQ</h2>
+
+<p>Propagating tracing context through message queues requires custom injectors and extractors, as RabbitMQ doesn&rsquo;t natively support W3C Trace Context headers.</p>
+
+<h3 id="injecting-context-producer-side">Injecting Context (Producer Side)</h3>
+
+<p>When publishing a message, the current activity&rsquo;s trace context is serialized and added to the message headers:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Inject(<span style="color:#66d9ef">object</span> carrier, <span style="color:#66d9ef">string</span> fieldName, <span style="color:#66d9ef">string</span> fieldValue)
+{
+    <span style="color:#66d9ef">var</span> props = carrier <span style="color:#66d9ef">as</span> IBasicProperties;
+    props.Headers ??= <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;();
+    props.Headers.Add(fieldName, fieldValue);
+}
+</code></pre></div>
+
+<p>The <code>DistributedContextPropagator.Current.Inject()</code> method calls this injector for each trace context field, embedding the trace and span IDs into the RabbitMQ message properties.</p>
+
+<h3 id="extracting-context-consumer-side">Extracting Context (Consumer Side)</h3>
+
+<p>When consuming a message, the trace context is extracted from the headers:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; ExtractTraceContextFromHeaders(
+    IDictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt; headers, <span style="color:#66d9ef">string</span> key)
+{
+    <span style="color:#66d9ef">if</span> (headers.TryGetValue(key, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">object</span> <span style="color:#66d9ef">value</span>))
+    {
+        <span style="color:#66d9ef">var</span> bytes = <span style="color:#66d9ef">value</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">byte</span><span style="color:#a6e22e">[]</span>;
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span><span style="color:#a6e22e">[]</span> { Encoding.UTF8.GetString(bytes) };
+    }
+    <span style="color:#66d9ef">return</span> Array.Empty&lt;<span style="color:#66d9ef">string</span>&gt;();
+}
+</code></pre></div>
+
+<p>The consumer then starts a new activity linked to the parent context:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> parentContext = _propagator.Extract(
+    <span style="color:#66d9ef">default</span>, headers, DistributedContextExtractor.ExtractTraceContextFromHeaders);
+
+<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = ActivitySources.ApiActivitySource
+    .StartActivity(<span style="color:#e6db74">&#34;consume&#34;</span>, ActivityKind.Consumer, parentContext.ActivityContext))
+{
+    <span style="color:#75715e">// Process message
+</span><span style="color:#75715e"></span>}
+</code></pre></div>
+
+<h3 id="propagating-baggage">Propagating Baggage</h3>
+
+<p>Baggage allows you to pass custom metadata through the distributed trace. The <code>ActivityPopulator</code> utility class helps transfer baggage from a parent activity to a child activity:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> PopulateBaggageFromParentActivity(Activity parentActivity, Activity activity)
+{
+    <span style="color:#66d9ef">if</span> (parentActivity <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span> || activity <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">return</span>;
+
+    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> parentActivity.Baggage)
+    {
+        activity.SetBaggage(item.Key, item.Value);
+    }
+}
+</code></pre></div>
+
+<p>This ensures that custom correlation data (like material IDs, user IDs, or request identifiers) flows through the entire trace chain.</p>
+
+<p>Here&rsquo;s how it used
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> parentContext = _propagator.Extract(<span style="color:#66d9ef">default</span>, headers, DistributedContextExtractor.ExtractTraceContextFromHeaders);
+<span style="color:#66d9ef">var</span> baggage = DistributedContextPropagator.Current.ExtractBaggage(headers, DistributedContextExtractor.ExtractBaggageFromHeaders);
+
+<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> activity = ActivitySources.IisApiActivitySource.StartActivity(<span style="color:#e6db74">$&#34;{ApplicationName} consume&#34;</span>, ActivityKind.Consumer, parentContext.ActivityContext))
+{
+    ActivityPopulator.PopulateBaggage(baggage, activity);
+    <span style="color:#75715e">// further processing
+</span><span style="color:#75715e"></span>}
+</code></pre></div></p>
+
+<h2 id="further-work">Further work</h2>
+
+<p>At this point, we can dissect logs in our setup quering it by <code>TraceId</code> and visualising the path of a complex multi-service request. As a further step, we can visualise those paths using <a href="https://www.jaegertracing.io/">Jaeger</a>.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In the current landscape of multi-microservices architectures ability to understand the path of each request is crucial for observability and debugging purposes. Opentelemetry grants us this posilibity allowing us to almost seamlessly enrich our logs with trace information as well as visualising it with modern tools.</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
